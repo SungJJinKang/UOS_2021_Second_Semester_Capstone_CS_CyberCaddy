@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1052627479811",
+    "project_id": "dabajo-test",
+    "storage_bucket": "dabajo-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052627479811:android:ab3a20e55a3d647fba8d36",
+        "android_client_info": {
+          "package_name": "com.uoscybercaddy.dabajo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052627479811-h60p7hjnllfg1kq1jon93lsahepktmm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqIL7W6jqQpVqeg875XtMPVjSay5xFKpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052627479811-h60p7hjnllfg1kq1jon93lsahepktmm8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
