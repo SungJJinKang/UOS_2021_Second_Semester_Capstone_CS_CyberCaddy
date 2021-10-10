@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
+        findViewById(R.id.writeButton).setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
                     FirebaseAuth.getInstance().signOut();
                     startSignUpActivity();
                     break;
+                case R.id.writeButton:
+                    startPostActivity();
+                    break;
             }
         }
     };
@@ -39,4 +43,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,SignUpActivity.class);
         startActivity(intent);
     }
+
+    private void startPostActivity() {
+        Intent intent = new Intent(this,PostActivity.class);
+        startActivity(intent);
+    }
+
+    private void startActivityShortcut(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivity(intent);
+    } // startactivity 한번에 사용하기
 }
