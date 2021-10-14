@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.logoutButton:
                     FirebaseAuth.getInstance().signOut();
-                    startSignUpActivity();
+                    startLoginActivity();
                     break;
                 case R.id.writeButton:
                     startPostActivity();
@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSignUpActivity() {
         Intent intent = new Intent(this,SignUpActivity.class);
+        startActivity(intent);
+    }
+    private void startLoginActivity(){
+        Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
     }
 
