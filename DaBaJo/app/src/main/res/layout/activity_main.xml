@@ -25,5 +25,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="글쓰기" />
+
+        <Button
+            android:id="@+id/profileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="프로필" />
     </LinearLayout>
 </LinearLayout>

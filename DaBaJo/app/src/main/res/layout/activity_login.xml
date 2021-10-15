@@ -23,7 +23,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="10dp">
-
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            app:boxBackgroundColor="@color/white"
+            >
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
@@ -33,7 +39,14 @@
             android:hint="이메일"
             android:inputType="textEmailAddress"
             android:minHeight="48dp" />
-
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            app:boxBackgroundColor="@color/white"
+            app:passwordToggleEnabled="true">
         <EditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
@@ -43,7 +56,7 @@
             android:hint="비밀번호"
             android:inputType="textPassword"
             android:minHeight="48dp" />
-
+        </com.google.android.material.textfield.TextInputLayout>
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
@@ -57,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="계정이 있으신가요?"
+                android:text="계정이 없으신가요?"
                 android:paddingRight="5dp"
                 />
         <Button

@@ -45,7 +45,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         //Actionbar and its title
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("계정 생성");
+        actionBar.setTitle("회원가입");
         //enable back button
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
