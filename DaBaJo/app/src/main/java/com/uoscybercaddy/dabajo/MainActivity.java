@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
         {
             startActivityShortcut(LoginActivity.class);
         }else{
-
+            //임시startActivityShortcut(CameraActivity.class);
+            //startActivityShortcut(MemberinfoinitActivity.class);//임시
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

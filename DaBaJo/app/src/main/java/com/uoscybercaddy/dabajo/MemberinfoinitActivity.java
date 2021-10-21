@@ -1,9 +1,14 @@
 package com.uoscybercaddy.dabajo;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -14,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -21,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,6 +38,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,8 +54,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class MemberinfoinitActivity extends AppCompatActivity {
+    private ImageView profileImageView;
+    private String profilePath;
     EditText editTextNickName, nameEditText,phoneEditText,dateEditText;
     RadioGroup sexRadiGroup, tutortutyRadiGroup;
     Button infoSubmitButton;
@@ -77,7 +96,10 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         sexRadiGroup = (RadioGroup)findViewById(R.id.sexRadiGroup);
         tutortutyRadiGroup = (RadioGroup)findViewById(R.id.tutortutyRadiGroup);
         infoSubmitButton = (Button)findViewById(R.id.infoSubmitButton);
+        profileImageView = (ImageView)findViewById(R.id.profileImageView);
+
         infoSubmitButton.setOnClickListener(onClickListener);
+        profileImageView.setOnClickListener(onClickListener);
 
         sexRadiGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -111,6 +133,79 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+    public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
+
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_NORMAL:
+                return bitmap;
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90);
+                break;
+            default:
+                return bitmap;
+        }
+        try {
+            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return bmRotated;
+        }
+        catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case 0:
+                if(resultCode == Activity.RESULT_OK){
+                    profilePath = data.getStringExtra("profilePath");
+                    Log.e("로그: ","profilePath: "+profilePath);
+                    ExifInterface exif = null;
+                    try {
+                        exif = new ExifInterface(profilePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_UNDEFINED);
+
+                    Bitmap bmp = BitmapFactory.decodeFile(profilePath);
+                    Bitmap bmRotated = rotateBitmap(bmp, orientation);
+
+
+
+                    profileImageView.setImageBitmap(bmRotated);
+
+                }
+                break;
+        }
+
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -163,64 +258,82 @@ public class MemberinfoinitActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.infoSubmitButton:
                     profileUpdate();
-                    finish();
-                    break;
 
+                    break;
+                case R.id.profileImageView:
+                    startActivityShortcut(CameraActivity.class);
+                    break;
             }
         }
     };
 
 
     private void profileUpdate() {
-        String nickName = editTextNickName.getText().toString().trim();
-        String name = nameEditText.getText().toString().trim();
-        String phone = phoneEditText.getText().toString().trim();
-        String date = dateEditText.getText().toString().trim();
+        final String nickName = editTextNickName.getText().toString().trim();
+        final String name = nameEditText.getText().toString().trim();
+        final String phone = phoneEditText.getText().toString().trim();
+        final String date = dateEditText.getText().toString().trim();
 
-        if( name.length()>0 && nickName.length()>0 && phone.length()>0 && date.length()>0){
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if( name.length()>0 && nickName.length()>0 && phone.length()>7 && date.length()>0){
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            // Create a storage reference from our app
+            StorageReference storageRef = storage.getReference();
+            // Create a reference to 'images/mountains.jpg'
 
-            MemberInfo memberInfo = new MemberInfo(nickName, name, phone, date, sex,  tutortuty);
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/profileImage.jpg");
+            try{
+                InputStream stream = new FileInputStream(new File(profilePath));
+                UploadTask uploadTask = mountainImagesRef.putStream(stream);
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
 
-            if(user!=null){
-                db.collection("users").document(user.getUid()).set(memberInfo)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully written!");
-                                startToast("회원정보 등록 성공");
-                                finish();
+                        }
+                        // Continue with the task to get the download URL
+                        return mountainImagesRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            MemberInfo memberInfo = new MemberInfo(nickName, name, phone, date, sex,  tutortuty,downloadUri.toString());
+                            if(user!=null){
+                                db.collection("users").document(user.getUid()).set(memberInfo)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                startToast("회원정보 등록 성공");
+                                                finish();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error writing document", e);
+                                                startToast("회원정보 등록 실패");
+                                            }
+                                        });
+
                             }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error writing document", e);
-                                startToast("회원정보 등록 실패");
-                            }
-                        });
 
+                        } else {
+                            // Handle failures
+                            // ...
+                            Log.e("로그","실패");
+                        }
+                    }
+                });
+
+            }catch(FileNotFoundException e){
+                Log.e("로그","에러: "+e.toString());
             }
-
-/*
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(name)
-                    .build();
-            if(user != null){
-                user.updateProfile(profileUpdates)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "User profile updated.");
-                                    startToast("회원 정보 등록 완료.");
-
-                                }
-                            }
-                        });
-            }
-*/
+            finish();
         } else{
             startToast("회원 정보를 입력해주세요...");
         }
@@ -240,8 +353,8 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     }
     private void startActivityShortcut(Class c) {
         Intent intent = new Intent(this, c);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(intent, 0);
     } // startactivity 한번에 사용하기
     private void startSignupActivity() {
         Intent intent = new Intent(this,SignUpActivity.class);

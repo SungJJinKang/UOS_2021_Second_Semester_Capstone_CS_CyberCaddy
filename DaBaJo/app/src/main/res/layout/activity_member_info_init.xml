@@ -8,43 +8,50 @@
 
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/memberInfo"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:gravity="center"
-        android:text="회원정보"
-        android:textColor="@color/black"
-        android:textSize="24dp"
-        android:textStyle="bold" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            app:cardCornerRadius="100dp">
+
+            <ImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#9A9A9A"
+                app:srcCompat="@drawable/fui_ic_anonymous_white_24dp" />
+        </androidx.cardview.widget.CardView>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            app:boxBackgroundColor="@color/white"
-            >
+            app:boxBackgroundColor="@color/white">
+
             <EditText
                 android:id="@+id/editTextNickName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="닉네임"
-                />
+                android:hint="닉네임" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            app:boxBackgroundColor="@color/white"
-            >
+            app:boxBackgroundColor="@color/white">
+
             <EditText
                 android:id="@+id/nameEditText"
                 android:layout_width="match_parent"
@@ -55,80 +62,80 @@
                 android:inputType="textEmailAddress"
                 android:minHeight="48dp" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            app:boxBackgroundColor="@color/white"
-            >
-        <EditText
-            android:id="@+id/phoneEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="전화번호"
-            android:inputType="phone" />
+            app:boxBackgroundColor="@color/white">
+
+            <EditText
+                android:id="@+id/phoneEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="전화번호"
+                android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            app:boxBackgroundColor="@color/white"
-            >
-        <EditText
-            android:id="@+id/dateEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="생년월일"
-            android:inputType="date" />
+            app:boxBackgroundColor="@color/white">
+
+            <EditText
+                android:id="@+id/dateEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="생년월일"
+                android:inputType="date" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <RadioGroup
+            android:id="@+id/sexRadiGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sexRadiGroup"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
             <RadioButton
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="남자"
                 android:id="@+id/rb_man"
-                />
-            <RadioButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="여자"
+                android:text="남자" />
+
+            <RadioButton
                 android:id="@+id/rb_woman"
-                />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="여자" />
 
         </RadioGroup>
 
         <RadioGroup
+            android:id="@+id/tutortutyRadiGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tutortutyRadiGroup"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
             <RadioButton
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="튜티"
                 android:id="@+id/rb_tuty"
-                />
-            <RadioButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="튜터"
+                android:text="튜티" />
+
+            <RadioButton
                 android:id="@+id/rb_tutor"
-                />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="튜터" />
 
         </RadioGroup>
 

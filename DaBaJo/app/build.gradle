@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.uoscybercaddy.dabajo"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -46,11 +46,16 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth'
         // Import the BoM for the Firebase platform
-        implementation platform('com.google.firebase:firebase-bom:28.4.1')
+
         // Declare the dependencies for the desired Firebase products without specifying versions
         // For example, declare the dependencies for Firebase Authentication and Cloud Firestore
         implementation 'com.google.firebase:firebase-auth'
         implementation 'com.google.firebase:firebase-firestore'
         // Also declare the dependency for the Google Play services library and specify its version
         implementation 'com.google.android.gms:play-services-auth:19.2.0'
+        // Import the BoM for the Firebase platform
+        implementation platform('com.google.firebase:firebase-bom:28.4.2')
+        // Declare the dependency for the Cloud Storage library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-storage'
 }

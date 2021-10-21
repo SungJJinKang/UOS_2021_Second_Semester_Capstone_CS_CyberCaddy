@@ -7,14 +7,16 @@ public class MemberInfo {
     private String date;
     private String sex;
     private String tutortuty;
+    private String photoUrl;
 
-    public MemberInfo(String nickName, String name, String phone, String date, String sex, String tutortuty){
+    public MemberInfo(String nickName, String name, String phone, String date, String sex, String tutortuty, String photoUrl){
         this.nickName = nickName;
         this.name = name;
         this.phone = phone;
         this.date = date;
         this.sex = sex;
         this.tutortuty = tutortuty;
+        this.photoUrl = photoUrl;
 
     }
     public String getName(){
@@ -51,7 +53,8 @@ public class MemberInfo {
         return this.tutortuty;
     }
     public void setTutortuty(String tutortuty){
-        this.name = tutortuty;
+        this.tutortuty = tutortuty;
     }
-
+    public String getPhotoUrl(){return this.photoUrl;}
+    public void setPhotoUrl(){this.photoUrl= photoUrl;}
 }
