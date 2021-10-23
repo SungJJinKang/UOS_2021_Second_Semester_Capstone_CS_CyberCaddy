@@ -1,5 +1,9 @@
 package com.uoscybercaddy.dabajo;
 
+import android.graphics.drawable.Drawable;
+
+import java.util.Optional;
+
 public class MemberInfo {
     private String nickName;
     private String name;
@@ -8,6 +12,9 @@ public class MemberInfo {
     private String sex;
     private String tutortuty;
     private String photoUrl;
+
+    private Drawable profilePhotoDrawable;
+    private boolean profilePhotoDrawableIsLoaded = false;
 
     public MemberInfo(String nickName, String name, String phone, String date, String sex, String tutortuty, String photoUrl){
         this.nickName = nickName;
@@ -57,4 +64,15 @@ public class MemberInfo {
     }
     public String getPhotoUrl(){return this.photoUrl;}
     public void setPhotoUrl(){this.photoUrl= photoUrl;}
+
+    public Drawable GetProfilePhotoDrawable()
+    {
+        if(profilePhotoDrawableIsLoaded == false)
+        {
+            //Load Image
+            profilePhotoDrawableIsLoaded = true;
+        }
+        return profilePhotoDrawable;
+    }
+
 }
