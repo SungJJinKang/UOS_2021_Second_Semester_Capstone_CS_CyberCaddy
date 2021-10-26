@@ -32,7 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
+//
 public class CameraActivity extends AppCompatActivity {
     private Camera2BasicFragment camera2BasicFragment;
     /**
