@@ -1,4 +1,4 @@
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

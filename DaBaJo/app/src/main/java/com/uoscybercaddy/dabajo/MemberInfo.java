@@ -3,21 +3,29 @@ package com.uoscybercaddy.dabajo;
 public class MemberInfo {
     private String nickName;
     private String name;
-    private String phone;
-    private String date;
+    private String introduction;
     private String sex;
     private String tutortuty;
     private String photoUrl;
 
-    public MemberInfo(String nickName, String name, String phone, String date, String sex, String tutortuty, String photoUrl){
+    public MemberInfo(String nickName, String name, String introduction, String sex, String tutortuty, String photoUrl){
         this.nickName = nickName;
         this.name = name;
-        this.phone = phone;
-        this.date = date;
+        this.introduction = introduction;
         this.sex = sex;
         this.tutortuty = tutortuty;
         this.photoUrl = photoUrl;
-
+    }
+    public MemberInfo(String nickName, String name, String introduction, String sex, String tutortuty){
+        this.nickName = nickName;
+        this.name = name;
+        this.introduction = introduction;
+        this.sex = sex;
+        this.tutortuty = tutortuty;
+        this.photoUrl = photoUrl;
+    }
+    public MemberInfo(String photoUrl){
+        this.photoUrl = photoUrl;
     }
     public String getName(){
         return this.name;
@@ -31,17 +39,11 @@ public class MemberInfo {
     public void setNickName(String nickName){
         this.nickName = nickName;
     }
-    public String getphone(){
-        return this.phone;
+    public String getIntroduction(){
+        return this.introduction;
     }
-    public void setPhone(String phone){
-        this.phone = phone;
-    }
-    public String getDate(){
-        return this.date;
-    }
-    public void setDate(String date){
-        this.date = date;
+    public void setIntroduction(String phone){
+        this.introduction = introduction;
     }
     public String getSex(){
         return this.sex;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +24,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.fragment.Camera2BasicFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;

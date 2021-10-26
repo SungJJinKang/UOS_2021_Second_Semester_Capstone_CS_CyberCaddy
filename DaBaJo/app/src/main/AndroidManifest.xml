@@ -4,6 +4,7 @@
     <!-- Internet Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <application
@@ -14,11 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DaBaJo">
         <activity
-            android:name=".ProfileActivity"
+            android:name=".activity.DashboardActivity"
             android:exported="false" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".activity.MainActivity"></activity>
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:theme="@style/SplashActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,14 +28,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:exported="true">
 
         </activity>
-        <activity android:name=".MemberinfoinitActivity"></activity>
-        <activity android:name=".CameraActivity"></activity>
-        <activity android:name=".SignUpActivity"></activity>
-        <activity android:name=".PostActivity"></activity>
+        <activity android:name=".activity.MemberinfoinitActivity"></activity>
+        <activity android:name=".activity.CameraActivity"></activity>
+        <activity android:name=".activity.SignUpActivity"></activity>
+        <activity android:name=".activity.PostActivity"></activity>
     </application>
 
 </manifest>

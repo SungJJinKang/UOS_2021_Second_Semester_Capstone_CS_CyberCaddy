@@ -1,62 +1,50 @@
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.activity;
 
+import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseNetworkException;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.uoscybercaddy.dabajo.MemberInfo;
+import com.uoscybercaddy.dabajo.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,13 +55,16 @@ import java.io.InputStream;
 public class MemberinfoinitActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private String profilePath;
-    EditText editTextNickName, nameEditText,phoneEditText,dateEditText;
+    private FirebaseUser user;
+    EditText editTextNickName, nameEditText,editTextIntroduction;
     RadioGroup sexRadiGroup, tutortutyRadiGroup;
-    Button infoSubmitButton;
+    Button infoSubmitButton, takePicture, gotoGallery;
     String sex, tutortuty;
+    CardView pictureGallerySelect;
     private FirebaseAuth mAuth;
     private static final String TAG = "MemberinfoinitActivity";
     private static final int RC_SIGN_IN = 100;
+
 
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
@@ -91,13 +82,18 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         editTextNickName = (EditText)findViewById(R.id.editTextNickName);
         nameEditText = (EditText)findViewById(R.id.nameEditText);
-        phoneEditText = (EditText)findViewById(R.id.phoneEditText);
-        dateEditText = (EditText)findViewById(R.id.dateEditText);
+        editTextIntroduction = (EditText)findViewById(R.id.editTextIntroduction);
         sexRadiGroup = (RadioGroup)findViewById(R.id.sexRadiGroup);
         tutortutyRadiGroup = (RadioGroup)findViewById(R.id.tutortutyRadiGroup);
         infoSubmitButton = (Button)findViewById(R.id.infoSubmitButton);
         profileImageView = (ImageView)findViewById(R.id.profileImageView);
+        takePicture=(Button)findViewById(R.id.takePicture);
+        gotoGallery = (Button)findViewById(R.id.gotoGallery);
+        pictureGallerySelect = (CardView)findViewById(R.id.pictureGallerySelect);
 
+
+        takePicture.setOnClickListener(onClickListener);
+        gotoGallery.setOnClickListener(onClickListener);
         infoSubmitButton.setOnClickListener(onClickListener);
         profileImageView.setOnClickListener(onClickListener);
 
@@ -176,6 +172,11 @@ public class MemberinfoinitActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -258,10 +259,19 @@ public class MemberinfoinitActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.infoSubmitButton:
                     profileUpdate();
-
                     break;
                 case R.id.profileImageView:
+                    //startActivityShortcut(CameraActivity.class);
+                    if(pictureGallerySelect.getVisibility() == View.VISIBLE){
+                        pictureGallerySelect.setVisibility(View.GONE);
+                    }else{
+                        pictureGallerySelect.setVisibility(View.VISIBLE);
+                    }
+                    break;
+                case R.id.takePicture:
                     startActivityShortcut(CameraActivity.class);
+                    break;
+                case R.id.gotoGallery:
                     break;
             }
         }
@@ -271,75 +281,80 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     private void profileUpdate() {
         final String nickName = editTextNickName.getText().toString().trim();
         final String name = nameEditText.getText().toString().trim();
-        final String phone = phoneEditText.getText().toString().trim();
-        final String date = dateEditText.getText().toString().trim();
+        final String introduction = editTextIntroduction.getText().toString().trim();
 
-        if( name.length()>0 && nickName.length()>0 && phone.length()>7 && date.length()>0){
+        if( name.length()>0 && nickName.length()>0 && introduction.length()>7 ){
             FirebaseStorage storage = FirebaseStorage.getInstance();
             // Create a storage reference from our app
             StorageReference storageRef = storage.getReference();
             // Create a reference to 'images/mountains.jpg'
+            user = FirebaseAuth.getInstance().getCurrentUser();
 
-            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/profileImage.jpg");
-            try{
-                InputStream stream = new FileInputStream(new File(profilePath));
-                UploadTask uploadTask = mountainImagesRef.putStream(stream);
-                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
 
-                        }
-                        // Continue with the task to get the download URL
-                        return mountainImagesRef.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            MemberInfo memberInfo = new MemberInfo(nickName, name, phone, date, sex,  tutortuty,downloadUri.toString());
-                            if(user!=null){
-                                db.collection("users").document(user.getUid()).set(memberInfo)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "DocumentSnapshot successfully written!");
-                                                startToast("회원정보 등록 성공");
-                                                finish();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Error writing document", e);
-                                                startToast("회원정보 등록 실패");
-                                            }
-                                        });
+            if(profilePath == null){
+                MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty);
+                uploader(memberInfo);
+            }else{
+                try{
+                    InputStream stream = new FileInputStream(new File(profilePath));
+                    UploadTask uploadTask = mountainImagesRef.putStream(stream);
+                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
 
                             }
-
-                        } else {
-                            // Handle failures
-                            // ...
-                            Log.e("로그","실패");
+                            // Continue with the task to get the download URL
+                            return mountainImagesRef.getDownloadUrl();
                         }
-                    }
-                });
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri downloadUri = task.getResult();
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty,downloadUri.toString());
+                                uploader(memberInfo);
+                            } else {
+                                // Handle failures
+                                // ...
+                                Log.e("로그","실패");
+                                startToast("회원 정보 업로드 실패");
+                            }
+                        }
+                    });
 
-            }catch(FileNotFoundException e){
-                Log.e("로그","에러: "+e.toString());
+                }catch(FileNotFoundException e){
+                    Log.e("로그","에러: "+e.toString());
+                }
+                finish();
             }
-            finish();
         } else{
             startToast("회원 정보를 입력해주세요...");
         }
 
     }
-
+    private void uploader(MemberInfo memberInfo){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(user.getUid()).set(memberInfo)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                        startToast("회원정보 등록 성공");
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                        startToast("회원정보 등록 실패");
+                    }
+                });
+    }
 
 
     private void startToast(String msg) {

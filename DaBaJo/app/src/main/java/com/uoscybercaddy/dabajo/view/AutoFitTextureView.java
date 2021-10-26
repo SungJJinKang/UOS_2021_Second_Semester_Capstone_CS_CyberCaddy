@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

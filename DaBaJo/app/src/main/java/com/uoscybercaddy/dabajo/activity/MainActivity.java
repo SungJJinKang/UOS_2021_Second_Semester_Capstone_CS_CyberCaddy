@@ -1,10 +1,9 @@
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,10 +12,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.uoscybercaddy.dabajo.R;
 
 public class MainActivity extends AppCompatActivity {
     //firebase auth
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
         findViewById(R.id.writeButton).setOnClickListener(onClickListener);
-        findViewById(R.id.profileButton).setOnClickListener(onClickListener);
+        findViewById(R.id.gotoMainButton).setOnClickListener(onClickListener);
 
     }
     private void checkUserStatus(){
@@ -121,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.writeButton:
                     startPostActivity();
                     break;
-                case R.id.profileButton:
-                    startProfileActivity();
+                case R.id.gotoMainButton:
+                    startDashboardActivity();
                     break;
             }
         }
@@ -132,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,SignUpActivity.class);
         startActivity(intent);
     }
-    private void startProfileActivity(){
-        Intent intent = new Intent(this,ProfileActivity.class);
+    private void startDashboardActivity(){
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
     private void startPostActivity() {

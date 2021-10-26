@@ -1,4 +1,4 @@
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
