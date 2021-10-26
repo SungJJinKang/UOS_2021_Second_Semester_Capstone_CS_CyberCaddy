@@ -24,9 +24,6 @@ public class MemberInfo {
         this.photoUrl = photoUrl;
     }
 
-    private Drawable profilePhotoDrawable;
-    private boolean profilePhotoDrawableIsLoaded = false;
-
     public MemberInfo(String nickName, String name, String introduction, String sex, String tutortuty){
         this.nickName = nickName;
         this.name = name;
