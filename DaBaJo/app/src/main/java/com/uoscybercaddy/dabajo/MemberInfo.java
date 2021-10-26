@@ -12,6 +12,9 @@ public class MemberInfo {
     private String tutortuty;
     private String photoUrl;
 
+    private Drawable profilePhotoDrawable;
+    private boolean profilePhotoDrawableIsLoaded = false;
+
     public MemberInfo(String nickName, String name, String introduction, String sex, String tutortuty, String photoUrl){
         this.nickName = nickName;
         this.name = name;
