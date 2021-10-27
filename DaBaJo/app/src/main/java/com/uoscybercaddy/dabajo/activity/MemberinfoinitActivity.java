@@ -15,12 +15,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -58,21 +60,22 @@ import java.io.InputStream;
 
 public class MemberinfoinitActivity extends AppCompatActivity {
     private ImageView profileImageView;
-    private String profilePath;
+    private String profilePath, downloadUrl=null;
     private FirebaseUser user;
     EditText editTextNickName, nameEditText,editTextIntroduction;
     RadioGroup sexRadiGroup, tutortutyRadiGroup;
+    RadioButton rb_woman, rb_tutor;
     Button infoSubmitButton;
-    String sex, tutortuty;
+    String sex="", tutortuty="";
     private FirebaseAuth mAuth;
     private static final String TAG = "MemberinfoinitActivity";
     private static final int RC_SIGN_IN = 100;
-
     //
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_GALLERY_CODE = 300;
     private static final int IMAGE_PICK_CAMERA_CODE = 400;
+    String fromProfile = null;
     String cameraPermissions[];
     String storagePermissions[];
     Uri image_url;
@@ -102,6 +105,8 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         profileImageView = (ImageView)findViewById(R.id.profileImageView);
         infoSubmitButton.setOnClickListener(onClickListener);
         profileImageView.setOnClickListener(onClickListener);
+        rb_woman = (RadioButton)findViewById(R.id.rb_woman);
+        rb_tutor = (RadioButton)findViewById(R.id.rb_tutor);
 
         sexRadiGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -129,6 +134,10 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 }
             }
         });
+        Intent intent = getIntent();
+        if(intent.hasExtra("fromProfileEdit")){
+            fromProfile = "fromProfileEdit";
+        }
         //findViewById(R.id.gotoSignUpTV).setOnClickListener(onClickListener);
         //
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -151,7 +160,9 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         if(document.getData().get("photoUrl") != null){
                             Glide.with(MemberinfoinitActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(profileImageView);
+                            downloadUrl = (document.getData().get("photoUrl").toString());
                         }
+                        //downloadUrl = (document.getData().get("photoUrl").toString());
                         editTextNickName.setText(document.getData().get("nickName").toString());
                         nameEditText.setText(document.getData().get("name").toString());
                         editTextIntroduction.setText(document.getData().get("introduction").toString());
@@ -435,8 +446,27 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         final String nickName = editTextNickName.getText().toString().trim();
         final String name = nameEditText.getText().toString().trim();
         final String introduction = editTextIntroduction.getText().toString().trim();
-
-        if( name.length()>0 && nickName.length()>0 && introduction.length()>7 ){
+        progressDialog.setMessage("정보 업데이트중");
+        progressDialog.show();
+        if(name.length()<1){
+            nameEditText.setError("이름을 입력해주세요.");
+            nameEditText.setFocusable(true);
+        }
+        else if(nickName.length()<1){
+            editTextNickName.setError("비밀번호가 일치하지 않습니다.");
+            editTextNickName.setFocusable(true);
+        }
+        else if(introduction.length()<1){
+            editTextIntroduction.setError("비밀번호가 일치하지 않습니다.");
+            editTextIntroduction.setFocusable(true);
+        }
+        else if(sex.length()<1){
+            rb_woman.setError("성별을 골라주세요");
+        }
+        else if(tutortuty.length()<1){
+            rb_tutor.setError("튜터/튜티를 골라주세요");
+        }
+        else{
             FirebaseStorage storage = FirebaseStorage.getInstance();
             // Create a storage reference from our app
             StorageReference storageRef = storage.getReference();
@@ -445,18 +475,20 @@ public class MemberinfoinitActivity extends AppCompatActivity {
 
             final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/profileImage.jpg");
 
-            if(image_url == null){ //image_url == null
+            if(image_url == null && downloadUrl==null){ //image_url == null
                 MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty);
                 uploader(memberInfo);
             }else{
               //  try{
                     //InputStream stream = new FileInputStream(new File(profilePath));
                     //UploadTask uploadTask = mountainImagesRef.putStream(stream);
+                if(image_url != null){
                     UploadTask uploadTask = mountainImagesRef.putFile(image_url);
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                             if (!task.isSuccessful()) {
+                                progressDialog.dismiss();
                                 throw task.getException();
 
                             }
@@ -474,19 +506,18 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                             } else {
                                 // Handle failures
                                 // ...
+                                progressDialog.dismiss();
                                 Log.e("로그","실패");
                                 startToast("회원 정보 업로드 실패");
                             }
                         }
                     });
+                }else{
+                    MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty,downloadUrl);
+                    uploader(memberInfo);
+                }
 
-               // }catch(FileNotFoundException e){
-              //      Log.e("로그","에러: "+e.toString());
-                //}
-                finish();
             }
-        } else{
-            startToast("회원 정보를 입력해주세요...");
         }
 
     }
@@ -498,6 +529,12 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
                         startToast("회원정보 등록 성공");
+                        progressDialog.dismiss();
+                        Intent intent = new Intent(MemberinfoinitActivity.this,DashboardActivity.class);
+                        if(fromProfile != null){
+                            intent.putExtra("fromProfileEdit","fromProfileEdit");
+                        }
+                        startActivity(intent);
                         finish();
                     }
                 })
@@ -505,7 +542,9 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error writing document", e);
+                        progressDialog.dismiss();
                         startToast("회원정보 등록 실패");
+
                     }
                 });
     }

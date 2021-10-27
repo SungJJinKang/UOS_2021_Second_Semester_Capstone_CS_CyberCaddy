@@ -99,6 +99,7 @@ public class ProfileFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         pd = new ProgressDialog(getActivity());
 
+
         DocumentReference docRef = db.collection("users").document(user.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -121,11 +122,14 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MemberinfoinitActivity.class);
+                intent.putExtra("fromProfileEdit","fromProfileEdit");
                 startActivity(intent);
+                getActivity().finish();
             }
         });
 
