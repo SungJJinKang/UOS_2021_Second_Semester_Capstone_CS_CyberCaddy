@@ -2,6 +2,7 @@ package com.uoscybercaddy.dabajo.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,6 +41,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -58,9 +62,8 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     private FirebaseUser user;
     EditText editTextNickName, nameEditText,editTextIntroduction;
     RadioGroup sexRadiGroup, tutortutyRadiGroup;
-    Button infoSubmitButton, takePicture, gotoGallery;
+    Button infoSubmitButton;
     String sex, tutortuty;
-    CardView pictureGallerySelect;
     private FirebaseAuth mAuth;
     private static final String TAG = "MemberinfoinitActivity";
     private static final int RC_SIGN_IN = 100;
@@ -97,13 +100,6 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         tutortutyRadiGroup = (RadioGroup)findViewById(R.id.tutortutyRadiGroup);
         infoSubmitButton = (Button)findViewById(R.id.infoSubmitButton);
         profileImageView = (ImageView)findViewById(R.id.profileImageView);
-        takePicture=(Button)findViewById(R.id.takePicture);
-        gotoGallery = (Button)findViewById(R.id.gotoGallery);
-        pictureGallerySelect = (CardView)findViewById(R.id.pictureGallerySelect);
-
-
-        takePicture.setOnClickListener(onClickListener);
-        gotoGallery.setOnClickListener(onClickListener);
         infoSubmitButton.setOnClickListener(onClickListener);
         profileImageView.setOnClickListener(onClickListener);
 
@@ -113,8 +109,10 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 switch(checkedId){
                     case R.id.rb_man:
                         sex = "남자";
+                        break;
                     case R.id.rb_woman:
                         sex = "여자";
+                        break;
                 }
             }
         });
@@ -124,8 +122,10 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 switch(checkedId){
                     case R.id.rb_tuty:
                         tutortuty = "튜티";
+                        break;
                     case R.id.rb_tutor:
                         tutortuty = "튜터";
+                        break;
                 }
             }
         });
@@ -134,9 +134,79 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         //
+
+
+        //
+
+        //기존 데이터 불러오기
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        if(document.getData().get("photoUrl") != null){
+                            Glide.with(MemberinfoinitActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(profileImageView);
+                        }
+                        editTextNickName.setText(document.getData().get("nickName").toString());
+                        nameEditText.setText(document.getData().get("name").toString());
+                        editTextIntroduction.setText(document.getData().get("introduction").toString());
+                        sex = document.getData().get("sex").toString();
+                        Log.e("남자? : ",""+sex);
+                        tutortuty = document.getData().get("tutortuty").toString();
+                        Log.e("튜터튜티",""+tutortuty);
+                        if(sex.equals("남자")){
+                            sexRadiGroup.check(R.id.rb_man);
+                        }else{
+                            sexRadiGroup.check(R.id.rb_woman);
+                        }
+                        if(tutortuty.equals("튜터")){
+                            tutortutyRadiGroup.check(R.id.rb_tutor);
+                        }
+                        else{
+                            tutortutyRadiGroup.check(R.id.rb_tuty);
+                        }
+                    } else {
+                        Log.d(TAG, "정보를 등록해주세요");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+
         progressDialog = new ProgressDialog(this);
     }
     //
+    private void showImagePicDialog(){
+        String options[] = {"사진 촬영", "갤러리"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("골라주세요");
+        builder.setItems(options, (dialog, which) ->{
+            if(which == 0){
+                if(!checkCameraPermission()){
+                    requestCameraPermission();
+                }
+                else{
+                    pickFromCamera();
+                }
+            }else if(which ==1){
+                //갤러리
+                if(!checkStoragePermission()){
+                    requestStoragePermission();
+                }
+                else{
+                    pickFromGallery();
+                }
+            }
+        });
+        builder.create().show();
+    }
     private boolean checkStoragePermission(){
         boolean result = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
         return result;
@@ -354,33 +424,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                     profileUpdate();
                     break;
                 case R.id.profileImageView:
-                    //startActivityShortcut(CameraActivity.class);
-                    if(pictureGallerySelect.getVisibility() == View.VISIBLE){
-                        pictureGallerySelect.setVisibility(View.GONE);
-                    }else{
-                        pictureGallerySelect.setVisibility(View.VISIBLE);
-                    }
-                    break;
-                case R.id.takePicture:
-                    //startActivityShortcut(CameraActivity.class);
-                    //
-                    if(!checkCameraPermission()){
-                        requestCameraPermission();
-                    }
-                    else{
-                        pickFromCamera();
-                    }
-                    //
-                    break;
-                case R.id.gotoGallery:
-                    //
-                    if(!checkStoragePermission()){
-                        requestStoragePermission();
-                    }
-                    else{
-                        pickFromGallery();
-                    }
-                    //
+                    showImagePicDialog();
                     break;
             }
         }
@@ -424,7 +468,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()) {
                                 Uri downloadUri = task.getResult();
-                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
                                 MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty,downloadUri.toString());
                                 uploader(memberInfo);
                             } else {

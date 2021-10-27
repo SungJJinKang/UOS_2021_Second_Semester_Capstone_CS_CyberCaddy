@@ -30,7 +30,6 @@ public class MemberInfo {
         this.introduction = introduction;
         this.sex = sex;
         this.tutortuty = tutortuty;
-        this.photoUrl = photoUrl;
     }
     public MemberInfo(String photoUrl){
         this.photoUrl = photoUrl;
