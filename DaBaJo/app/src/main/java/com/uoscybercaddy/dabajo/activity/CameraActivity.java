@@ -15,7 +15,7 @@
  */
 
 package com.uoscybercaddy.dabajo.activity;
-
+//
 import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
@@ -32,7 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-//
+
 public class CameraActivity extends AppCompatActivity {
     private Camera2BasicFragment camera2BasicFragment;
     /**
