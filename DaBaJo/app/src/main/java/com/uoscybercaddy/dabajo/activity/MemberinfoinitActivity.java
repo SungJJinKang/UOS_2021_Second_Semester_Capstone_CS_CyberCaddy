@@ -65,6 +65,16 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     private static final String TAG = "MemberinfoinitActivity";
     private static final int RC_SIGN_IN = 100;
 
+    //
+    private static final int CAMERA_REQUEST_CODE = 100;
+    private static final int STORAGE_REQUEST_CODE = 200;
+    private static final int IMAGE_PICK_GALLERY_CODE = 300;
+    private static final int IMAGE_PICK_CAMERA_CODE = 400;
+    String cameraPermissions[];
+    String storagePermissions[];
+    Uri image_url;
+    //
+
 
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
@@ -119,11 +129,75 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 }
             }
         });
-
-
         //findViewById(R.id.gotoSignUpTV).setOnClickListener(onClickListener);
+        //
+        cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        //
         progressDialog = new ProgressDialog(this);
     }
+    //
+    private boolean checkStoragePermission(){
+        boolean result = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result;
+    }
+    private void requestStoragePermission(){
+        requestPermissions(storagePermissions, STORAGE_REQUEST_CODE);
+    }
+    private boolean checkCameraPermission(){
+        boolean result1 = checkSelfPermission(Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
+        boolean result2 = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result1 && result2;
+    }
+    private void requestCameraPermission(){
+        requestPermissions(cameraPermissions, CAMERA_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode){
+            case CAMERA_REQUEST_CODE:
+                if(grantResults.length > 0 ){
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    if(cameraAccepted && writeStorageAccepted){
+                        pickFromCamera();
+                    }else{
+                        startToast("카메라&저장소를 승인해주세요.");
+                    }
+                }
+                break;
+            case STORAGE_REQUEST_CODE:
+                if(grantResults.length > 0 ){
+                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    if(writeStorageAccepted){
+                        pickFromGallery();
+                    }else{
+                        startToast("저장소를 승인해주세요.");
+                    }
+                }
+                break;
+        }
+
+    }
+    private void pickFromCamera(){
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "Temp Pic");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
+
+        image_url = this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_url);
+        startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
+    }
+    private void pickFromGallery(){
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+    }
+    //
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -174,9 +248,29 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("resultCode : ",""+resultCode);
+        Log.e("RESULT_OK : ",""+ RESULT_OK);
+        if(resultCode == RESULT_OK){
+            if(requestCode == IMAGE_PICK_GALLERY_CODE){
+                image_url = data.getData();
+                Log.e("이미지 uri",""+image_url);
+                profileImageView.setImageURI(null);
+                profileImageView.setImageURI(image_url);
 
+            }
+            if(requestCode == IMAGE_PICK_CAMERA_CODE){
+                Log.e("이미지 uri",""+image_url);
+                profileImageView.setImageURI(null);
+                profileImageView.setImageURI(image_url);
 
+            }
+        }
+    }
 
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -204,9 +298,8 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 }
                 break;
         }
-
     }
-
+*/
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -269,9 +362,25 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                     }
                     break;
                 case R.id.takePicture:
-                    startActivityShortcut(CameraActivity.class);
+                    //startActivityShortcut(CameraActivity.class);
+                    //
+                    if(!checkCameraPermission()){
+                        requestCameraPermission();
+                    }
+                    else{
+                        pickFromCamera();
+                    }
+                    //
                     break;
                 case R.id.gotoGallery:
+                    //
+                    if(!checkStoragePermission()){
+                        requestStoragePermission();
+                    }
+                    else{
+                        pickFromGallery();
+                    }
+                    //
                     break;
             }
         }
@@ -292,13 +401,14 @@ public class MemberinfoinitActivity extends AppCompatActivity {
 
             final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/profileImage.jpg");
 
-            if(profilePath == null){
+            if(image_url == null){ //image_url == null
                 MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty);
                 uploader(memberInfo);
             }else{
-                try{
-                    InputStream stream = new FileInputStream(new File(profilePath));
-                    UploadTask uploadTask = mountainImagesRef.putStream(stream);
+              //  try{
+                    //InputStream stream = new FileInputStream(new File(profilePath));
+                    //UploadTask uploadTask = mountainImagesRef.putStream(stream);
+                    UploadTask uploadTask = mountainImagesRef.putFile(image_url);
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -326,9 +436,9 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                         }
                     });
 
-                }catch(FileNotFoundException e){
-                    Log.e("로그","에러: "+e.toString());
-                }
+               // }catch(FileNotFoundException e){
+              //      Log.e("로그","에러: "+e.toString());
+                //}
                 finish();
             }
         } else{

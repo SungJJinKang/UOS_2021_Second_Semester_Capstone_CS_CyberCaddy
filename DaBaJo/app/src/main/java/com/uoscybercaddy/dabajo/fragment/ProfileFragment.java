@@ -1,6 +1,7 @@
 package com.uoscybercaddy.dabajo.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
+import com.uoscybercaddy.dabajo.activity.SignUpActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -121,14 +124,11 @@ public class ProfileFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showEditProfileDialog();
+                Intent intent = new Intent(getActivity(), MemberinfoinitActivity.class);
+                startActivity(intent);
             }
         });
 
         return view;
-    }
-
-    private void showEditProfileDialog() {
-
     }
 }
