@@ -30,6 +30,8 @@ public class PostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post);
 
         findViewById(R.id.postButton).setOnClickListener(onClickListener);
+        findViewById(R.id.imageButton).setOnClickListener(onClickListener);
+        findViewById(R.id.videoButton).setOnClickListener(onClickListener);
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -38,14 +40,20 @@ public class PostActivity extends AppCompatActivity {
             switch (v.getId()){
                 case R.id.postButton:
                     startToast("works");
-                    profileUpdate();
+                    writePost();
+                    break;
+                case R.id.imageButton:
+
+                    break;
+                case R.id.videoButton:
+
                     break;
             }
         }
     };
 
 
-    private void profileUpdate() {
+    private void writePost() {
         final String title = ((EditText) findViewById(R.id.postTitle)).getText().toString();
         final String contents = ((EditText) findViewById(R.id.postBody)).getText().toString();
 
@@ -55,7 +63,7 @@ public class PostActivity extends AppCompatActivity {
             uploader(writeInfo);
 
         } else {
-            startToast("회원정보를 입력해주세요.");
+            startToast("내용을 입력해주세요.");
         }
     }
 
@@ -79,5 +87,10 @@ public class PostActivity extends AppCompatActivity {
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
+    private void startActivityShortcut(Class c) {
+        Intent intent = new Intent(this, c);
+        startActivity(intent);
+    } // startactivity 한번에 사용하기
 
 }
