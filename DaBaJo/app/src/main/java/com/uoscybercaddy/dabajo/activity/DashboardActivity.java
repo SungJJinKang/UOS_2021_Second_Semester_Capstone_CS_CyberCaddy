@@ -37,12 +37,24 @@ public class DashboardActivity extends AppCompatActivity {
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
 
 
+        Intent intent = getIntent();
+        if(intent.hasExtra("fromProfileEdit")){
+            actionBar.setTitle("프로필");
+            ProfileFragment fragment4= new ProfileFragment();
+            FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
+            ft4.replace(R.id.content, fragment4, "");
+            ft4.commit();
+            navigationView.getMenu().getItem(3).setChecked(true);
+            //nav_profile fragment transaction
+        }else{
+            actionBar.setTitle("홈");
+            HomeFragment fragment1= new HomeFragment();
+            FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
+            ft1.replace(R.id.content, fragment1, "");
+            ft1.commit();
+        }
         //디폴트
-        actionBar.setTitle("홈");
-        HomeFragment fragment1= new HomeFragment();
-        FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
-        ft1.replace(R.id.content, fragment1, "");
-        ft1.commit();
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener selectedListener =
