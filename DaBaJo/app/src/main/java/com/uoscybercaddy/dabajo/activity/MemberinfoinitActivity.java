@@ -448,13 +448,16 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         final String introduction = editTextIntroduction.getText().toString().trim();
         progressDialog.setMessage("정보 업데이트중");
         progressDialog.show();
-        if(name.length()<1){
-            nameEditText.setError("이름을 입력해주세요.");
-            nameEditText.setFocusable(true);
-        }
-        else if(nickName.length()<1){
+        rb_woman.setError(null);
+        rb_tutor.setError(null);
+        if(nickName.length()<1){
             editTextNickName.setError("비밀번호가 일치하지 않습니다.");
             editTextNickName.setFocusable(true);
+        }
+        else if(name.length()<1){
+            nameEditText.setError("이름을 입력해주세요.");
+            nameEditText.setFocusable(true);
+
         }
         else if(introduction.length()<1){
             editTextIntroduction.setError("비밀번호가 일치하지 않습니다.");
@@ -518,8 +521,9 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 }
 
             }
-        }
 
+        }
+        progressDialog.dismiss();
     }
     private void uploader(MemberInfo memberInfo){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
