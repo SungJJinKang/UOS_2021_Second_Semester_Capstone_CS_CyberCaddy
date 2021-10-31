@@ -1,18 +1,23 @@
 package com.uoscybercaddy.dabajo.activity;
 
 import static com.uoscybercaddy.dabajo.activity.ImageDirectoryHelper.GetImageDirecotry;
+import static com.uoscybercaddy.dabajo.activity.ImageDirectoryHelper.GetVideoDirecotry;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,10 +68,10 @@ public class PostActivity extends AppCompatActivity {
     int successCount = 0;
 
     ArrayList<ImageView> uploadedImageList = new ArrayList<ImageView>();
+    ArrayList<Uri> uploadedVideoUriList = new ArrayList<Uri>();
 
 
 
-    private int imgCount = 0;
     private void UpdateImage(WriteInfo writeInfo)
     {
         if(uploadedImageList.isEmpty())
@@ -112,6 +117,62 @@ public class PostActivity extends AppCompatActivity {
             });
         }
     }
+
+    private String getfiletype(Uri videouri) {
+        ContentResolver r = getContentResolver();
+        // get the file type ,in this case its mp4
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(r.getType(videouri));
+    }
+
+    private void CompreeVideo()
+    {
+    }
+
+
+    private void UpdateVideo(WriteInfo writeInfo)
+    {
+        if(uploadedVideoUriList.isEmpty())
+        {
+            return ;
+        }
+
+
+        writeInfo.videoCount = uploadedVideoUriList.size();
+        writeInfo.videoSize = new int[uploadedVideoUriList.size()];
+        writeInfo.videoExtensions = new String[uploadedVideoUriList.size()];
+
+        for(int i = 0 ; i < uploadedVideoUriList.size() ; i++)
+        {
+            writeInfo.videoExtensions[i] = getfiletype(uploadedVideoUriList.get(i));
+        }
+
+        ArrayList<String> videoDirectoryList =  GetVideoDirecotry(writeInfo);
+
+        for(int i = 0 ; i < uploadedVideoUriList.size() ; i++)
+        {
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+// Create a reference to "mountains.jpg"
+            StorageReference videoRef = storageRef.child(videoDirectoryList.get(i));
+
+
+            UploadTask uploadTask = videoRef.putFile(uploadedVideoUriList.get(i));
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                }
+            });
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,11 +236,20 @@ public class PostActivity extends AppCompatActivity {
 //                parent.addView(editText);
 
             }
-            if(requestCode == IMAGE_PICK_CAMERA_CODE){
+            else if(requestCode == IMAGE_PICK_CAMERA_CODE){
                 Log.e("이미지 uri",""+image_url);
 //                profileImageView.setImageURI(null);
 //                profileImageView.setImageURI(image_url);
 
+            }
+            else if(requestCode == IMAGE_PICK_GALLERY_VIDEO_CODE)
+            {
+                Uri selecteVideoUri = data.getData();
+                if(selecteVideoUri != null)
+                {
+                    uploadedVideoUriList.add(selecteVideoUri);
+
+                }
             }
         }
     }
@@ -194,6 +264,7 @@ public class PostActivity extends AppCompatActivity {
             user = FirebaseAuth.getInstance().getCurrentUser();
             WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), new Date());
             UpdateImage(writeInfo);
+            UpdateVideo(writeInfo);
 
             uploadPost(writeInfo);
 
@@ -272,9 +343,24 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void pickFromGalleryVideo(){
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-        galleryIntent.setType("video/*");
-        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_VIDEO_CODE);
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_PICK_GALLERY_VIDEO_CODE);
+    }
+
+    private String gteVideoPath(Uri uri) {
+        String[] projection = { MediaStore.Video.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
     }
 
     private boolean checkStoragePermission(){

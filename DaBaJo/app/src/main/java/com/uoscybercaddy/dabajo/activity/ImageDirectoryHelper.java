@@ -29,4 +29,27 @@ public class ImageDirectoryHelper
         }
         return imgPathList;
     }
+
+    static ArrayList<String> GetVideoDirecotry(WriteInfo info)
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String string = new String();
+        string += "posts/";
+        string += user.getUid();
+        string += "/";
+        string += info.createdAt.toString();
+        string += "/";
+
+        ArrayList<String> imgPathList = new ArrayList<String>();
+
+        for(int i = 0 ; i < info.videoCount ; i++)
+        {
+            String imgPathStr = string;
+            imgPathStr += Integer.toString(i);
+            imgPathStr += ".";
+            imgPathStr += info.videoExtensions[i];
+            imgPathList.add(imgPathStr);
+        }
+        return imgPathList;
+    }
 }

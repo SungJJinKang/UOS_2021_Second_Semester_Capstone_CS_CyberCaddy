@@ -12,6 +12,11 @@ public class WriteInfo {
     public int imageCount;
     public int[] imageSize;
 
+    public int videoCount;
+    public int[] videoSize;
+    public String[] videoExtensions;
+
+
     public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;
         this.body = contents;
