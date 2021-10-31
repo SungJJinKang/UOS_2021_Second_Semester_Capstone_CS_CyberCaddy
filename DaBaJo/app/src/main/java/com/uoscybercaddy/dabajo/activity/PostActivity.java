@@ -139,6 +139,7 @@ public class PostActivity extends AppCompatActivity {
 
 
         writeInfo.videoCount = uploadedVideoUriList.size();
+        //TODO : 비디오 사이즈 수정 필요.
         //writeInfo.videoSize = new int[uploadedVideoUriList.size()];
         writeInfo.videoExtensions = new ArrayList<String>();
 

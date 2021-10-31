@@ -14,6 +14,7 @@ public class WriteInfo {
     public int[] imageSize;
 
     public int videoCount;
+    //TODO : 비디오 사이즈 수정 필요.
     //public int[] videoSize;
     public List<String> videoExtensions;
 
