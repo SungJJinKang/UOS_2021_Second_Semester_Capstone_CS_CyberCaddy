@@ -36,4 +36,10 @@ public class WriteInfo {
     public void setWriter(String writer){
         this.writer = writer;
     }
+    public Date getCreatedAt(){
+        return this.createdAt;
+    }
+    public void setCreatedAt(Date createdAt){
+        this.createdAt = createdAt;
+    }
 }
