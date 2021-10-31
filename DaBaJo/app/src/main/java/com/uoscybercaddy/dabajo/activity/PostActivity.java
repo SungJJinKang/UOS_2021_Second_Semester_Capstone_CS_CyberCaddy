@@ -93,6 +93,7 @@ public class PostActivity extends AppCompatActivity {
 
         imgCount = 0;
 
+        writeInfo.imageCount = uploadedImageList.size();
         ArrayList<String> imgDirectoryList = GetImageDirecotry(writeInfo);
 
         for(int i = 0 ; i < uploadedImageList.size() ; i++)
