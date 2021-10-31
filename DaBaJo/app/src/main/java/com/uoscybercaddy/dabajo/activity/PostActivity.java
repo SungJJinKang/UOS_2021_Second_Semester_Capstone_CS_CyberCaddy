@@ -59,11 +59,33 @@ public class PostActivity extends AppCompatActivity {
 
     List<ImageView> uploadedImageList;
 
-    private void UpdateImage()
+    private List<String> GetImageDirecotry(WriteInfo info)
+    {
+        String string = new String();
+        string += "posts/";
+        string += user.getUid();
+        string += "/";
+        string += info.createdAt.toString();
+        string += "/";
+
+        List<String> imgPathList = new List<String>;
+
+        for(int i = 0 ; i < info.imageCount ; i++)
+        {
+            String imgPathStr = string;
+            imgPathStr += Integer.toString(i);
+            imgPathStr += ".jpg";
+            imgPathList.add(imgPathStr);
+        }
+        return imgPathList;
+    }
+
+
+    private int UpdateImage()
     {
         if(uploadedImageList.isEmpty())
         {
-            return;
+            return 0;
         }
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -71,11 +93,8 @@ public class PostActivity extends AppCompatActivity {
 // Create a reference to "mountains.jpg"
         StorageReference imageRef = storageRef.child("test.jpg");
 
-// Create a reference to 'images/mountains.jpg'
-        StorageReference mountainImagesRef = storageRef.child("images/test.jpg");
 
-        imageRef.getName().equals(mountainImagesRef.getName());    // true
-        imageRef.getPath().equals(mountainImagesRef.getPath());    // false
+        int imgCount = 0;
 
         for(ImageView imgView : uploadedImageList)
         {
@@ -97,8 +116,11 @@ public class PostActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
+                    imgCount++;
                 }
             });
+
+            return imgCount;
         }
 
     }
@@ -179,10 +201,12 @@ public class PostActivity extends AppCompatActivity {
 
         if (title.length() > 0 && contents.length() > 0) {
 
-            UpdateImage();
+
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), new Date());
+            writeInfo.imageCount = UpdateImage();
+
             uploadPost(writeInfo);
 
         } else {
