@@ -2,6 +2,7 @@ package com.uoscybercaddy.dabajo.view;
 
 
 import java.util.Date;
+import java.util.List;
 
 public class WriteInfo {
     private String title;
@@ -14,7 +15,7 @@ public class WriteInfo {
 
     public int videoCount;
     public int[] videoSize;
-    public String[] videoExtensions;
+    public List<String> videoExtensions;
 
 
     public WriteInfo(String title, String contents, String writer, Date createdAt){

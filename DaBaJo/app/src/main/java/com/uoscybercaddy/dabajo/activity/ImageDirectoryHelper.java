@@ -47,7 +47,7 @@ public class ImageDirectoryHelper
             String imgPathStr = string;
             imgPathStr += Integer.toString(i);
             imgPathStr += ".";
-            imgPathStr += info.videoExtensions[i];
+            imgPathStr += info.videoExtensions.get(i);
             imgPathList.add(imgPathStr);
         }
         return imgPathList;

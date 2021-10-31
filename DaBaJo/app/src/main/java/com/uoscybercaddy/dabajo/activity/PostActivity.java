@@ -140,11 +140,11 @@ public class PostActivity extends AppCompatActivity {
 
         writeInfo.videoCount = uploadedVideoUriList.size();
         writeInfo.videoSize = new int[uploadedVideoUriList.size()];
-        writeInfo.videoExtensions = new String[uploadedVideoUriList.size()];
+        writeInfo.videoExtensions = new ArrayList<String>();
 
         for(int i = 0 ; i < uploadedVideoUriList.size() ; i++)
         {
-            writeInfo.videoExtensions[i] = getfiletype(uploadedVideoUriList.get(i));
+            writeInfo.videoExtensions.add(getfiletype(uploadedVideoUriList.get(i)));
         }
 
         ArrayList<String> videoDirectoryList =  GetVideoDirecotry(writeInfo);
@@ -155,7 +155,6 @@ public class PostActivity extends AppCompatActivity {
 
 // Create a reference to "mountains.jpg"
             StorageReference videoRef = storageRef.child(videoDirectoryList.get(i));
-
 
             UploadTask uploadTask = videoRef.putFile(uploadedVideoUriList.get(i));
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -248,7 +247,6 @@ public class PostActivity extends AppCompatActivity {
                 if(selecteVideoUri != null)
                 {
                     uploadedVideoUriList.add(selecteVideoUri);
-
                 }
             }
         }
