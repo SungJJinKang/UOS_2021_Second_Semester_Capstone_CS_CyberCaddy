@@ -126,9 +126,8 @@ public class PostActivity extends AppCompatActivity {
                     imgCount++;
                 }
             });
-            while(uploadTask.isComplete() == false){};
         }
-        return imgCount;
+        return uploadedImageList.size();
     }
 
     @Override
