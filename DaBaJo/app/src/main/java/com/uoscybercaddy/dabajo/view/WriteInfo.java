@@ -14,7 +14,7 @@ public class WriteInfo {
     public int[] imageSize;
 
     public int videoCount;
-    public int[] videoSize;
+    //public int[] videoSize;
     public List<String> videoExtensions;
 
 

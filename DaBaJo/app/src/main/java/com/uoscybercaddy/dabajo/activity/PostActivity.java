@@ -139,7 +139,7 @@ public class PostActivity extends AppCompatActivity {
 
 
         writeInfo.videoCount = uploadedVideoUriList.size();
-        writeInfo.videoSize = new int[uploadedVideoUriList.size()];
+        //writeInfo.videoSize = new int[uploadedVideoUriList.size()];
         writeInfo.videoExtensions = new ArrayList<String>();
 
         for(int i = 0 ; i < uploadedVideoUriList.size() ; i++)
