@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firestore.v1.Write;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
@@ -81,23 +82,29 @@ public class PostActivity extends AppCompatActivity {
     }
 
 
-    private int UpdateImage()
+    private int UpdateImage(WriteInfo writeInfo)
     {
         if(uploadedImageList.isEmpty())
         {
             return 0;
         }
 
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
-// Create a reference to "mountains.jpg"
-        StorageReference imageRef = storageRef.child("test.jpg");
 
 
         int imgCount = 0;
 
-        for(ImageView imgView : uploadedImageList)
+        List<String> imgDirectoryList = GetImageDirecotry(writeInfo);
+
+        for(int i = 0 ; i < uploadedImageList.size() ; i++)
         {
+            ImageView imgView = uploadedImageList.get(i);
+
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+// Create a reference to "mountains.jpg"
+            StorageReference imageRef = storageRef.child(imgDirectoryList.get(i));
+
             imgView.setDrawingCacheEnabled(true);
             imgView.buildDrawingCache();
             Bitmap bitmap = ((BitmapDrawable) imgView.getDrawable()).getBitmap();
