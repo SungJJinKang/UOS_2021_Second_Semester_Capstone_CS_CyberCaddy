@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/drawable/button_background.xml" value="0.14583333333333334" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/drawable/button_background_gray.xml" value="0.14583333333333334" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/drawable/button_background_red.xml" value="0.14583333333333334" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_login.xml" value="0.152" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_main.xml" value="0.1296875" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_member_info_init.xml" value="0.1296875" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_sign_up.xml" value="0.2" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/like_tutor.xml" value="0.1296875" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="Android API 30 Platform" project-jdk-type="Android SDK" />
+</project>
