@@ -29,13 +29,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.firestore.v1.Write;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -58,9 +57,9 @@ public class PostActivity extends AppCompatActivity {
     int pathCount = 0;
     int successCount = 0;
 
-    List<ImageView> uploadedImageList;
+    ArrayList<ImageView> uploadedImageList = new ArrayList<ImageView>();
 
-    private List<String> GetImageDirecotry(WriteInfo info)
+    private ArrayList<String> GetImageDirecotry(WriteInfo info)
     {
         String string = new String();
         string += "posts/";
@@ -69,7 +68,7 @@ public class PostActivity extends AppCompatActivity {
         string += info.createdAt.toString();
         string += "/";
 
-        List<String> imgPathList = new List<String>;
+        ArrayList<String> imgPathList = new ArrayList<String>();
 
         for(int i = 0 ; i < info.imageCount ; i++)
         {
@@ -81,7 +80,7 @@ public class PostActivity extends AppCompatActivity {
         return imgPathList;
     }
 
-
+    private int imgCount = 0;
     private int UpdateImage(WriteInfo writeInfo)
     {
         if(uploadedImageList.isEmpty())
@@ -92,9 +91,9 @@ public class PostActivity extends AppCompatActivity {
 
 
 
-        int imgCount = 0;
+        imgCount = 0;
 
-        List<String> imgDirectoryList = GetImageDirecotry(writeInfo);
+        ArrayList<String> imgDirectoryList = GetImageDirecotry(writeInfo);
 
         for(int i = 0 ; i < uploadedImageList.size() ; i++)
         {
@@ -126,10 +125,8 @@ public class PostActivity extends AppCompatActivity {
                     imgCount++;
                 }
             });
-
-            return imgCount;
         }
-
+        return imgCount;
     }
 
     @Override
@@ -212,7 +209,7 @@ public class PostActivity extends AppCompatActivity {
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), new Date());
-            writeInfo.imageCount = UpdateImage();
+            writeInfo.imageCount = UpdateImage(writeInfo);
 
             uploadPost(writeInfo);
 
