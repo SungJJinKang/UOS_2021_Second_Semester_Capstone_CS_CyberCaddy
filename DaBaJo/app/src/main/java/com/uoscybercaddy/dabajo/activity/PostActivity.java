@@ -1,15 +1,12 @@
 package com.uoscybercaddy.dabajo.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,27 +15,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.uoscybercaddy.dabajo.R;
-import com.uoscybercaddy.dabajo.view.WriteInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.view.WriteInfo;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
+import java.util.List;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -60,6 +56,52 @@ public class PostActivity extends AppCompatActivity {
 
     int pathCount = 0;
     int successCount = 0;
+
+    List<ImageView> uploadedImageList;
+
+    private void UpdateImage()
+    {
+        if(uploadedImageList.isEmpty())
+        {
+            return;
+        }
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+// Create a reference to "mountains.jpg"
+        StorageReference imageRef = storageRef.child("test.jpg");
+
+// Create a reference to 'images/mountains.jpg'
+        StorageReference mountainImagesRef = storageRef.child("images/test.jpg");
+
+        imageRef.getName().equals(mountainImagesRef.getName());    // true
+        imageRef.getPath().equals(mountainImagesRef.getPath());    // false
+
+        for(ImageView imgView : uploadedImageList)
+        {
+            imgView.setDrawingCacheEnabled(true);
+            imgView.buildDrawingCache();
+            Bitmap bitmap = ((BitmapDrawable) imgView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = imageRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
+                }
+            });
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +157,7 @@ public class PostActivity extends AppCompatActivity {
                 imageView.setLayoutParams(layoutParams);
                 Glide.with(this).load(image_url).override(1000).into(imageView);
                 parent.addView(imageView);
-
+                uploadedImageList.add(imageView);
                 // 사진 하나하나 설명 가능하게 editText 생성
 //                EditText editText = new EditText(PostActivity.this);
 //                editText.setLayoutParams(layoutParams);
@@ -136,6 +178,9 @@ public class PostActivity extends AppCompatActivity {
         final String contents = ((EditText) findViewById(R.id.postBody)).getText().toString();
 
         if (title.length() > 0 && contents.length() > 0) {
+
+            UpdateImage();
+
             user = FirebaseAuth.getInstance().getCurrentUser();
             WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), new Date());
             uploadPost(writeInfo);
@@ -147,6 +192,8 @@ public class PostActivity extends AppCompatActivity {
 
     private void uploadPost(WriteInfo writeInfo){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
         db.collection("posts").add(writeInfo)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
