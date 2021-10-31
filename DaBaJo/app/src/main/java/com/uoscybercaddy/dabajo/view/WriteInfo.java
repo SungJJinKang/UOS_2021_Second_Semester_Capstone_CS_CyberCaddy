@@ -9,7 +9,8 @@ public class WriteInfo {
     private String writer;
     public Date createdAt;
 
-    public int imageCount = 0;
+    public int imageCount;
+    public int[] imageSize;
 
     public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;

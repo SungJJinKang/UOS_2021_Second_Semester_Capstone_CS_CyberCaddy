@@ -1,9 +1,12 @@
 package com.uoscybercaddy.dabajo.activity;
 
+import static com.uoscybercaddy.dabajo.activity.ImageDirectoryHelper.GetImageDirecotry;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -35,6 +39,7 @@ import com.uoscybercaddy.dabajo.view.WriteInfo;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -59,42 +64,20 @@ public class PostActivity extends AppCompatActivity {
 
     ArrayList<ImageView> uploadedImageList = new ArrayList<ImageView>();
 
-    private ArrayList<String> GetImageDirecotry(WriteInfo info)
-    {
-        String string = new String();
-        string += "posts/";
-        string += user.getUid();
-        string += "/";
-        string += info.createdAt.toString();
-        string += "/";
 
-        ArrayList<String> imgPathList = new ArrayList<String>();
-
-        for(int i = 0 ; i < info.imageCount ; i++)
-        {
-            String imgPathStr = string;
-            imgPathStr += Integer.toString(i);
-            imgPathStr += ".jpg";
-            imgPathList.add(imgPathStr);
-        }
-        return imgPathList;
-    }
 
     private int imgCount = 0;
-    private int UpdateImage(WriteInfo writeInfo)
+    private void UpdateImage(WriteInfo writeInfo)
     {
         if(uploadedImageList.isEmpty())
         {
-            return 0;
+            return ;
         }
 
 
-
-
-        imgCount = 0;
-
         writeInfo.imageCount = uploadedImageList.size();
-        ArrayList<String> imgDirectoryList = GetImageDirecotry(writeInfo);
+        writeInfo.imageSize = new int[uploadedImageList.size()];
+        ArrayList<String> imgDirectoryList =  GetImageDirecotry(writeInfo);
 
         for(int i = 0 ; i < uploadedImageList.size() ; i++)
         {
@@ -112,6 +95,8 @@ public class PostActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
 
+            writeInfo.imageSize[i] = data.length;
+
             UploadTask uploadTask = imageRef.putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -123,11 +108,9 @@ public class PostActivity extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                     // ...
-                    imgCount++;
                 }
             });
         }
-        return uploadedImageList.size();
     }
 
     @Override
@@ -210,7 +193,7 @@ public class PostActivity extends AppCompatActivity {
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), new Date());
-            writeInfo.imageCount = UpdateImage(writeInfo);
+            UpdateImage(writeInfo);
 
             uploadPost(writeInfo);
 
@@ -218,6 +201,41 @@ public class PostActivity extends AppCompatActivity {
             startToast("내용을 입력해주세요.");
         }
     }
+
+    //TODO : 이거 나중에 글 보는 액티비티로 옮겨야한다.
+    public Bitmap[] GetImageFromWriteInfo(WriteInfo writeinfo)
+    {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+// Create a reference to "mountains.jpg"
+        Bitmap[] bitmaps = new Bitmap[writeinfo.imageCount];
+
+        ArrayList<String> imgDirectoryList = ImageDirectoryHelper.GetImageDirecotry(writeinfo);
+
+        for(int i = 0 ; i < writeinfo.imageCount ; i++)
+        {
+            final StorageReference imageRef = storageRef.child(imgDirectoryList.get(i));
+
+            final int imageSize = writeinfo.imageSize[i];
+
+            Task<byte[]> tasks = imageRef.getBytes(imageSize);
+
+            try {
+                com.google.android.gms.tasks.Tasks.await(tasks);
+
+                Bitmap bitmap = BitmapFactory.decodeByteArray( tasks.getResult(), 0, imageSize ) ;
+                bitmaps[i] = bitmap;
+
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return bitmaps;
+    }
+
 
     private void uploadPost(WriteInfo writeInfo){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
