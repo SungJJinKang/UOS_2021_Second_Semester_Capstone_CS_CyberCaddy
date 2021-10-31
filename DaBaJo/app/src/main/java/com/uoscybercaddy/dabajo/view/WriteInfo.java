@@ -1,15 +1,19 @@
 package com.uoscybercaddy.dabajo.view;
 
 
+import java.util.Date;
+
 public class WriteInfo {
     private String title;
     private String body;
     private String writer;
+    private Date createdAt;
 
-    public WriteInfo(String title, String contents, String writer){
+    public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;
         this.body = contents;
         this.writer = writer;
+        this.createdAt = createdAt;
     }
 
     public String getTitle(){
