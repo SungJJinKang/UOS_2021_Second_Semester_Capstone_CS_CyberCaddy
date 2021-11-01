@@ -300,8 +300,8 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 }
                 break;
             case STORAGE_REQUEST_CODE:
-                if(grantResults.length > 1 ){
-                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                if(grantResults.length > 0 ){
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if(writeStorageAccepted){
                         pickFromGallery();
                     }else{
