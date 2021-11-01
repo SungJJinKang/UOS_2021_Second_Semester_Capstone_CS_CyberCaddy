@@ -43,7 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostActivity extends AppCompatActivity {
+public class WritePostActivity extends AppCompatActivity {
 
     private static final String TAG = "WritePostActivity";
     private FirebaseUser user;
@@ -188,6 +188,7 @@ public class PostActivity extends AppCompatActivity {
                 case R.id.postButton:
                     startToast("works");
                     writePost();
+                    startActivityShortcut(FeedActivity.class);
                     break;
                 case R.id.imageButton:
                     if(!checkStoragePermission()){
@@ -221,7 +222,7 @@ public class PostActivity extends AppCompatActivity {
                 Log.e("이미지 uri",""+image_url);
 
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                ImageView imageView = new ImageView(PostActivity.this);
+                ImageView imageView = new ImageView(WritePostActivity.this);
                 imageView.setLayoutParams(layoutParams);
                 Glide.with(this).load(image_url).override(1000).into(imageView);
                 parent.addView(imageView);
@@ -273,7 +274,6 @@ public class PostActivity extends AppCompatActivity {
 
     private void uploadPost(WriteInfo writeInfo){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
         db.collection("posts").add(writeInfo)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
