@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -44,7 +42,6 @@ import com.uoscybercaddy.dabajo.view.WriteInfo;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -272,39 +269,6 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    //TODO : 이거 나중에 글 보는 액티비티로 옮겨야한다.
-    public Bitmap[] GetImageFromWriteInfo(WriteInfo writeinfo)
-    {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
-// Create a reference to "mountains.jpg"
-        Bitmap[] bitmaps = new Bitmap[writeinfo.imageCount];
-
-        ArrayList<String> imgDirectoryList = ImageDirectoryHelper.GetImageDirecotry(writeinfo);
-
-        for(int i = 0 ; i < writeinfo.imageCount ; i++)
-        {
-            final StorageReference imageRef = storageRef.child(imgDirectoryList.get(i));
-
-            final int imageSize = writeinfo.imageSize[i];
-
-            Task<byte[]> tasks = imageRef.getBytes(imageSize);
-
-            try {
-                com.google.android.gms.tasks.Tasks.await(tasks);
-
-                Bitmap bitmap = BitmapFactory.decodeByteArray( tasks.getResult(), 0, imageSize ) ;
-                bitmaps[i] = bitmap;
-
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return bitmaps;
-    }
 
 
     private void uploadPost(WriteInfo writeInfo){
