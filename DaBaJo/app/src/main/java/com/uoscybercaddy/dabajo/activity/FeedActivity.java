@@ -52,13 +52,14 @@ public class FeedActivity extends AppCompatActivity  {
     @Override
     protected void onStart() {
         super.onStart();
-        mDatas = new ArrayList<>();
+
         db.collection("posts")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            mDatas = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 mDatas.add(new WriteInfo(document.getData().get("title").toString(),
@@ -66,7 +67,8 @@ public class FeedActivity extends AppCompatActivity  {
                                         document.getData().get("writer").toString(),
                                         new Date(document.getDate("createdAt").getTime())));
 
-                            }
+                            } // DATE 순으로 정렬 필요
+                            // 댓글 postactivity
                             feedRecyclerView = findViewById(R.id.feedRecyclerView);
 
                             mAdapter = new PostAdapter(mDatas);

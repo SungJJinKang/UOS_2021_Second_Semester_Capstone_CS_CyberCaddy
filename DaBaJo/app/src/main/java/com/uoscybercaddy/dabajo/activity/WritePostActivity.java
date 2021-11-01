@@ -191,6 +191,7 @@ public class WritePostActivity extends AppCompatActivity {
                 case R.id.postButton:
                     startToast("works");
                     writePost();
+                    startActivityShortcut(FeedActivity.class);
                     break;
                 case R.id.imageButton:
                     if(!checkStoragePermission()){
