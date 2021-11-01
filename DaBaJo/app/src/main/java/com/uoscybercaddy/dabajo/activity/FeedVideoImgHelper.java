@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 public class FeedVideoImgHelper
 {
-    public Uri[] GetVideoUriFromWriteInfo(WriteInfo writeinfo)
+    public static Uri[] GetVideoUriFromWriteInfo(WriteInfo writeinfo)
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
@@ -58,7 +58,7 @@ public class FeedVideoImgHelper
     }
 
     // 이거 사용 추천!!!!!!!!!
-    public void SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
+    public static void SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
     {
         Bitmap bitmap = GetImageFromWriteInfo(writeinfo, index);
         if(bitmap != null)
@@ -67,7 +67,7 @@ public class FeedVideoImgHelper
         }
     }
 
-    public Bitmap GetImageFromWriteInfo(WriteInfo writeinfo, int index)
+    public static Bitmap GetImageFromWriteInfo(WriteInfo writeinfo, int index)
     {
         if(index < 0 || index >= writeinfo.imageCount)
         {
@@ -82,7 +82,7 @@ public class FeedVideoImgHelper
         return writeinfo.imageBitmap[index];
     }
 
-    public Bitmap[] GetImageFromWriteInfo(WriteInfo writeinfo)
+    public static Bitmap[] GetImageFromWriteInfo(WriteInfo writeinfo)
     {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
@@ -122,7 +122,7 @@ public class FeedVideoImgHelper
     //2021-11-11 아직 테스트 안됨
     // 이거 사용 추천!!!!!!!!!
     // 참고 코드 : https://github.com/Akshayrrao/Firebase.video.streaming.app/blob/master/app/src/main/java/com/example/netflix/ViewHolder.java
-    public void PlayVideo(Application application, SimpleExoPlayer targetExoPlayer, PlayerView playerView, WriteInfo writeinfo, int index)
+    public static void PlayVideo(Application application, SimpleExoPlayer targetExoPlayer, PlayerView playerView, WriteInfo writeinfo, int index)
     {
         if(index < 0 || index >= writeinfo.videoCount)
         {
