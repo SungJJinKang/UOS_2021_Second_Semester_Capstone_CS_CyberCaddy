@@ -27,6 +27,11 @@ public class FeedVideoImgHelper
 {
     public static Uri[] GetVideoUriFromWriteInfo(WriteInfo writeinfo)
     {
+        if( writeinfo.isVideoDataLoaded == true )
+        {
+            return writeinfo.videoUries;
+        }
+
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
         ArrayList<String> videoDirectoryList = ImageDirectoryHelper.GetVideoDirecotry(writeinfo);
@@ -53,6 +58,8 @@ public class FeedVideoImgHelper
                 e.printStackTrace();
             }
         }
+
+        writeinfo.isVideoDataLoaded = true;
 
         return videoUries;
     }
@@ -84,6 +91,11 @@ public class FeedVideoImgHelper
 
     public static Bitmap[] GetImageFromWriteInfo(WriteInfo writeinfo)
     {
+        if( writeinfo.isImageDataLoaded == true )
+        {
+            return writeinfo.imageBitmap;
+        }
+
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
         // Create a reference to "mountains.jpg"
@@ -114,6 +126,8 @@ public class FeedVideoImgHelper
                 e.printStackTrace();
             }
         }
+
+        writeinfo.isImageDataLoaded = true;
 
         return bitmaps;
     }
