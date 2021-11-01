@@ -127,6 +127,7 @@ public class MainActivity extends FragmentActivity {
                 case R.id.gotoFeedButton:
                     startActivityShortcut(FeedActivity.class);
 
+
             }
         }
     };
