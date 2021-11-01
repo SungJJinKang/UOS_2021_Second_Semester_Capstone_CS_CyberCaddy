@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
@@ -202,9 +204,11 @@ public class MemberinfoinitActivity extends AppCompatActivity {
             if(which == 0){
                 if(!checkCameraPermission()){
                     requestCameraPermission();
+                    Log.e("리퀘스트 카메라 퍼미션 ","리퀘스트 카메라 퍼미션");
                 }
                 else{
                     pickFromCamera();
+                    Log.e("pickFromCamera","pickFromCamera");
                 }
             }else if(which ==1){
                 //갤러리
@@ -223,7 +227,12 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         return result;
     }
     private void requestStoragePermission(){
-        requestPermissions(storagePermissions, STORAGE_REQUEST_CODE);
+        try{
+            requestPermissions(storagePermissions, STORAGE_REQUEST_CODE);
+        }catch(Exception e){
+            Log.e("에러",""+e.getMessage());
+        }
+
     }
     private boolean checkCameraPermission(){
         boolean result1 = checkSelfPermission(Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
@@ -232,6 +241,26 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     }
     private void requestCameraPermission(){
         requestPermissions(cameraPermissions, CAMERA_REQUEST_CODE);
+    }
+    private void showDialogToGetPermission() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("권한 요청")
+                .setMessage("권한이 필요합니다. " +
+                        "설정으로 가서 승인해주세요.");
+
+        builder.setTitle("권한 요청")
+                .setMessage("권한이 필요합니다. " +
+                        "설정으로 가서 승인해주세요.")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", getPackageName(), null));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                });
+        builder.create().show();
+
     }
 
     @Override
@@ -245,17 +274,57 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                     if(cameraAccepted && writeStorageAccepted){
                         pickFromCamera();
                     }else{
+                        if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) && shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                            startToast("카메라&저장소를 승인해주세요.");
+                            Log.e("", "User declined, but i can still ask for more");
+
+                        }else{
+                            startToast("카메라&저장소를 승인해주세요.");
+                            Log.e("", "User declined and i can't ask");
+                            showDialogToGetPermission();
+                        }
+
+
+                    }
+                }
+                else{
+                    if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) && shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
                         startToast("카메라&저장소를 승인해주세요.");
+                        Log.e("", "User declined, but i can still ask for more");
+
+                    }else{
+                        startToast("카메라&저장소를 승인해주세요.");
+                        Log.e("", "User declined and i can't ask");
+                        showDialogToGetPermission();
                     }
                 }
                 break;
             case STORAGE_REQUEST_CODE:
-                if(grantResults.length > 0 ){
+                if(grantResults.length > 1 ){
                     boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     if(writeStorageAccepted){
                         pickFromGallery();
                     }else{
+                        if(shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                            startToast("저장소를 승인해주세요.");
+                            Log.e("", "User declined, but i can still ask for more");
+
+                        }else{
+                            startToast("저장소를 승인해주세요.");
+                            Log.e("", "User declined and i can't ask");
+                            showDialogToGetPermission();
+                        }
+
+                    }
+                }else{
+                    if(shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
                         startToast("저장소를 승인해주세요.");
+                        Log.e("", "User declined, but i can still ask for more");
+
+                    }else{
+                        startToast("저장소를 승인해주세요.");
+                        Log.e("", "User declined and i can't ask");
+                        showDialogToGetPermission();
                     }
                 }
                 break;
