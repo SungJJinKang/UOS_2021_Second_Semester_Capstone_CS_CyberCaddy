@@ -16,12 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
-<<<<<<< HEAD
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-=======
->>>>>>> 1a73fe23296f06cbb0e5d529189b2ffa6427f152
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -34,7 +29,7 @@ import com.uoscybercaddy.dabajo.view.WriteInfo;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class FeedActivity extends AppCompatActivity  {
+public class FeedActivity extends AppCompatActivity {
 
     private FirebaseUser user;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -42,7 +37,6 @@ public class FeedActivity extends AppCompatActivity  {
     private RecyclerView feedRecyclerView;
     private PostAdapter mAdapter;
     private ArrayList<WriteInfo> mDatas;
-
 
 
     @Override
@@ -89,10 +83,11 @@ public class FeedActivity extends AppCompatActivity  {
 
 
     }
+
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.writePostButton:
                     startToast("works");
                     startActivityShortcut(WritePostActivity.class);
@@ -109,4 +104,5 @@ public class FeedActivity extends AppCompatActivity  {
     private void startActivityShortcut(Class c) {
         Intent intent = new Intent(this, c);
         startActivity(intent);
+    }
 }
