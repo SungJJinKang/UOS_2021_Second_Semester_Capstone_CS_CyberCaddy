@@ -1,5 +1,6 @@
 package com.uoscybercaddy.dabajo.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         WriteInfo data = datas.get(position);
         holder.title.setText(data.getTitle());
         holder.contents.setText(data.getBody());
+        Log.e("로그 :", "데이터"+datas.get(position).getTitle());
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.uoscybercaddy.dabajo.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
@@ -141,7 +140,7 @@ public class MainActivity extends FragmentActivity {
         startActivity(intent);
     }
     private void startPostActivity() {
-        Intent intent = new Intent(this,PostActivity.class);
+        Intent intent = new Intent(this, WritePostActivity.class);
         startActivity(intent);
     }
 
