@@ -2,6 +2,7 @@ package com.uoscybercaddy.dabajo.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,9 +10,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +35,7 @@ import com.uoscybercaddy.dabajo.adapter.AdapterUsers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class UsersFragment extends Fragment {
     RecyclerView recyclerView;
@@ -92,6 +96,7 @@ public class UsersFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            usersList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
                                 String name, nickName, photoUrl, sex, tutortuty, introduction, search;
@@ -115,7 +120,45 @@ public class UsersFragment extends Fragment {
                         }
                     }
                 });
-        //
+    }
+    private void searchUsers(String query) {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            usersList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String name, nickName, photoUrl, sex, tutortuty, introduction, search;
+                                name = document.getData().get("name").toString();
+                                nickName = document.getData().get("nickName").toString();
+                                photoUrl = document.getData().get("photoUrl").toString();
+                                tutortuty = document.getData().get("tutortuty").toString();
+                                introduction = document.getData().get("introduction").toString();
+                                sex = document.getData().get("sex").toString();
+
+                                ModelUsers modelUser = new ModelUsers(name, nickName, photoUrl, sex,  tutortuty, introduction);
+                                if(!(document.getId().equals(fUser.getUid()))){
+                                    if(modelUser.getName().toLowerCase().contains(query.toLowerCase()) ||
+                                    modelUser.getNickName().toLowerCase().contains(query.toLowerCase())
+                                    ||modelUser.getIntroduction().toLowerCase().contains(query.toLowerCase())
+                                    ){
+                                        usersList.add(modelUser);
+                                    }
+                                }
+                                adapterUsers = new AdapterUsers(getActivity(), usersList);
+                                adapterUsers.notifyDataSetChanged();
+                                recyclerView.setAdapter(adapterUsers);
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
     private void checkUserStatus(){
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -129,9 +172,38 @@ public class UsersFragment extends Fragment {
     //inflate option menu
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.menu_main, menu);
+        menuInflater.inflate(R.menu.menu_search_users, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(!TextUtils.isEmpty(query.trim())){
+                    searchUsers(query);
+                }
+                else{
+                    getAllUsers();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(!TextUtils.isEmpty(newText.trim())){
+                    searchUsers(newText);
+                }
+                else{
+                    getAllUsers();
+                }
+                return false;
+            }
+        });
+
         super.onCreateOptionsMenu(menu, menuInflater);
     }
+
+
 
     //handle menu item clicks
 
