@@ -8,6 +8,6 @@
         android:title="검색"
         android:icon="@drawable/ic_person_search_white"
         app:showAsAction="always"
-        app:actionviewclass="android.support.v7.widget.SearchView"/>
+        app:actionViewClass="android.widget.SearchView"/>
         />
 </menu>

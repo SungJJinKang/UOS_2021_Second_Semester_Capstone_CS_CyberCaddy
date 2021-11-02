@@ -12,6 +12,14 @@ public class ModelUsers {
         this.introduction = introduction;
         this.search = search;
     }
+    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction) {
+        this.name = name;
+        this.nickName = nickName;
+        this.photoUrl = photoUrl;
+        this.sex = sex;
+        this.tutortuty = tutortuty;
+        this.introduction = introduction;
+    }
     public String getName() {
         return name;
     }

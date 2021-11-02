@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +26,7 @@ import com.uoscybercaddy.dabajo.activity.MainActivity;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    TextView showUsersTv;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,7 +77,18 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        showUsersTv = (TextView) view.findViewById(R.id.showUsersTv);
+
+        showUsersTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsersFragment usersFragment= new UsersFragment();
+                ((DashboardActivity)getActivity()).replaceFragment(usersFragment);
+            }
+        });
+
+        return view;
     }
     private void checkUserStatus(){
         FirebaseUser user = firebaseAuth.getCurrentUser();
