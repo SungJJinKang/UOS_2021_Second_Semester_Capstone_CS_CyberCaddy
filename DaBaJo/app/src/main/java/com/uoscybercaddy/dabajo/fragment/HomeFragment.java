@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -27,7 +28,6 @@ import com.uoscybercaddy.dabajo.activity.MainActivity;
  */
 public class HomeFragment extends Fragment {
     TextView showUsersTv;
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 UsersFragment usersFragment= new UsersFragment();
-                ((DashboardActivity)getActivity()).replaceFragment(usersFragment);
+                ((DashboardActivity)getActivity()).replaceFragment(usersFragment, "유저");
             }
         });
 
@@ -112,10 +112,17 @@ public class HomeFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id== R.id.action_logout){
-            firebaseAuth.signOut();
-            checkUserStatus();
+        switch(id){
+            case R.id.action_logout:
+                firebaseAuth.signOut();
+                checkUserStatus();
+                break;
+            case R.id.nav_chat:
+                ChatListFragment chatListFragment= new ChatListFragment();
+                ((DashboardActivity)getActivity()).replaceFragment(chatListFragment,"채팅");
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

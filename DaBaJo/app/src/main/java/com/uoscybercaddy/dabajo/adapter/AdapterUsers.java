@@ -1,6 +1,7 @@
 package com.uoscybercaddy.dabajo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.uoscybercaddy.dabajo.ModelUsers;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.activity.ChatActivity;
 import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
 
 import java.util.List;
@@ -39,6 +41,7 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHolder>{
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         //get data
+        String hisUID = userList.get(position).getUid();
         String userImage = userList.get(position).getPhotoUrl();
         String userNickName = userList.get(position).getNickName();
         String introduction = userList.get(position).getIntroduction();
@@ -53,7 +56,9 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHolder>{
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startToast(""+userNickName);
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("hisUid",hisUID);
+                context.startActivity(intent);
             }
         });
     }

@@ -33,7 +33,6 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         actionBar = getSupportActionBar();
-        actionBar.setTitle("프로필");
         firebaseAuth = FirebaseAuth.getInstance();
 
         BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -58,8 +57,8 @@ public class DashboardActivity extends AppCompatActivity {
         //디폴트
 
     }
-    public void replaceFragment(Fragment fragment) {
-        actionBar.setTitle("유저");
+    public void replaceFragment(Fragment fragment, String s) {
+        actionBar.setTitle(s);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.

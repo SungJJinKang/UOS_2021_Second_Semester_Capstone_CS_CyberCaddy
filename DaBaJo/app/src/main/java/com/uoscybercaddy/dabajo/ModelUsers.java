@@ -1,17 +1,18 @@
 package com.uoscybercaddy.dabajo;
 
 public class ModelUsers {
-    String name, nickName, photoUrl, sex, tutortuty, introduction, search;
+    String name, nickName, photoUrl, sex, tutortuty, introduction, search, uid;
 
-    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search) {
+    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String uid) {
         this.name = name;
         this.nickName = nickName;
         this.photoUrl = photoUrl;
         this.sex = sex;
         this.tutortuty = tutortuty;
         this.introduction = introduction;
-        this.search = search;
+        this.uid = uid;
     }
+
     public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction) {
         this.name = name;
         this.nickName = nickName;
@@ -20,6 +21,14 @@ public class ModelUsers {
         this.tutortuty = tutortuty;
         this.introduction = introduction;
     }
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     public String getName() {
         return name;
     }

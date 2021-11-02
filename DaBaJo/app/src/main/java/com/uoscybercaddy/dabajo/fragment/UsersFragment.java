@@ -132,16 +132,17 @@ public class UsersFragment extends Fragment {
                         if (task.isSuccessful()) {
                             usersList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String name, nickName, photoUrl, sex, tutortuty, introduction, search;
+                                String name, nickName, photoUrl, sex, tutortuty, introduction, search,uid;
                                 name = document.getData().get("name").toString();
                                 nickName = document.getData().get("nickName").toString();
                                 photoUrl = document.getData().get("photoUrl").toString();
                                 tutortuty = document.getData().get("tutortuty").toString();
                                 introduction = document.getData().get("introduction").toString();
                                 sex = document.getData().get("sex").toString();
+                                uid = document.getId();
 
-                                ModelUsers modelUser = new ModelUsers(name, nickName, photoUrl, sex,  tutortuty, introduction);
-                                if(!(document.getId().equals(fUser.getUid()))){
+                                ModelUsers modelUser = new ModelUsers(name, nickName, photoUrl, sex,  tutortuty, introduction,uid);
+                                if(!(uid.equals(fUser.getUid()))){
                                     if(modelUser.getName().toLowerCase().contains(query.toLowerCase()) ||
                                     modelUser.getNickName().toLowerCase().contains(query.toLowerCase())
                                     ||modelUser.getIntroduction().toLowerCase().contains(query.toLowerCase())

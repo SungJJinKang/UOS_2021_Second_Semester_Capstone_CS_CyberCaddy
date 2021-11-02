@@ -3,24 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.HomeFragment">
+    tools:context=".fragment.ChatListFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:text="홈" />
-
-    <TextView
-        android:id="@+id/showUsersTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="유저 전체보기"
-        android:textSize="50sp"
-        />
-
+        android:layout_gravity="center"
+        android:textSize="30sp"
+        android:text="Chat List" />
 
 </FrameLayout>
