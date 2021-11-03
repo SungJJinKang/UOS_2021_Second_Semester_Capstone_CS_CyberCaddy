@@ -14,12 +14,14 @@
         android:layout_weight="1"
         android:id="@+id/content"
         ></FrameLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:layout_width="match_parent"
         android:id="@+id/navigation"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/menu_nav"
-        ></com.google.android.material.bottomnavigation.BottomNavigationView>
+        android:background="@drawable/top_stroke"
+        app:itemIconTint="@drawable/bottom_icon_color"
+        app:itemTextColor="@drawable/bottom_icon_color"
+        app:menu="@menu/menu_nav"></com.google.android.material.bottomnavigation.BottomNavigationView>
 </LinearLayout>

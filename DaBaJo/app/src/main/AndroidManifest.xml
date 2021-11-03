@@ -33,7 +33,7 @@
 
         </activity>
         <activity android:name=".activity.MemberinfoinitActivity"></activity>
-
+        <activity android:name=".activity.CategorySport"></activity>
         <activity android:name=".activity.SignUpActivity"></activity>
         <activity android:name=".activity.PostActivity"></activity>
     </application>

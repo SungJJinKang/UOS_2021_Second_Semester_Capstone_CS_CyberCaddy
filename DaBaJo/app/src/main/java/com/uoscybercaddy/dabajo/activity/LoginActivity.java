@@ -9,6 +9,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -318,4 +319,5 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this,SignUpActivity.class);
         startActivity(intent);
     }
+
 }

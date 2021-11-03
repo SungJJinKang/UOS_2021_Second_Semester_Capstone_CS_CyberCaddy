@@ -3,7 +3,7 @@
     <style name="Theme.DaBaJo" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimaryVariant">#FB5943</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -16,4 +16,8 @@
     <style name="SplashActivityTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_image</item>
     </style>
+<!--    <style name="EditTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
+<!--        <item name="colorAccent">#FB5943</item>-->
+<!--        <item name="colorControlNormal">#545454</item>-->
+<!--    </style>-->
 </resources>
