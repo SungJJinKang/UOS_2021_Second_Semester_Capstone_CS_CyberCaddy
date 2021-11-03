@@ -99,15 +99,16 @@ public class UsersFragment extends Fragment {
                             usersList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                String name, nickName, photoUrl, sex, tutortuty, introduction, search;
+                                String name, nickName, photoUrl, sex, tutortuty, introduction, search,uid;
                                 name = document.getData().get("name").toString();
                                 nickName = document.getData().get("nickName").toString();
                                 photoUrl = document.getData().get("photoUrl").toString();
                                 tutortuty = document.getData().get("tutortuty").toString();
                                 introduction = document.getData().get("introduction").toString();
                                 sex = document.getData().get("sex").toString();
+                                uid = document.getId();
 
-                                ModelUsers modelUser = new ModelUsers(name, nickName, photoUrl, sex,  tutortuty, introduction);
+                                ModelUsers modelUser = new ModelUsers(name, nickName, photoUrl, sex,  tutortuty, introduction,uid);
                                 if(!(document.getId().equals(fUser.getUid()))){
                                     usersList.add(modelUser);
                                 }
