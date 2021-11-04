@@ -1,7 +1,6 @@
 package com.uoscybercaddy.dabajo.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
@@ -88,6 +87,7 @@ public class MainActivity extends FragmentActivity {
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
         findViewById(R.id.writeButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoMainButton).setOnClickListener(onClickListener);
+        findViewById(R.id.gotoFeedButton).setOnClickListener(onClickListener);
 
     }
     private void checkUserStatus(){
@@ -124,6 +124,10 @@ public class MainActivity extends FragmentActivity {
                 case R.id.gotoMainButton:
                     startDashboardActivity();
                     break;
+                case R.id.gotoFeedButton:
+                    startActivityShortcut(FeedActivity.class);
+
+
             }
         }
     };
@@ -137,7 +141,7 @@ public class MainActivity extends FragmentActivity {
         startActivity(intent);
     }
     private void startPostActivity() {
-        Intent intent = new Intent(this,PostActivity.class);
+        Intent intent = new Intent(this, WritePostActivity.class);
         startActivity(intent);
     }
 

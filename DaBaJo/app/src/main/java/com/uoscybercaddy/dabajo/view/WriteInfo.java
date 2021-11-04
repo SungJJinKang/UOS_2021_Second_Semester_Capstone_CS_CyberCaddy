@@ -1,6 +1,9 @@
 package com.uoscybercaddy.dabajo.view;
 
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,12 +15,16 @@ public class WriteInfo {
 
     public int imageCount;
     public int[] imageSize;
+    public transient Bitmap imageBitmap[];
+    public transient  boolean isImageDataLoaded = false;
 
     public int videoCount;
     //TODO : 비디오 사이즈 수정 필요.
     //public int[] videoSize;
     public List<String> videoExtensions;
-
+    //transient로 셋팅하면 파이어베이스에 전송막을 수 있다.
+    public transient Uri[] videoUries;
+    public transient  boolean isVideoDataLoaded = false;
 
     public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;
