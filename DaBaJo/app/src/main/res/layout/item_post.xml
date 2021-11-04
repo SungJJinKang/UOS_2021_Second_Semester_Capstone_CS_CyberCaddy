@@ -7,7 +7,7 @@
     android:layout_margin="5dp"
     android:orientation="vertical"
     app:cardCornerRadius="10dp">
-
+<!--postAdapter에서 사용됨-->
     <include
         layout="@layout/view_post"
         android:layout_width="match_parent"
