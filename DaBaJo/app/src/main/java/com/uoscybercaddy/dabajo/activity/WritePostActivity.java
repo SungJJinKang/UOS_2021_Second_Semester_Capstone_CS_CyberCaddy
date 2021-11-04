@@ -174,7 +174,7 @@ public class WritePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        setContentView(R.layout.activity_write_post);
         parent = findViewById(R.id.contentsLayout);
         findViewById(R.id.postButton).setOnClickListener(onClickListener);
         findViewById(R.id.imageButton).setOnClickListener(onClickListener);

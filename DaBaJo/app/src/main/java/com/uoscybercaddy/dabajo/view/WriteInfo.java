@@ -4,10 +4,11 @@ package com.uoscybercaddy.dabajo.view;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class WriteInfo {
+public class WriteInfo implements Serializable {
     private String title;
     private String body;
     private String writer;

@@ -49,6 +49,7 @@ public class FeedActivity extends AppCompatActivity {
 
     }
 
+    // 피드 화면에서 최대로 글 몇줄 출력할 것인지
     @Override
     protected void onStart() {
         super.onStart();
@@ -72,7 +73,7 @@ public class FeedActivity extends AppCompatActivity {
                             // 댓글 postactivity
                             feedRecyclerView = findViewById(R.id.feedRecyclerView);
 
-                            mAdapter = new PostAdapter(mDatas);
+                            mAdapter = new PostAdapter(FeedActivity.this, mDatas);
                             feedRecyclerView.setAdapter(mAdapter);
 
                         } else {
