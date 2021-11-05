@@ -104,7 +104,6 @@ public class HomeFragment extends Fragment {
                 getActivity().finish();
             }
         });
-        return view;
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
         showUsersTv = (TextView) view.findViewById(R.id.showUsersTv);

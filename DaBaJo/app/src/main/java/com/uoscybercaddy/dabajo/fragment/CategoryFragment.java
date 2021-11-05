@@ -73,7 +73,6 @@ public class CategoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
-        return inflater.inflate(R.layout.fragment_category, container, false);
         View view = inflater.inflate(R.layout.fragment_category, container, false);
         button = (Button)view.findViewById(R.id.buttonSport);
 
