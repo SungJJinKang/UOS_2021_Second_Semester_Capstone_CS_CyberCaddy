@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -38,14 +38,8 @@ public class PostActivity extends AppCompatActivity {
         TextView contentTextView = findViewById(R.id.item_post_contents);
         contentTextView.setText(writeInfo.getBody());
 
-        String img_url = "https://firebasestorage.googleapis.com/v0/b/dabajo-test.appspot.com/o/posts%2FvHEVbyMFbCaDBK5Ook6u8dnaNi82%2FSun%20Oct%2031%2022%3A11%3A48%20GMT%2B09%3A00%202021%2F1.jpg?alt=media&token=6b402735-f5a8-4709-a51a-dce7ef037eaa";
-
         parent = findViewById(R.id.item_post_layout);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        ImageView imageView = new ImageView(PostActivity.this);
-        imageView.setLayoutParams(layoutParams);
-        Glide.with(this).load(img_url).override(1000).into(imageView);
-        parent.addView(imageView);
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -56,7 +50,18 @@ public class PostActivity extends AppCompatActivity {
 
             FeedVideoImgHelper.SetImageToImageView(imageView2, writeInfo, i);
             parent.addView(imageView2);
+        }
 
+        if(writeInfo.videoCount > 0)
+        {
+            //test test!!!!!!!!!!!!!!!!!!!
+            //test test!!!!!!!!!!!!!!!!!!!
+            //test test!!!!!!!!!!!!!!!!!!!
+            //FeedVideoImgHelper.PlayVideo(getApplication(), writeInfo, 0)
+            PlayerView videoPlayerView = new PlayerView(PostActivity.this);
+            videoPlayerView.setLayoutParams(layoutParams);
+            FeedVideoImgHelper.PlayVideo(getApplication(), videoPlayerView, writeInfo, 0);
+            parent.addView(videoPlayerView);
         }
 
     }

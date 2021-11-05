@@ -29,6 +29,43 @@ import java.util.concurrent.ExecutionException;
 
 public class FeedVideoImgHelper
 {
+
+
+    public interface OnLoadImageListener {
+        void OnImageLoad(Bitmap bitmap);
+    }
+
+
+    // 이거 사용 추천!!!!!!!!!
+    public static void SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
+    {
+        if(index < 0 || index >= writeinfo.imageCount)
+        {
+            Log.e("post image load", " index is out of bound");
+            return;
+        }
+
+        ArrayList<String> imgDirectoryList = ImageDirectoryHelper.GetImageDirecotry(writeinfo);
+        String targetImgFirebaseDirectory = imgDirectoryList.get(index);
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        storageRef.child(targetImgFirebaseDirectory).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(imgView).load(uri).override(1000).into(imgView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e("image load fail", exception.toString());
+            }
+        });
+    }
+
+
+
+
+
     public static Uri[] GetVideoUriFromWriteInfo(WriteInfo writeinfo)
     {
         if( writeinfo.isVideoDataLoaded == true )
@@ -68,69 +105,43 @@ public class FeedVideoImgHelper
         return videoUries;
     }
 
-    public interface OnLoadImageListener {
-        void OnImageLoad(Bitmap bitmap);
-    }
-
-
-    // 이거 사용 추천!!!!!!!!!
-    public static void SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
-    {
-        ArrayList<String> imgDirectoryList = ImageDirectoryHelper.GetImageDirecotry(writeinfo);
-        String targetImgFirebaseDirectory = imgDirectoryList.get(index);
-
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        storageRef.child(targetImgFirebaseDirectory).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(imgView).load(uri).override(1000).into(imgView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.e("image load fail", exception.toString());
-            }
-        });
-    }
-
-
-
-
-
-
     //application는 그냥 getApplication() 넣어주면 됩니다. targetExoPlayer랑 playerView는 호출하는 액티비티에서 만들어야함.
     //2021-11-11 아직 테스트 안됨
     // 이거 사용 추천!!!!!!!!!
     // 참고 코드 : https://github.com/Akshayrrao/Firebase.video.streaming.app/blob/master/app/src/main/java/com/example/netflix/ViewHolder.java
-    public static void PlayVideo(Application application, SimpleExoPlayer targetExoPlayer, PlayerView playerView, WriteInfo writeinfo, int index)
+    public static void PlayVideo(Application application, PlayerView playerView, WriteInfo writeinfo, int index)
     {
         if(index < 0 || index >= writeinfo.videoCount)
         {
+            Log.e("post video load", " index is out of bound");
             return;
         }
 
-        if(writeinfo.videoUries == null || writeinfo.videoUries[index] == null)
-        {
-            GetVideoUriFromWriteInfo(writeinfo);
-        }
 
+        ArrayList<String> videoDirectoryList = ImageDirectoryHelper.GetVideoDirecotry(writeinfo);
 
-        Uri targetVideoUri = writeinfo.videoUries[index];
-
-        if(targetVideoUri != null && targetVideoUri.toString() != "")
-        {
-            try {
-                targetExoPlayer = (SimpleExoPlayer) ExoPlayerFactory.newSimpleInstance(application);
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        final StorageReference videoRef = storageRef.child(videoDirectoryList.get(index));
+        Task<Uri> videoMetaDataFetchTask = videoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri)
+            {
+                final SimpleExoPlayer _targetExoPlayer = (SimpleExoPlayer) ExoPlayerFactory.newSimpleInstance(application);
                 DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("video");
                 ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-                MediaSource mediaSource = new ExtractorMediaSource(targetVideoUri,dataSourceFactory,extractorsFactory,null,null);
-                playerView.setPlayer(targetExoPlayer);
-                targetExoPlayer.prepare(mediaSource);
-                targetExoPlayer.setPlayWhenReady(false);
-            }catch (Exception e){
-                Log.e("ViewHolder","exoplayer error"+e.toString());
+                MediaSource mediaSource = new ExtractorMediaSource(uri,dataSourceFactory,extractorsFactory,null,null);
+                playerView.setPlayer(_targetExoPlayer);
+                _targetExoPlayer.prepare(mediaSource);
+                _targetExoPlayer.setPlayWhenReady(false);
+
             }
-        }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e("video load fail", exception.toString());
+            }
+        });
+
 
     }
 }
