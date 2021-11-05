@@ -15,7 +15,7 @@ public class WriteInfo implements Serializable {
     public Date createdAt;
 
     public int imageCount;
-    public List<int> imageSize;
+    public List<Integer> imageSize;
     public transient Bitmap imageBitmap[];
     public transient  boolean isImageDataLoaded = false;
 
