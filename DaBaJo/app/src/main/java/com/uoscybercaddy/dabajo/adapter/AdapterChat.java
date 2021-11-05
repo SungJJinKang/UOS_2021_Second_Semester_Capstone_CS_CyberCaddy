@@ -25,7 +25,7 @@ import com.uoscybercaddy.dabajo.models.Modelchat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
+//
 public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
 
     private static final int MSG_TYPE_LEFT = 0;
