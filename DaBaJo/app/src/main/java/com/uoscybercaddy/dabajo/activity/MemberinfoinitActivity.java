@@ -460,7 +460,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
             final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/profileImage.jpg");
 
             if(image_url == null && downloadUrl==null){ //image_url == null
-                MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty);
+                MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,  tutortuty,null);
                 uploader(memberInfo);
             }else{
               //  try{

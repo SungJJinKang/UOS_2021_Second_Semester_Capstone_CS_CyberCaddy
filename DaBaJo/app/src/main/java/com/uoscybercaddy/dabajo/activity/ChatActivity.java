@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,8 +45,10 @@ import com.uoscybercaddy.dabajo.models.Modelchat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
@@ -92,6 +95,39 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.e("hisUid : ",""+hisUid);
         DocumentReference hisdocRef = db.collection("users").document(hisUid);
+        hisdocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d(TAG, "Current data: " + snapshot.getData());
+                    if(snapshot.getData().get("onlineStatus") == null){
+                        userStatusTv.setText("");
+                    }
+                    else{
+                        String onlineStatus = snapshot.getData().get("onlineStatus").toString();
+                        if(onlineStatus.equals("online")){
+                            userStatusTv.setText(onlineStatus);
+                        }
+                        else{
+                            Calendar cal = Calendar.getInstance(Locale.KOREA);
+                            cal.setTimeInMillis(Long.parseLong(onlineStatus));
+                            String dateTime = DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
+                            userStatusTv.setText("마지막에 본 시간 : "+dateTime);
+                        }
+                    }
+
+                } else {
+                    Log.d(TAG, "Current data: null");
+                }
+            }
+        });
+
         hisdocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -100,7 +136,10 @@ public class ChatActivity extends AppCompatActivity {
                     if (document.exists()) {
                         String nickName = document.getData().get("nickName").toString();
                         String name = document.getData().get("name").toString();
+
+
                         nameTv.setText(nickName);
+
                         try{
                             Glide.with(ChatActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(profileIv);
                         }catch (Exception e){
@@ -268,6 +307,25 @@ public class ChatActivity extends AppCompatActivity {
             finish();
         }
     }
+    private void checkOnlineStatus(String status){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(myUid)
+                .update("onlineStatus", status)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "온라인 ");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -277,13 +335,22 @@ public class ChatActivity extends AppCompatActivity {
 
     public void onStart() {
         checkUserStatus();
+        checkOnlineStatus("online");
         super.onStart();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        checkOnlineStatus(timeStamp);
         registration.remove();
+    }
+
+    @Override
+    protected void onResume() {
+        checkOnlineStatus("online");
+        super.onResume();
     }
 
     @Override
