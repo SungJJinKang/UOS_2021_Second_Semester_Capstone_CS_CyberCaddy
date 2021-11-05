@@ -23,19 +23,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.uoscybercaddy.dabajo.MemberInfo;
-import com.uoscybercaddy.dabajo.ModelUsers;
+import com.uoscybercaddy.dabajo.models.ModelUsers;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.MainActivity;
 import com.uoscybercaddy.dabajo.adapter.AdapterUsers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class UsersFragment extends Fragment {
     RecyclerView recyclerView;

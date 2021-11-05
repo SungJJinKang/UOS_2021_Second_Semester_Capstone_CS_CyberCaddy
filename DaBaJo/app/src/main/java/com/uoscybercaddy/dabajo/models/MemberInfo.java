@@ -1,4 +1,4 @@
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.models;
 
 import android.graphics.drawable.Drawable;
 

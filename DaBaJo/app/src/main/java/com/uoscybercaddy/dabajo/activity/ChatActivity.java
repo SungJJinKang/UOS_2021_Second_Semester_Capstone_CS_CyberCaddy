@@ -1,8 +1,10 @@
 package com.uoscybercaddy.dabajo.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -26,12 +28,24 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.adapter.AdapterChat;
+import com.uoscybercaddy.dabajo.models.Modelchat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
@@ -44,10 +58,14 @@ public class ChatActivity extends AppCompatActivity {
     ImageButton sendBtn;
     FirebaseAuth firebaseAuth;
     private static final String TAG = "ChatActivity";
-
+    ListenerRegistration registration;
+    List<Modelchat> chatList;
+    AdapterChat adapterChat;
 
     String hisUid;
     String myUid;
+    String hisImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +80,12 @@ public class ChatActivity extends AppCompatActivity {
         userStatusTv = findViewById(R.id.userStatusTv);
         messageEt = findViewById(R.id.messageEt);
         sendBtn = findViewById(R.id.sendBtn);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         Intent intent = getIntent();
         hisUid = intent.getStringExtra("hisUid");
         firebaseAuth = FirebaseAuth.getInstance();
@@ -101,13 +125,122 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+        readMessages();
+        seenMessage();
+    }
+
+    private void seenMessage() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query query = db.collection("chats");
+        registration = query
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+                        for (QueryDocumentSnapshot doc : value) {
+                            if (doc.getString("sender").equals(hisUid) && doc.getString("receiver").equals(myUid) ){
+                                if (doc.getBoolean("isSeen") != true) {
+                                    doc.getReference()
+                                            .update("isSeen", true)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error updating document", e);
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    }
+                });
+
+    }
+
+    private void readMessages() {
+        chatList = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference citiesRef = db.collection("chats");
+        /*
+        db.collection("chats")
+                .whereIn("receiver", Arrays.asList(myUid, hisUid))
+                .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        Log.d(TAG, doc.getId() + " => " + doc.getData());
+                                        if (doc.getString("sender").equals(hisUid) || doc.getString("sender").equals(myUid)) {
+                                            String message = doc.getString("message");
+                                            String receiver = doc.getString("receiver");
+                                            String sender = doc.getString("sender");
+                                            String timestamp = doc.getString("timstamp");
+                                            Boolean isSeen = doc.getBoolean("isSeen");
+                                            Modelchat modelchat = new Modelchat(message,receiver,sender,timestamp,isSeen);
+                                            chatList.add(modelchat);
+                                        }
+                                        adapterChat = new AdapterChat(ChatActivity.this, chatList, hisImage);
+                                        adapterChat.notifyDataSetChanged();
+                                        recyclerView.setAdapter(adapterChat);
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
+*/
+        db.collection("chats")
+                .orderBy("timestamp")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+                        chatList.clear();
+                        
+                        for (QueryDocumentSnapshot doc : value) {
+                            if ((doc.getString("sender").equals(hisUid) && doc.getString("receiver").equals(myUid) )||
+                                    ( doc.getString("sender").equals(myUid) && doc.getString("receiver").equals(hisUid))) {
+
+                                String message = doc.getString("message");
+                                String receiver = doc.getString("receiver");
+                                String sender = doc.getString("sender");
+                                String timestamp = doc.getString("timestamp");
+                                Boolean isSeen = doc.getBoolean("isSeen");
+                                Modelchat modelchat = new Modelchat(message,receiver,sender,timestamp,isSeen);
+                                chatList.add(modelchat);
+                            }
+                            adapterChat = new AdapterChat(ChatActivity.this, chatList, hisImage);
+                           // adapterChat.notifyDataSetChanged();
+                            recyclerView.setAdapter(adapterChat);
+                        }
+                    }
+                });
+
     }
 
     private void sendMessage(String message) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        Log.e("timestamp : ",""+timestamp);
         Map<String, Object> data = new HashMap<>();
         data.put("sender", myUid);
         data.put("receiver", hisUid);
         data.put("message",message);
+        data.put("timestamp", timestamp);
+        data.put("isSeen",false);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("chats")
                 .add(data)
@@ -146,6 +279,13 @@ public class ChatActivity extends AppCompatActivity {
         checkUserStatus();
         super.onStart();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        registration.remove();
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();

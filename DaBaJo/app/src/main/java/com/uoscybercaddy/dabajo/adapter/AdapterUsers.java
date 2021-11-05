@@ -13,10 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.uoscybercaddy.dabajo.ModelUsers;
+import com.uoscybercaddy.dabajo.models.ModelUsers;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.ChatActivity;
-import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
 
 import java.util.List;
 

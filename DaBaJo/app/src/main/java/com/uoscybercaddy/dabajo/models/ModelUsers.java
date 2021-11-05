@@ -1,4 +1,4 @@
-package com.uoscybercaddy.dabajo;
+package com.uoscybercaddy.dabajo.models;
 
 public class ModelUsers {
     String name, nickName, photoUrl, sex, tutortuty, introduction, search, uid;
