@@ -27,6 +27,9 @@ public class WriteInfo implements Serializable {
     public transient Uri[] videoUries;
     public transient  boolean isVideoDataLoaded = false;
 
+    public WriteInfo() {
+
+    }
     public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;
         this.body = contents;
