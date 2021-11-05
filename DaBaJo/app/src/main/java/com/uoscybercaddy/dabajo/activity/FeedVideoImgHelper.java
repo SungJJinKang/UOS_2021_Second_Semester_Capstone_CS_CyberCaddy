@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -15,6 +17,7 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -64,37 +67,35 @@ public class FeedVideoImgHelper
         return videoUries;
     }
 
-    // 이거 사용 추천!!!!!!!!!
-    public static void SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
-    {
-        Bitmap bitmap = GetImageFromWriteInfo(writeinfo, index);
-        if(bitmap != null)
-        {
-            imgView.setImageBitmap(bitmap);
-        }
+    public interface OnLoadImageListener {
+        void OnImageLoad(Bitmap bitmap);
     }
 
-    public static Bitmap GetImageFromWriteInfo(WriteInfo writeinfo, int index)
+
+    // 이거 사용 추천!!!!!!!!!
+    public static boolean SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
+    {
+        return GetImageFromWriteInfo(writeinfo, index,
+                new OnLoadImageListener()
+                {
+                    @Override
+                    public void OnImageLoad(Bitmap bitmap)
+                    {
+                        imgView.setImageBitmap(bitmap);
+                    }
+
+                }
+        );
+    }
+
+
+
+    public static boolean GetImageFromWriteInfo(WriteInfo writeinfo, int index,  @NonNull OnLoadImageListener onLoadImageListener)
     {
         if(index < 0 || index >= writeinfo.imageCount)
         {
 
-            return null;
-        }
-
-        if(writeinfo.imageBitmap == null || writeinfo.imageBitmap[index] == null)
-        {
-            GetImageFromWriteInfo(writeinfo);
-        }
-
-        return writeinfo.imageBitmap[index];
-    }
-
-    public static Bitmap[] GetImageFromWriteInfo(WriteInfo writeinfo)
-    {
-        if( writeinfo.isImageDataLoaded == true )
-        {
-            return writeinfo.imageBitmap;
+            return false;
         }
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -105,33 +106,31 @@ public class FeedVideoImgHelper
 
         ArrayList<String> imgDirectoryList = ImageDirectoryHelper.GetImageDirecotry(writeinfo);
 
-        for(int i = 0 ; i < writeinfo.imageCount ; i++)
-        {
-            final StorageReference imageRef = storageRef.child(imgDirectoryList.get(i));
+        final StorageReference imageRef = storageRef.child(imgDirectoryList.get(index));
 
-            final Integer imageSize = writeinfo.imageSize.get(i);
+        final Integer imageSize = writeinfo.imageSize.get(index);
+        Task<byte[]> tasks = imageRef.getBytes( imageSize.longValue()).addOnCompleteListener
+                (
+                        new OnCompleteListener<byte[]>() {
+                            @Override
+                            public void onComplete(@NonNull Task<byte[]> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.e("firebase", "Error getting data", task.getException());
+                                } else {
+                                    byte[] result = task.getResult();
 
-            Task<byte[]> tasks = imageRef.getBytes( imageSize.longValue());
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, imageSize);
+                                    onLoadImageListener.OnImageLoad(bitmap);
 
-            try {
-                com.google.android.gms.tasks.Tasks.await(tasks);
+                                }
+                            }
+                        }
+                );
 
-                Bitmap bitmap = BitmapFactory.decodeByteArray( tasks.getResult(), 0, imageSize ) ;
-
-                bitmaps[i] = bitmap;
-                writeinfo.imageBitmap[i] = bitmap;
-
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        writeinfo.isImageDataLoaded = true;
-
-        return bitmaps;
+        return true;
     }
+
+
 
     //application는 그냥 getApplication() 넣어주면 됩니다. targetExoPlayer랑 playerView는 호출하는 액티비티에서 만들어야함.
     //2021-11-11 아직 테스트 안됨

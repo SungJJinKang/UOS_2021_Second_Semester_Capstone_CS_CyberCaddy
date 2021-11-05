@@ -1,9 +1,7 @@
 package com.uoscybercaddy.dabajo.activity;
 
-import static com.uoscybercaddy.dabajo.activity.FeedVideoImgHelper.GetImageFromWriteInfo;
+import static com.uoscybercaddy.dabajo.activity.FeedVideoImgHelper.SetImageToImageView;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,7 +15,6 @@ import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class PostActivity extends AppCompatActivity {
@@ -52,8 +49,7 @@ public class PostActivity extends AppCompatActivity {
             for(int i=0; i<imgCount; i++) {
                 ImageView imageView2 = new ImageView(PostActivity.this);
                 imageView.setLayoutParams(layoutParams);
-                Bitmap bitmap = GetImageFromWriteInfo(writeInfo, i);
-                imageView.setImageBitmap(bitmap);
+                SetImageToImageView(imageView, writeInfo, i);
                 parent.addView(imageView);
 
             }
