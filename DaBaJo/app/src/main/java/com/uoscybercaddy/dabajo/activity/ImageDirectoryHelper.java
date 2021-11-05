@@ -1,7 +1,5 @@
 package com.uoscybercaddy.dabajo.activity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
 import java.util.ArrayList;
@@ -10,10 +8,9 @@ public class ImageDirectoryHelper
 {
     static ArrayList<String> GetImageDirecotry(WriteInfo info)
     {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String string = new String();
         string += "posts/";
-        string += user.getUid();
+        string += info.getWriter();
         string += "/";
         string += info.createdAt.toString();
         string += "/";
@@ -32,10 +29,9 @@ public class ImageDirectoryHelper
 
     static ArrayList<String> GetVideoDirecotry(WriteInfo info)
     {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String string = new String();
         string += "posts/";
-        string += user.getUid();
+        string += info.getWriter();
         string += "/";
         string += info.createdAt.toString();
         string += "/";

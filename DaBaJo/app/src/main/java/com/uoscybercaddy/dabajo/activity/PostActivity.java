@@ -1,9 +1,8 @@
 package com.uoscybercaddy.dabajo.activity;
 
-import static com.uoscybercaddy.dabajo.activity.FeedVideoImgHelper.SetImageToImageView;
-
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -68,15 +67,15 @@ public class PostActivity extends AppCompatActivity {
                 storageRef.child(temp).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        // Got the download URL for 'users/me/profile.png'
+                        Glide.with(imageView2).load(uri).override(1000).into(imageView2);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
+                        Log.e("image load fail", exception.toString());
                     }
                 });
-                Glide.with(this).load(temp).override(1000).into(imageView2);
+
 //                Bitmap bitmap = GetImageFromWriteInfo(writeInfo, i);
 //                imageView.setImageBitmap(bitmap);
                 parent.addView(imageView2);
@@ -85,4 +84,5 @@ public class PostActivity extends AppCompatActivity {
         }
 
     }
+
 }

@@ -124,12 +124,17 @@ public class FeedVideoImgHelper
                                     byte[] result = task.getResult();
 
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, imageSize);
-                                    onLoadImageListener.OnImageLoad(bitmap);
+
+                                    if(onLoadImageListener != null)
+                                    {
+                                        onLoadImageListener.OnImageLoad(bitmap);
+                                    }
 
                                 }
                             }
                         }
                 );
+
 
         return true;
     }
