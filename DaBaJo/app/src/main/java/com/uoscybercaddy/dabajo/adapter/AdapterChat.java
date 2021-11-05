@@ -1,12 +1,15 @@
 package com.uoscybercaddy.dabajo.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -62,13 +65,31 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
 
         holder.timeTv.setText(dateTime);
         holder.messageTv.setText(message);
-
-
         try{
             Glide.with(context).load(imageUrl).centerCrop().override(500).into(holder.profileIv);
         }catch (Exception e){
             Glide.with(context).load(R.drawable.ic_profile_black).centerCrop().override(500).into(holder.profileIv);
         }
+        holder.messageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("메세지 삭제");
+                builder.setMessage("정말 삭제하시겠습니까?");
+                builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+            }
+        });
 
         if(position == chatList.size()-1){
             if(chatList.get(position).isSeen()){
@@ -101,6 +122,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
     class MyHolder extends RecyclerView.ViewHolder{
         ImageView profileIv;
         TextView messageTv, timeTv, isSeenTv;
+        LinearLayout messageLayout;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -108,6 +130,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
             messageTv = itemView.findViewById(R.id.messageTv);
             timeTv = itemView.findViewById(R.id.timeTv);
             isSeenTv = itemView.findViewById(R.id.isSeenTv);
+            messageLayout = itemView.findViewById(R.id.messageLayout);
 
         }
     }

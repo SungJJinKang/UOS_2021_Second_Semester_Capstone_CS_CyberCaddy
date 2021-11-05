@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
@@ -106,11 +108,17 @@ public class ChatActivity extends AppCompatActivity {
 
                 if (snapshot != null && snapshot.exists()) {
                     Log.d(TAG, "Current data: " + snapshot.getData());
-                    if(snapshot.getData().get("onlineStatus") == null){
+                    Object typingTo = snapshot.getData().get("typingTo");
+                    Object onlineStatusObject = snapshot.getData().get("onlineStatus");
+
+                    if (typingTo != null && typingTo.toString().equals(myUid)) {
+                        userStatusTv.setText("입력중... ");
+                    }
+                    else if(onlineStatusObject == null){
                         userStatusTv.setText("");
                     }
                     else{
-                        String onlineStatus = snapshot.getData().get("onlineStatus").toString();
+                        String onlineStatus = onlineStatusObject.toString();
                         if(onlineStatus.equals("online")){
                             userStatusTv.setText(onlineStatus);
                         }
@@ -151,6 +159,26 @@ public class ChatActivity extends AppCompatActivity {
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
+            }
+        });
+        messageEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().trim().length() == 0){
+                    checkTypingStatus("noOne");
+                }else{
+                    checkTypingStatus(hisUid);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         sendBtn.setOnClickListener(new View.OnClickListener() {
@@ -209,35 +237,7 @@ public class ChatActivity extends AppCompatActivity {
         chatList = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference citiesRef = db.collection("chats");
-        /*
-        db.collection("chats")
-                .whereIn("receiver", Arrays.asList(myUid, hisUid))
-                .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                                        Log.d(TAG, doc.getId() + " => " + doc.getData());
-                                        if (doc.getString("sender").equals(hisUid) || doc.getString("sender").equals(myUid)) {
-                                            String message = doc.getString("message");
-                                            String receiver = doc.getString("receiver");
-                                            String sender = doc.getString("sender");
-                                            String timestamp = doc.getString("timstamp");
-                                            Boolean isSeen = doc.getBoolean("isSeen");
-                                            Modelchat modelchat = new Modelchat(message,receiver,sender,timestamp,isSeen);
-                                            chatList.add(modelchat);
-                                        }
-                                        adapterChat = new AdapterChat(ChatActivity.this, chatList, hisImage);
-                                        adapterChat.notifyDataSetChanged();
-                                        recyclerView.setAdapter(adapterChat);
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-                            }
-                        });
-*/
+
         db.collection("chats")
                 .orderBy("timestamp")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -323,7 +323,23 @@ public class ChatActivity extends AppCompatActivity {
                         Log.w(TAG, "Error writing document", e);
                     }
                 });
-
+    }
+    private void checkTypingStatus(String typing){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(myUid)
+                .update("typingTo", typing)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "입력중 ");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
     }
 
     @Override
@@ -344,6 +360,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onPause();
         String timeStamp = String.valueOf(System.currentTimeMillis());
         checkOnlineStatus(timeStamp);
+        checkTypingStatus("noOne");
         registration.remove();
     }
 

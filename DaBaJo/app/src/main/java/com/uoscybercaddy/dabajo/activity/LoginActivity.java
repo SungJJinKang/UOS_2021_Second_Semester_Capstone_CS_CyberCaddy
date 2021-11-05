@@ -278,24 +278,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 progressDialog.dismiss();
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                /*
-                                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                db.collection("users").document(user.getUid())
-                                        .update("onlineStatus", "online")
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "온라인 ");
 
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Error writing document", e);
-                                            }
-                                        });
-*/
                                 startToast("로그인 성공");
                                 startMainActivity();
                                 finish();
