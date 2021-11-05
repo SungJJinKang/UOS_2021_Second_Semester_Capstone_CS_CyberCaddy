@@ -2,13 +2,13 @@ package com.uoscybercaddy.dabajo.activity;
 
 import android.app.Application;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -17,7 +17,8 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -73,71 +74,27 @@ public class FeedVideoImgHelper
 
 
     // 이거 사용 추천!!!!!!!!!
-    public static boolean SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
+    public static void SetImageToImageView(ImageView imgView, WriteInfo writeinfo, int index)
     {
-        return GetImageFromWriteInfo(writeinfo, index,
-                new OnLoadImageListener()
-                {
-                    @Override
-                    public void OnImageLoad(Bitmap bitmap)
-                    {
-                        if(imgView != null)
-                        {
-                            imgView.setImageBitmap(bitmap);
-
-                        }
-                    }
-
-                }
-        );
-    }
-
-
-
-    public static boolean GetImageFromWriteInfo(WriteInfo writeinfo, int index,  @NonNull OnLoadImageListener onLoadImageListener)
-    {
-        if(index < 0 || index >= writeinfo.imageCount)
-        {
-
-            return false;
-        }
+        ArrayList<String> imgDirectoryList = ImageDirectoryHelper.GetImageDirecotry(writeinfo);
+        String targetImgFirebaseDirectory = imgDirectoryList.get(index);
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
-        // Create a reference to "mountains.jpg"
-        Bitmap[] bitmaps = new Bitmap[writeinfo.imageCount];
-        writeinfo.imageBitmap = new Bitmap[writeinfo.videoCount];
-
-        ArrayList<String> imgDirectoryList = ImageDirectoryHelper.GetImageDirecotry(writeinfo);
-
-        final StorageReference imageRef = storageRef.child(imgDirectoryList.get(index));
-
-        final Integer imageSize = writeinfo.imageSize.get(index);
-        Task<byte[]> tasks = imageRef.getBytes( imageSize.longValue()).addOnCompleteListener
-                (
-                        new OnCompleteListener<byte[]>() {
-                            @Override
-                            public void onComplete(@NonNull Task<byte[]> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.e("firebase", "Error getting data", task.getException());
-                                } else {
-                                    byte[] result = task.getResult();
-
-                                    Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, imageSize);
-
-                                    if(onLoadImageListener != null)
-                                    {
-                                        onLoadImageListener.OnImageLoad(bitmap);
-                                    }
-
-                                }
-                            }
-                        }
-                );
-
-
-        return true;
+        storageRef.child(targetImgFirebaseDirectory).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(imgView).load(uri).override(1000).into(imgView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e("image load fail", exception.toString());
+            }
+        });
     }
+
+
+
 
 
 
