@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.activity.LoginActivity;
 import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
 import com.uoscybercaddy.dabajo.activity.SignUpActivity;
 
@@ -37,8 +39,9 @@ public class ProfileFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
     FirebaseFirestore db;
-    ImageView avatarIv, coverIv;
-    TextView nickNameTv, emailTv, nameTv;
+    ImageView avatarIv;
+    TextView nickNameTv, descriptionTv;
+    ImageButton notice, logout;
     FloatingActionButton fab;
     ProgressDialog pd;
 
@@ -89,11 +92,11 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         avatarIv = (ImageView) view.findViewById(R.id.avatarIv);
-        coverIv = (ImageView) view.findViewById(R.id.coverIv);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         nickNameTv = (TextView) view.findViewById(R.id.nickNameTv);
-        emailTv = (TextView) view.findViewById(R.id.emailTv);
-        nameTv = (TextView) view.findViewById(R.id.nameTv);
+        descriptionTv = (TextView) view.findViewById(R.id.descriptionTv);
+        notice = (ImageButton) view.findViewById(R.id.noticeButton);
+        logout = (ImageButton) view.findViewById(R.id.logoutButton);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -112,8 +115,7 @@ public class ProfileFragment extends Fragment {
                             Glide.with(getActivity()).load(document.getData().get("photoUrl")).centerCrop().override(500).into(avatarIv);
                         }
                         nickNameTv.setText(document.getData().get("nickName").toString());
-                        emailTv.setText(user.getEmail());
-                        nameTv.setText(document.getData().get("name").toString());
+                        descriptionTv.setText(document.getData().get("introduction").toString());
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -128,6 +130,16 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MemberinfoinitActivity.class);
                 intent.putExtra("fromProfileEdit","fromProfileEdit");
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 getActivity().finish();
             }

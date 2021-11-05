@@ -16,8 +16,9 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="170dp"
-            android:layout_height="170dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="40dp"
             app:cardCornerRadius="100dp">
 
             <ImageView
@@ -67,6 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
             app:boxBackgroundColor="@color/white">
 
             <EditText
@@ -78,7 +80,7 @@
                 android:gravity="start|top"
                 android:hint="소개"
                 android:inputType="textMultiLine"
-                android:lines="3"
+                android:lines="1"
                 android:scrollbars="vertical" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -94,6 +96,8 @@
                 android:id="@+id/rb_man"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:theme="@style/CustomRadioButton"
+                android:layout_marginLeft="90dp"
                 android:layout_weight="1"
                 android:text="남자" />
 
@@ -101,6 +105,8 @@
                 android:id="@+id/rb_woman"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:theme="@style/CustomRadioButton"
                 android:layout_weight="1"
                 android:text="여자" />
 
@@ -110,21 +116,26 @@
             android:id="@+id/tutortutyRadiGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/rb_tuty"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="90dp"
                 android:layout_weight="1"
-                android:text="튜티" />
+                android:text="튜티"
+                android:theme="@style/CustomRadioButton" />
 
             <RadioButton
                 android:id="@+id/rb_tutor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:layout_weight="1"
-                android:text="튜터" />
+                android:text="튜터"
+                android:theme="@style/CustomRadioButton" />
 
         </RadioGroup>
 
@@ -133,6 +144,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:layout_marginLeft="130dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="130dp"
             android:background="@drawable/button_background_red"
             android:padding="15dp"
             android:text="확인"

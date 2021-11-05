@@ -44,7 +44,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/adBanner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="35sp"
@@ -76,7 +76,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/viewAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -98,7 +98,7 @@
         android:gravity="center" >
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/Button1"
+            android:id="@+id/buttonSport"
             android:layout_width="20dp"
             android:layout_height="80dp"
             android:layout_weight="1"
@@ -111,7 +111,7 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/Button2"
+            android:id="@+id/buttonArtPhy"
             android:layout_width="20dp"
             android:layout_height="80dp"
             android:layout_marginLeft="20dp"
@@ -126,7 +126,7 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/Button3"
+            android:id="@+id/buttonHealth"
             android:layout_width="20dp"
             android:layout_height="80dp"
             android:layout_marginRight="20dp"
@@ -140,7 +140,7 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/Button4"
+            android:id="@+id/buttonEdu"
             android:layout_width="20dp"
             android:layout_height="80dp"
             android:layout_weight="1"

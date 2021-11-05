@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.uoscybercaddy.dabajo.R;
-import com.uoscybercaddy.dabajo.activity.CategorySport;
-import com.uoscybercaddy.dabajo.activity.MainActivity;
+import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,12 +66,12 @@ public class CategoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_category, container, false);
-        button = (Button)view.findViewById(R.id.button2);
+        button = (Button)view.findViewById(R.id.buttonSport);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), CategorySport.class);
+            Intent intent = new Intent(getActivity(), CategorySportActivity.class);
             startActivity(intent);
             getActivity().finish();
             }

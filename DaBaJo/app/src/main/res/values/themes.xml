@@ -16,6 +16,13 @@
     <style name="SplashActivityTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_image</item>
     </style>
+    <style name="ShapeAppearance.App.CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="CustomRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">#FB5943</item>
+    </style>
 <!--    <style name="EditTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
 <!--        <item name="colorAccent">#FB5943</item>-->
 <!--        <item name="colorControlNormal">#545454</item>-->

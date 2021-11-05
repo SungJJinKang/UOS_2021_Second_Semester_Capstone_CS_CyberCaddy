@@ -3,6 +3,7 @@ package com.uoscybercaddy.dabajo.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
@@ -29,25 +30,29 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        actionBar = getSupportActionBar();
-        actionBar.setTitle("프로필");
         firebaseAuth = FirebaseAuth.getInstance();
 
         BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
+        actionBar = getSupportActionBar();
+        actionBar.hide();
 
 
         Intent intent = getIntent();
         if(intent.hasExtra("fromProfileEdit")){
-            actionBar.setTitle("프로필");
             ProfileFragment fragment4= new ProfileFragment();
             FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
             ft4.replace(R.id.content, fragment4, "");
             ft4.commit();
             navigationView.getMenu().getItem(3).setChecked(true);
             //nav_profile fragment transaction
-        }else{
-            actionBar.setTitle("홈");
+        } else if(intent.hasExtra("카테고리로")) {
+            CategoryFragment fragment2 = new CategoryFragment();
+            FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
+            ft2.replace(R.id.content, fragment2, "");
+            ft2.commit();
+            navigationView.getMenu().getItem(1).setChecked(true);
+        } else {
             HomeFragment fragment1= new HomeFragment();
             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
             ft1.replace(R.id.content, fragment1, "");
@@ -63,14 +68,12 @@ public class DashboardActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.nav_home:
-                            actionBar.setTitle("홈");
                             HomeFragment fragment1= new HomeFragment();
                             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
                             ft1.replace(R.id.content, fragment1, "");
                             ft1.commit();
                             return true;
                         case R.id.nav_category:
-                            actionBar.setTitle("카테고리");
                             CategoryFragment fragment2= new CategoryFragment();
                             FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
                             ft2.replace(R.id.content, fragment2, "");
@@ -78,7 +81,6 @@ public class DashboardActivity extends AppCompatActivity {
                             //nav_category fragment transaction
                             return true;
                         case R.id.nav_favorite:
-                            actionBar.setTitle("좋아요");
                             FavoriteFragment fragment3= new FavoriteFragment();
                             FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
                             ft3.replace(R.id.content, fragment3, "");
@@ -86,7 +88,6 @@ public class DashboardActivity extends AppCompatActivity {
                             //nav_favorite fragment transaction
                             return true;
                         case R.id.nav_profile:
-                            actionBar.setTitle("프로필");
                             ProfileFragment fragment4= new ProfileFragment();
                             FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
                             ft4.replace(R.id.content, fragment4, "");

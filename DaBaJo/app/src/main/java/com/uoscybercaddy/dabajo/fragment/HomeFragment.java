@@ -12,7 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.uoscybercaddy.dabajo.R;
-import com.uoscybercaddy.dabajo.activity.CategorySport;
+import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
+import com.uoscybercaddy.dabajo.activity.DashboardActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +35,8 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    Button button;
+    Button sportButton;
+    TextView showAll;
 
 
     /**
@@ -69,16 +71,27 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         //        textView = (TextView)view.findViewById(R.id.textView5);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        button = (Button)view.findViewById(R.id.button1);
+        sportButton = (Button)view.findViewById(R.id.buttonSport);
+        showAll = (TextView)view.findViewById(R.id.viewAll);
 
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), CategorySport.class);
-//                startActivity(intent);
-//                getActivity().finish();
-//            }
-//        });
+        sportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CategorySportActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
+        showAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DashboardActivity.class);
+                intent.putExtra("카테고리로", 1);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
         return view;
     }
 }

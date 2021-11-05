@@ -91,10 +91,8 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         //Actionbar and its title
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("회원 정보 업데이트");
-        //enable back button
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.hide();
+
         firebaseAuth = FirebaseAuth.getInstance();
         editTextNickName = (EditText)findViewById(R.id.editTextNickName);
         nameEditText = (EditText)findViewById(R.id.nameEditText);
