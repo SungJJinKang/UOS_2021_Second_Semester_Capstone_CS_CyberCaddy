@@ -78,9 +78,6 @@ public class WritePostActivity extends AppCompatActivity {
 
 
         writeInfo.imageCount = uploadedImageList.size();
-    
-        writeInfo.imageSize = new ArrayList<Integer>();
-
         ArrayList<String> imgDirectoryList =  GetImageDirecotry(writeInfo);
 
         for(int i = 0 ; i < uploadedImageList.size() ; i++)
@@ -98,8 +95,6 @@ public class WritePostActivity extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
-
-            writeInfo.imageSize.add(data.length);
 
             UploadTask uploadTask = imageRef.putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {

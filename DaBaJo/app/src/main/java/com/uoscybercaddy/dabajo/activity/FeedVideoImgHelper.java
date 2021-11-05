@@ -25,7 +25,6 @@ import com.google.firebase.storage.StorageReference;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 public class FeedVideoImgHelper
 {
@@ -63,47 +62,6 @@ public class FeedVideoImgHelper
     }
 
 
-
-
-
-    public static Uri[] GetVideoUriFromWriteInfo(WriteInfo writeinfo)
-    {
-        if( writeinfo.isVideoDataLoaded == true )
-        {
-            return writeinfo.videoUries;
-        }
-
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-
-        ArrayList<String> videoDirectoryList = ImageDirectoryHelper.GetVideoDirecotry(writeinfo);
-
-        writeinfo.videoUries = new Uri[writeinfo.videoCount];
-        Uri[] videoUries = new Uri[writeinfo.videoCount];
-
-        for(int i = 0 ; i < writeinfo.imageCount ; i++)
-        {
-            final StorageReference videoRef = storageRef.child(videoDirectoryList.get(i));
-            Task<Uri> videoMetaDataFetchTask = videoRef.getDownloadUrl();
-
-            try {
-                com.google.android.gms.tasks.Tasks.await(videoMetaDataFetchTask);
-
-                Uri videoUri = videoMetaDataFetchTask.getResult();
-
-                writeinfo.videoUries[i] = videoUri;
-                videoUries[i] = videoUri;
-            }
-            catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        writeinfo.isVideoDataLoaded = true;
-
-        return videoUries;
-    }
 
     //application는 그냥 getApplication() 넣어주면 됩니다. targetExoPlayer랑 playerView는 호출하는 액티비티에서 만들어야함.
     //2021-11-11 아직 테스트 안됨
