@@ -108,7 +108,7 @@ public class FeedVideoImgHelper
         {
             final StorageReference imageRef = storageRef.child(imgDirectoryList.get(i));
 
-            final int imageSize = writeinfo.imageSize[i];
+            final Integer imageSize = writeinfo.imageSize.get(i);
 
             Task<byte[]> tasks = imageRef.getBytes(imageSize);
 

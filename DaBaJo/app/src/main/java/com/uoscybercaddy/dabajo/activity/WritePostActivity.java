@@ -79,7 +79,7 @@ public class WritePostActivity extends AppCompatActivity {
 
         writeInfo.imageCount = uploadedImageList.size();
     
-        writeInfo.imageSize = new ArrayList<int>();
+        writeInfo.imageSize = new ArrayList<Integer>();
 
         ArrayList<String> imgDirectoryList =  GetImageDirecotry(writeInfo);
 
