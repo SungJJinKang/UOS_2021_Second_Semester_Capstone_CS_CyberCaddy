@@ -120,7 +120,7 @@ public class ChatActivity extends AppCompatActivity {
                     else{
                         String onlineStatus = onlineStatusObject.toString();
                         if(onlineStatus.equals("online")){
-                            userStatusTv.setText(onlineStatus);
+                            userStatusTv.setText("온라인");
                         }
                         else{
                             Calendar cal = Calendar.getInstance(Locale.KOREA);

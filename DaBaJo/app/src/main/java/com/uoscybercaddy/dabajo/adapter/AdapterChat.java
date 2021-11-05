@@ -93,9 +93,9 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
 
         if(position == chatList.size()-1){
             if(chatList.get(position).isSeen()){
-                holder.isSeenTv.setText("Seen");
+                holder.isSeenTv.setText("읽음");
             }else{
-                holder.isSeenTv.setText("Delivered");
+                holder.isSeenTv.setText("전달됨");
             }
         }else{
             holder.isSeenTv.setVisibility(View.GONE);
