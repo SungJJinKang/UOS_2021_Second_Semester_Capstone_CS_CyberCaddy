@@ -9,16 +9,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
-
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,7 +24,6 @@ import com.uoscybercaddy.dabajo.adapter.PostAdapter;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -64,10 +60,9 @@ public class FeedActivity extends AppCompatActivity {
                             mDatas = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                mDatas.add(new WriteInfo(document.getData().get("title").toString(),
-                                        document.getData().get("body").toString(), // body or contents
-                                        document.getData().get("writer").toString(),
-                                        new Date(document.getDate("createdAt").getTime())));
+                                mDatas.add(
+                                        document.toObject(WriteInfo.class)
+                                );
 
                             } // DATE 순으로 정렬 필요
                             // 댓글 postactivity
