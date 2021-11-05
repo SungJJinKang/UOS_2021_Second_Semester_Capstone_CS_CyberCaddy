@@ -78,6 +78,7 @@ public class FeedVideoImgHelper
     {
         if(index < 0 || index >= writeinfo.imageCount)
         {
+
             return null;
         }
 
@@ -110,7 +111,7 @@ public class FeedVideoImgHelper
 
             final Integer imageSize = writeinfo.imageSize.get(i);
 
-            Task<byte[]> tasks = imageRef.getBytes(imageSize);
+            Task<byte[]> tasks = imageRef.getBytes( imageSize.longValue());
 
             try {
                 com.google.android.gms.tasks.Tasks.await(tasks);
