@@ -1,16 +1,15 @@
 package com.uoscybercaddy.dabajo.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +29,7 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        actionBar = getSupportActionBar();
         firebaseAuth = FirebaseAuth.getInstance();
 
         BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
@@ -60,6 +60,12 @@ public class DashboardActivity extends AppCompatActivity {
         }
         //디폴트
 
+    }
+    public void replaceFragment(Fragment fragment, String s) {
+        actionBar.setTitle(s);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.content, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener selectedListener =
@@ -122,22 +128,5 @@ public class DashboardActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    //inflate option menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
-    //handle menu item clicks
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if(id== R.id.action_logout){
-            firebaseAuth.signOut();
-            checkUserStatus();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

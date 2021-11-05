@@ -3,29 +3,40 @@ package com.uoscybercaddy.dabajo.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
 import com.uoscybercaddy.dabajo.activity.DashboardActivity;
-
+import com.uoscybercaddy.dabajo.activity.MainActivity;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-
+    TextView showUsersTv;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    FirebaseAuth firebaseAuth;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -59,6 +70,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -93,5 +105,53 @@ public class HomeFragment extends Fragment {
             }
         });
         return view;
+        // Inflate the layout for this fragment
+        firebaseAuth = FirebaseAuth.getInstance();
+        showUsersTv = (TextView) view.findViewById(R.id.showUsersTv);
+
+        showUsersTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsersFragment usersFragment= new UsersFragment();
+                ((DashboardActivity)getActivity()).replaceFragment(usersFragment, "유저");
+            }
+        });
+
+        return view;
+    }
+    private void checkUserStatus(){
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if(user!=null){
+            //profileTv.setText(user.getEmail());
+        } else{
+            startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
+        }
+    }
+
+    //inflate option menu
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
+
+    //handle menu item clicks
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.action_logout:
+                firebaseAuth.signOut();
+                checkUserStatus();
+                break;
+            case R.id.nav_chat:
+                ChatListFragment chatListFragment= new ChatListFragment();
+                ((DashboardActivity)getActivity()).replaceFragment(chatListFragment,"채팅");
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

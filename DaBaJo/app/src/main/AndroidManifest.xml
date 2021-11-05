@@ -4,9 +4,11 @@
     <!-- Internet Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,9 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DaBaJo">
         <activity
+            android:name=".activity.ChatActivity"
+            android:theme="@style/AppThemeNo"
+            android:exported="false" />
+        <activity
             android:name=".activity.DashboardActivity"
             android:exported="false" />
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/SplashActivityTheme">
@@ -29,13 +35,14 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:exported="true">
+            android:exported="true"></activity>
+        <activity android:name=".activity.MemberinfoinitActivity" />
+        <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.PostActivity" />
 
-        </activity>
-        <activity android:name=".activity.MemberinfoinitActivity"></activity>
+
         <activity android:name=".activity.CategorySportActivity"></activity>
-        <activity android:name=".activity.SignUpActivity"></activity>
-        <activity android:name=".activity.PostActivity"></activity>
+
     </application>
 
 </manifest>
