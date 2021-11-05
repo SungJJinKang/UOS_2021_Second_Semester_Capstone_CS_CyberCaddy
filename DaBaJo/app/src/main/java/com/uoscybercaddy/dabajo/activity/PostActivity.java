@@ -50,12 +50,11 @@ public class PostActivity extends AppCompatActivity {
         final int imgCount = writeInfo.imageCount;
         if(imgCount>0) {
             for(int i=0; i<imgCount; i++) {
-//                ImageView imageView = new ImageView(PostActivity.this);
-//                imageView.setLayoutParams(layoutParams);
-//                Glide.with(this).load(temp).override(1000).into(imageView);
-////                Bitmap bitmap = GetImageFromWriteInfo(writeInfo, i);
-////                imageView.setImageBitmap(bitmap);
-//                parent.addView(imageView);
+                ImageView imageView2 = new ImageView(PostActivity.this);
+                imageView.setLayoutParams(layoutParams);
+                Bitmap bitmap = GetImageFromWriteInfo(writeInfo, i);
+                imageView.setImageBitmap(bitmap);
+                parent.addView(imageView);
 
             }
         }
