@@ -81,7 +81,11 @@ public class FeedVideoImgHelper
                     @Override
                     public void OnImageLoad(Bitmap bitmap)
                     {
-                        imgView.setImageBitmap(bitmap);
+                        if(imgView != null)
+                        {
+                            imgView.setImageBitmap(bitmap);
+
+                        }
                     }
 
                 }
