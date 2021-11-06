@@ -15,15 +15,21 @@ import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,12 +47,18 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.AdapterChat;
 import com.uoscybercaddy.dabajo.models.Modelchat;
+import com.uoscybercaddy.dabajo.notifications.Data;
+import com.uoscybercaddy.dabajo.notifications.Sender;
+import com.uoscybercaddy.dabajo.notifications.Token;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +78,8 @@ public class ChatActivity extends AppCompatActivity {
     ListenerRegistration registration;
     List<Modelchat> chatList;
     AdapterChat adapterChat;
-
+    private RequestQueue requestQueue;
+    private boolean notify = false;
     String hisUid;
     String myUid;
     String hisImage;
@@ -86,10 +99,14 @@ public class ChatActivity extends AppCompatActivity {
         messageEt = findViewById(R.id.messageEt);
         sendBtn = findViewById(R.id.sendBtn);
 
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+
 
         Intent intent = getIntent();
         hisUid = intent.getStringExtra("hisUid");
@@ -184,12 +201,14 @@ public class ChatActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notify = true;
                 String message = messageEt.getText().toString().trim();
                 if(TextUtils.isEmpty(message)){
 
                 }else{
                     sendMessage(message);
                 }
+                messageEt.setText("");
             }
         });
         readMessages();
@@ -295,7 +314,89 @@ public class ChatActivity extends AppCompatActivity {
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
-        messageEt.setText("");
+
+
+        final DocumentReference docRef = db.collection("users").document(myUid);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d(TAG+"여기는??", "Current data: " + snapshot.getData());
+                    if(notify){
+                        senNotification(hisUid, snapshot.getData().get("name").toString(), message);
+                    }
+                    notify = false;
+
+                } else {
+                    Log.d(TAG, "Current data: null");
+                }
+            }
+        });
+
+    }
+
+    private void senNotification(String hisUid, String name, String message) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final DocumentReference docRef = db.collection("tokens").document(hisUid);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d(TAG+"왓", "Current data: " + snapshot.getData());
+                    String tokenString = snapshot.getData().get("token").toString();
+                    Token token = new Token(tokenString);
+                    Data data = new Data(myUid, name+": "+message, "새로운 메세지", hisUid, R.drawable.ic_chat_black);
+                    Sender sender = new Sender(data, token.getToken());
+
+                    //fcm json object request
+                    try {
+                        JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", senderJsonObj,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Log.d("JSON_RESPONSE", "onResponse: "+response.toString());
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("JSON_RESPONSE", "onResponse: "+error.toString());
+                            }
+                        }){
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String, String> headers = new HashMap<>();
+                                headers.put("Content-Type", "application/json");
+                                headers.put("Authorization", "key=AAAA9RV8rQM:APA91bHAUdhZt04zg97Y1I5yzAG3Pq5x7qEhCb8WS0saCHGDlaP8SgjixsE_PvRX8EmEIyEPV0mIdsoQsQj_U29F3yyN1cWveuCslPKW2-zr0lRHVNnP2ZQv_S5RopltAV6r-5xSO72R");
+                                return headers;
+                            }
+                        };
+                        //큐에 request 추가
+                        requestQueue.add(jsonObjectRequest);
+
+
+                    } catch (JSONException jsonException) {
+                        jsonException.printStackTrace();
+                    }
+
+
+                } else {
+                    Log.d(TAG, "Current data: null");
+                }
+            }
+        });
     }
 
     private void checkUserStatus(){

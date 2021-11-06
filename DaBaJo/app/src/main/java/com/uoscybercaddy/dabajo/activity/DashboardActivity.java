@@ -1,8 +1,11 @@
 package com.uoscybercaddy.dabajo.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -11,20 +14,27 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.fragment.CategoryFragment;
 import com.uoscybercaddy.dabajo.fragment.FavoriteFragment;
 import com.uoscybercaddy.dabajo.fragment.HomeFragment;
 import com.uoscybercaddy.dabajo.fragment.ProfileFragment;
+import com.uoscybercaddy.dabajo.notifications.Token;
 
 public class DashboardActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     ActionBar actionBar;
-
+    String mUID;
+    private static final String TAG = "DashboardActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +68,39 @@ public class DashboardActivity extends AppCompatActivity {
             ft1.replace(R.id.content, fragment1, "");
             ft1.commit();
         }
+        checkUserStatus();
         //디폴트
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        updateToken(token);
+
+                    }
+                });
 
     }
+
+    @Override
+    protected void onResume() {
+        checkUserStatus();
+        super.onResume();
+    }
+
+    public void updateToken(String token){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("tokens").document(mUID);
+        Token mToken = new Token(token);
+        docRef.set(mToken);
+    }
+
     public void replaceFragment(Fragment fragment, String s) {
         actionBar.setTitle(s);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -109,7 +149,13 @@ public class DashboardActivity extends AppCompatActivity {
     private void checkUserStatus(){
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user!=null){
-            //profileTv.setText(user.getEmail());
+            mUID = user.getUid();
+            
+            //shared preferences에 지금 로그인된 uid 저장
+            SharedPreferences sp = getSharedPreferences("SP_USER",MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("Current_USERID", mUID);
+            editor.apply();
         } else{
             startActivity(new Intent(DashboardActivity.this, MainActivity.class));
             finish();
