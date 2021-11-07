@@ -22,6 +22,7 @@ import java.util.Locale;
 public class PostActivity extends AppCompatActivity {
 
     private LinearLayout parent;
+    private LinearLayout comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,9 @@ public class PostActivity extends AppCompatActivity {
             FeedVideoImgHelper.PlayVideo(getApplication(), videoPlayerView, writeInfo, 0);
             parent.addView(videoPlayerView);
         }
+
+        comment = findViewById(R.id.item_post_comment);
+        ViewGroup.LayoutParams commentParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
     }
 
