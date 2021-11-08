@@ -27,6 +27,9 @@ public class MemberInfo {
         this.photoUrl = photoUrl;
     }
 
+    public MemberInfo() {
+    }
+
     public MemberInfo(String photoUrl){
         this.photoUrl = photoUrl;
     }

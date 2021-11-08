@@ -29,7 +29,7 @@ import com.uoscybercaddy.dabajo.activity.MainActivity;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    TextView showUsersTv;
+    TextView showUsersTv,showChattingListTv;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -107,12 +107,19 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
         showUsersTv = (TextView) view.findViewById(R.id.showUsersTv);
-
+        showChattingListTv = (TextView) view.findViewById(R.id.showChattingListTv);
         showUsersTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UsersFragment usersFragment= new UsersFragment();
                 ((DashboardActivity)getActivity()).replaceFragment(usersFragment, "유저");
+            }
+        });
+        showChattingListTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChatListFragment chatListFragment= new ChatListFragment();
+                ((DashboardActivity)getActivity()).replaceFragment(chatListFragment,"채팅");
             }
         });
 

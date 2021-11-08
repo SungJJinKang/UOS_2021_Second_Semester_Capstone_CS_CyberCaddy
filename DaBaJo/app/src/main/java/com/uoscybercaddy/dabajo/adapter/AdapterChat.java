@@ -70,7 +70,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, @SuppressLint("RecyclerView") int position) {
         String message = chatList.get(position).getMessage();
-        String timeStamp = chatList.get(position).getTimeStamp();
+        String timeStamp = chatList.get(position).getTimestamp();
         Calendar cal = Calendar.getInstance(Locale.KOREA);
         cal.setTimeInMillis(Long.parseLong(timeStamp));
 
@@ -120,7 +120,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
 
     private void deleteMessage(int position) {
         String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String msgTimeStamp = chatList.get(position).getTimeStamp();
+        String msgTimeStamp = chatList.get(position).getTimestamp();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference citiesRef = db.collection("chats");
 
