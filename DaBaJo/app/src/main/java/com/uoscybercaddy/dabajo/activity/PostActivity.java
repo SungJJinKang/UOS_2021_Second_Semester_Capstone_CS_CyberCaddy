@@ -1,10 +1,13 @@
 package com.uoscybercaddy.dabajo.activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,7 +25,7 @@ import java.util.Locale;
 public class PostActivity extends AppCompatActivity {
 
     private LinearLayout parent;
-    private LinearLayout comment;
+    private LinearLayout commentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +68,28 @@ public class PostActivity extends AppCompatActivity {
             parent.addView(videoPlayerView);
         }
 
-        comment = findViewById(R.id.item_post_comment);
+        commentLayout = findViewById(R.id.item_post_comment);
+
         ViewGroup.LayoutParams commentParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        findViewById(R.id.commentSendButton).setOnClickListener(onClickListener);
+
+
 
     }
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.commentSendButton:
+                    startToast("test");
+                    break;
+            }
+        }
+    };
 
+
+
+    private void startToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
 }

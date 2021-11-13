@@ -58,10 +58,25 @@
 
     </LinearLayout>
 
-    <include
-        layout="@layout/item_comment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/commentText"
+            android:layout_width="321dp"
+            android:layout_height="wrap_content"
+            android:hint="댓글"
+            android:minHeight="48dp"
+            android:padding="5dp" />
+
+        <Button
+            android:id="@+id/commentSendButton"
+            android:layout_width="76dp"
+            android:layout_height="48dp"
+            android:text="send" />
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
