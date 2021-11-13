@@ -7,11 +7,10 @@
     android:layout_margin="5dp"
     android:orientation="vertical"
     app:cardCornerRadius="10dp">
-
+    <!--    피드에 올라가는 item 입니다-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="696dp"
-        android:layout_gravity="top"
+        android:layout_height="match_parent"
         android:layout_margin="2dp"
         android:orientation="vertical">
 
@@ -39,44 +38,6 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:text="creatdAt" />
-
-        <LinearLayout
-            android:id="@+id/item_post_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/item_post_comment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/commentText"
-            android:layout_width="321dp"
-            android:layout_height="wrap_content"
-            android:hint="댓글"
-            android:minHeight="48dp"
-            android:padding="5dp" />
-
-        <Button
-            android:id="@+id/commentSendButton"
-            android:layout_width="76dp"
-            android:layout_height="48dp"
-            android:text="send" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

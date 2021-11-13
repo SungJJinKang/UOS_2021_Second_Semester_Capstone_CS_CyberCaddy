@@ -1,29 +1,34 @@
 package com.uoscybercaddy.dabajo.view;
 
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class WriteInfo {
+public class WriteInfo implements Serializable {
     private String title;
     private String body;
     private String writer;
     public Date createdAt;
 
     public int imageCount;
-    public int[] imageSize;
 
     public int videoCount;
     //TODO : 비디오 사이즈 수정 필요.
     //public int[] videoSize;
     public List<String> videoExtensions;
+    public transient  boolean isVideoDataLoaded = false;
+    public ArrayList<String> commentList;
+    public WriteInfo() {
 
-
+    }
     public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;
         this.body = contents;
         this.writer = writer;
         this.createdAt = createdAt;
+        this.commentList = new ArrayList<>();
     }
 
     public String getTitle(){
