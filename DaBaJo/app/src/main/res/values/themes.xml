@@ -29,6 +29,10 @@
     <style name="CustomRadioButton" parent="Theme.AppCompat.Light">
         <item name="colorAccent">#FB5943</item>
     </style>
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">#FB5943</item>
+        <item name="android:textColorSecondary">#545454</item>
+    </style>
 <!--    <style name="EditTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
 <!--        <item name="colorAccent">#FB5943</item>-->
 <!--        <item name="colorControlNormal">#545454</item>-->

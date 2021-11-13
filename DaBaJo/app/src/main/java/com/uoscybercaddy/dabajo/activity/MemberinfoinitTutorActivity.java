@@ -27,7 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,20 +41,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.uoscybercaddy.dabajo.models.MemberInfo;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.fragment.CategoryFragmentTutor;
+import com.uoscybercaddy.dabajo.models.MemberInfoTutor;
 
-public class MemberinfoinitActivity extends AppCompatActivity {
+public class MemberinfoinitTutorActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private String profilePath, downloadUrl=null;
     private FirebaseUser user;
-    EditText editTextNickName, nameEditText,editTextIntroduction;
+    EditText editTextNickName, editTextField, nameEditText, editTextIntroduction;
     RadioGroup sexRadiGroup;
     RadioButton rb_woman;
     Button infoSubmitButton;
     String sex="";
     private FirebaseAuth mAuth;
-    private static final String TAG = "MemberinfoinitActivity";
+    private static final String TAG = "MemberinfoinitTutorActivity";
     private static final int RC_SIGN_IN = 100;
     //
     private static final int CAMERA_REQUEST_CODE = 100;
@@ -74,7 +74,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member_info_init);
+        setContentView(R.layout.activity_member_info_init_tutor);
         mAuth = FirebaseAuth.getInstance();
         //Actionbar and its title
         ActionBar actionBar = getSupportActionBar();
@@ -84,6 +84,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         editTextNickName = (EditText)findViewById(R.id.editTextNickName);
         nameEditText = (EditText)findViewById(R.id.nameEditText);
         editTextIntroduction = (EditText)findViewById(R.id.editTextIntroduction);
+        editTextField = (EditText)findViewById(R.id.editTextField);
         sexRadiGroup = (RadioGroup)findViewById(R.id.sexRadiGroup);
         infoSubmitButton = (Button)findViewById(R.id.infoSubmitButton);
         profileImageView = (ImageView)findViewById(R.id.profileImageView);
@@ -121,7 +122,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         //기존 데이터 불러오기
         FirebaseUser user = firebaseAuth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("users").document(user.getUid());
+        DocumentReference docRef = db.collection("users_tutor").document(user.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -130,20 +131,22 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         if(document.getData().get("photoUrl") != null){
-                            Glide.with(MemberinfoinitActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(profileImageView);
+                            Glide.with(MemberinfoinitTutorActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(profileImageView);
                             downloadUrl = (document.getData().get("photoUrl").toString());
                         }
-                        //downloadUrl = (document.getData().get("photoUrl").toString());
                         editTextNickName.setText(document.getData().get("nickName").toString());
                         nameEditText.setText(document.getData().get("name").toString());
+                        editTextField.setText(document.getData().get("field").toString());
                         editTextIntroduction.setText(document.getData().get("introduction").toString());
                         sex = document.getData().get("sex").toString();
                         Log.e("남자? : ",""+sex);
+
                         if(sex.equals("남자")){
                             sexRadiGroup.check(R.id.rb_man);
                         }else{
                             sexRadiGroup.check(R.id.rb_woman);
                         }
+
                     } else {
                         Log.d(TAG, "정보를 등록해주세요");
                     }
@@ -401,14 +404,20 @@ public class MemberinfoinitActivity extends AppCompatActivity {
 
     private void profileUpdate() {
         final String nickName = editTextNickName.getText().toString().trim();
+        final String field = editTextField.getText().toString().trim();
         final String name = nameEditText.getText().toString().trim();
         final String introduction = editTextIntroduction.getText().toString().trim();
         progressDialog.setMessage("정보 업데이트중");
         progressDialog.show();
         rb_woman.setError(null);
         if(nickName.length()<1){
-            editTextNickName.setError("비밀번호가 일치하지 않습니다.");
+            editTextNickName.setError("닉네임을 입력해주세요.");
             editTextNickName.setFocusable(true);
+        }
+        else if(field.length()<1){
+            editTextField.setError("분야를 입력해주세요.");
+            editTextField.setFocusable(true);
+
         }
         else if(name.length()<1){
             nameEditText.setError("이름을 입력해주세요.");
@@ -416,7 +425,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
 
         }
         else if(introduction.length()<1){
-            editTextIntroduction.setError("비밀번호가 일치하지 않습니다.");
+            editTextIntroduction.setError("소개를 입력해주세요.");
             editTextIntroduction.setFocusable(true);
         }
         else if(sex.length()<1){
@@ -429,15 +438,15 @@ public class MemberinfoinitActivity extends AppCompatActivity {
             // Create a reference to 'images/mountains.jpg'
             user = FirebaseAuth.getInstance().getCurrentUser();
 
-            final StorageReference mountainImagesRef = storageRef.child("users/"+user.getUid()+"/profileImage.jpg");
+            final StorageReference mountainImagesRef = storageRef.child("users_tutor/"+user.getUid()+"/profileImage.jpg");
 
             if(image_url == null && downloadUrl==null){ //image_url == null
-                MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,null);
+                MemberInfoTutor memberInfo = new MemberInfoTutor(nickName, name, field, introduction, sex,null);
                 uploader(memberInfo);
             }else{
-              //  try{
-                    //InputStream stream = new FileInputStream(new File(profilePath));
-                    //UploadTask uploadTask = mountainImagesRef.putStream(stream);
+                //  try{
+                //InputStream stream = new FileInputStream(new File(profilePath));
+                //UploadTask uploadTask = mountainImagesRef.putStream(stream);
                 if(image_url != null){
                     UploadTask uploadTask = mountainImagesRef.putFile(image_url);
                     uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -457,7 +466,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Uri downloadUri = task.getResult();
 
-                                MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,downloadUri.toString());
+                                MemberInfoTutor memberInfo = new MemberInfoTutor(nickName, name, field, introduction, sex, downloadUri.toString());
                                 uploader(memberInfo);
                             } else {
                                 // Handle failures
@@ -469,7 +478,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                         }
                     });
                 }else{
-                    MemberInfo memberInfo = new MemberInfo(nickName, name, introduction, sex,downloadUrl);
+                    MemberInfoTutor memberInfo = new MemberInfoTutor(nickName, name, field, introduction, sex, downloadUrl);
                     uploader(memberInfo);
                 }
 
@@ -478,16 +487,16 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         }
         progressDialog.dismiss();
     }
-    private void uploader(MemberInfo memberInfo){
+    private void uploader(MemberInfoTutor memberInfo){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(user.getUid()).set(memberInfo)
+        db.collection("users_tutor").document(user.getUid()).set(memberInfo)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
                         startToast("회원정보 등록 성공");
                         progressDialog.dismiss();
-                        Intent intent = new Intent(MemberinfoinitActivity.this,DashboardActivity.class);
+                        Intent intent = new Intent(MemberinfoinitTutorActivity.this, DashboardActivityTutor.class);
                         if(fromProfile != null){
                             intent.putExtra("fromProfileEdit","fromProfileEdit");
                         }
@@ -511,18 +520,4 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void startMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-    private void startActivityShortcut(Class c) {
-        Intent intent = new Intent(this, c);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivityForResult(intent, 0);
-    } // startactivity 한번에 사용하기
-    private void startSignupActivity() {
-        Intent intent = new Intent(this,SignUpActivity.class);
-        startActivity(intent);
-    }
 }

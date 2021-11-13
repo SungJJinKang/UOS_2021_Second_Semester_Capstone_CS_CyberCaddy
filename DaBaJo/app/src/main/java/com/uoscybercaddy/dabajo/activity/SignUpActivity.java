@@ -4,13 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
     private FirebaseAuth mAuth;
     EditText emailEditText,passwordEditText, passwordCheckEditText;
+    Button isTutor;
     //progressbar to display while registering user
     ProgressDialog progressDialog;
 
@@ -41,16 +45,14 @@ public class SignUpActivity extends AppCompatActivity {
         passwordCheckEditText = (EditText) findViewById(R.id.passwordCheckEditText);
 
         findViewById(R.id.signupButton).setOnClickListener(onClickListener);
-        findViewById(R.id.gotoLoginButton).setOnClickListener(onClickListener);
-
+        findViewById(R.id.goBackButton).setOnClickListener(onClickListener);
         //Actionbar and its title
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("회원가입");
-        //enable back button
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.hide();
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("회원가입중...");
+
     }
 
     @Override
@@ -87,9 +89,8 @@ public class SignUpActivity extends AppCompatActivity {
                     //startLoginActivity();
                     //startToast("회원가입을 성공했습니다");
                     break;
-                case R.id.gotoLoginButton:
+                case R.id.goBackButton:
                     startLoginActivity();
-
                     break;
             }
         }

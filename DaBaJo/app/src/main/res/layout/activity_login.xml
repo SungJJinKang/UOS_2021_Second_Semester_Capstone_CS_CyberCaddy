@@ -62,12 +62,29 @@
                 android:inputType="textPassword"
                 android:minHeight="48dp" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/isTutorCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="250dp"
+                    android:textColor="#545454"
+                    android:theme="@style/checkBoxStyle"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:text="튜터이신가요?" />
+            </LinearLayout>
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-20dp"
+            android:layout_marginTop="-30dp"
             android:gravity="end"
             android:orientation="vertical">
 
@@ -79,28 +96,26 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/loginButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="42dp"
                     android:layout_gravity="end"
                     android:layout_marginRight="12dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_background_red"
                     android:backgroundTint="#FC5943"
                     android:gravity="center"
-                    android:padding="15dp"
                     android:text="로그인"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/gotoSignupButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="42dp"
                     android:layout_marginLeft="12dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_background_gray"
                     android:gravity="center"
-                    android:padding="15dp"
                     android:text="회원가입"
                     android:textColor="#545454"
                     android:textStyle="bold"

@@ -1,13 +1,8 @@
 package com.uoscybercaddy.dabajo.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,24 +28,18 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.NoticeActivity;
+import com.uoscybercaddy.dabajo.activity.DashboardActivityTutor;
 import com.uoscybercaddy.dabajo.activity.LoginActivity;
-import com.uoscybercaddy.dabajo.activity.MainActivity;
-import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
-import com.uoscybercaddy.dabajo.activity.SignUpActivity;
+import com.uoscybercaddy.dabajo.activity.MemberinfoinitTutorActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ProfileFragment extends Fragment {
-    private static final String TAG = "ProfileFragment";
+public class ProfileFragmentTutor extends Fragment {
+    private static final String TAG = "ProfileFragmentTutor";
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
     FirebaseFirestore db;
     ImageView avatarIv;
-    TextView nickNameTv, descriptionTv;
-    ImageButton notice, logout;
+    TextView nickNameTv, fieldTv, descriptionTv;
+    ImageButton chatting, myEval, notice, logout;
     FloatingActionButton fab;
     ProgressDialog pd;
 
@@ -60,7 +52,7 @@ public class ProfileFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ProfileFragment() {
+    public ProfileFragmentTutor() {
         // Required empty public constructor
     }
 
@@ -73,8 +65,8 @@ public class ProfileFragment extends Fragment {
      * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
+    public static ProfileFragmentTutor newInstance(String param1, String param2) {
+        ProfileFragmentTutor fragment = new ProfileFragmentTutor();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -97,11 +89,14 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile_tutor, container, false);
         avatarIv = (ImageView) view.findViewById(R.id.avatarIv);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         nickNameTv = (TextView) view.findViewById(R.id.nickNameTv);
+        fieldTv = (TextView) view.findViewById(R.id.fieldTv);
         descriptionTv = (TextView) view.findViewById(R.id.descriptionTv);
+        chatting = (ImageButton) view.findViewById(R.id.chattingListButton);
+        myEval = (ImageButton) view.findViewById(R.id.myEvalButton);
         notice = (ImageButton) view.findViewById(R.id.noticeButton);
         logout = (ImageButton) view.findViewById(R.id.logoutButton);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -109,8 +104,7 @@ public class ProfileFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         pd = new ProgressDialog(getActivity());
 
-
-        DocumentReference docRef = db.collection("users").document(user.getUid());
+        DocumentReference docRef = db.collection("users_tutor").document(user.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -122,6 +116,7 @@ public class ProfileFragment extends Fragment {
                             Glide.with(getActivity()).load(document.getData().get("photoUrl")).centerCrop().override(500).into(avatarIv);
                         }
                         nickNameTv.setText(document.getData().get("nickName").toString());
+                        fieldTv.setText(document.getData().get("field").toString());
                         descriptionTv.setText(document.getData().get("introduction").toString());
                     } else {
                         Log.d(TAG, "No such document");
@@ -135,7 +130,7 @@ public class ProfileFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MemberinfoinitActivity.class);
+                Intent intent = new Intent(getActivity(), MemberinfoinitTutorActivity.class);
                 intent.putExtra("fromProfileEdit","fromProfileEdit");
                 startActivity(intent);
                 getActivity().finish();
@@ -146,7 +141,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), NoticeActivity.class);
-                intent.putExtra("튜티",1);
+                intent.putExtra("튜터",1);
                 startActivity(intent);
                 getActivity().finish();
             }
@@ -169,7 +164,7 @@ public class ProfileFragment extends Fragment {
         if(user!=null){
             //profileTv.setText(user.getEmail());
         } else{
-            startActivity(new Intent(getActivity(), MainActivity.class));
+            startActivity(new Intent(getActivity(), DashboardActivityTutor.class));
             getActivity().finish();
         }
     }
@@ -193,3 +188,4 @@ public class ProfileFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 }
+

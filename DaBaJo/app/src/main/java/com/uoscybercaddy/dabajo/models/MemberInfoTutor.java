@@ -2,11 +2,10 @@ package com.uoscybercaddy.dabajo.models;
 
 import android.graphics.drawable.Drawable;
 
-import java.util.Optional;
-
-public class MemberInfo {
+public class MemberInfoTutor {
     private String nickName;
     private String name;
+    private String field;
     private String introduction;
     private String sex;
 
@@ -17,15 +16,16 @@ public class MemberInfo {
 
     private Drawable profilePhotoDrawable;
     private boolean profilePhotoDrawableIsLoaded = false;
-    public MemberInfo(String nickName, String name, String introduction, String sex, String photoUrl){
+    public MemberInfoTutor(String nickName, String name, String field, String introduction, String sex, String photoUrl){
         this.nickName = nickName;
         this.name = name;
         this.introduction = introduction;
+        this.field = field;
         this.sex = sex;
         this.photoUrl = photoUrl;
     }
 
-    public MemberInfo(String photoUrl){
+    public MemberInfoTutor(String photoUrl){
         this.photoUrl = photoUrl;
     }
     public String getName(){
@@ -39,6 +39,12 @@ public class MemberInfo {
     }
     public void setNickName(String nickName){
         this.nickName = nickName;
+    }
+    public String getField(){
+        return this.field;
+    }
+    public void setField(String field){
+        this.field = field;
     }
     public String getIntroduction(){
         return this.introduction;
@@ -66,3 +72,5 @@ public class MemberInfo {
     }
 
 }
+
+

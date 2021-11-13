@@ -90,6 +90,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CategorySportActivity.class);
+                intent.putExtra("튜티", "tutee");
                 startActivity(intent);
                 getActivity().finish();
             }

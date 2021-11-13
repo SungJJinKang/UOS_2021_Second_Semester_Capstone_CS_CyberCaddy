@@ -68,6 +68,27 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_marginBottom="5dp"
+            app:boxBackgroundColor="@color/white">
+
+            <EditText
+                android:id="@+id/editTextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="분야"
+                android:lines="1"
+                android:scrollbars="vertical" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_marginBottom="20dp"
             app:boxBackgroundColor="@color/white">
 
@@ -85,7 +106,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
         <RadioGroup
             android:id="@+id/sexRadiGroup"
             android:layout_width="match_parent"
@@ -96,22 +116,21 @@
                 android:id="@+id/rb_man"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:theme="@style/CustomRadioButton"
                 android:layout_marginLeft="90dp"
                 android:layout_weight="1"
-                android:text="남자" />
+                android:text="남자"
+                android:theme="@style/CustomRadioButton" />
 
             <RadioButton
                 android:id="@+id/rb_woman"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
-                android:theme="@style/CustomRadioButton"
                 android:layout_weight="1"
-                android:text="여자" />
+                android:text="여자"
+                android:theme="@style/CustomRadioButton" />
 
         </RadioGroup>
-
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/infoSubmitButton"

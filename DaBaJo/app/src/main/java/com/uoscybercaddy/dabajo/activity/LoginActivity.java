@@ -4,12 +4,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     SignInButton googleLoginBtn;
     EditText emailEditText, passwordEditText;
     ProgressDialog progressDialog;
+    CheckBox isTutorCheckBox;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +65,11 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = (EditText) findViewById(R.id.emailEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         googleLoginBtn = (SignInButton) findViewById(R.id.googleLoginBtn);
+        isTutorCheckBox = (CheckBox) findViewById(R.id.isTutorCheckBox);
+
         //Actionbar and its title
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("로그인");
+        actionBar.hide();
         //enable back button
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
@@ -91,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         //findViewById(R.id.gotoSignUpTV).setOnClickListener(onClickListener);
         progressDialog = new ProgressDialog(this);
+
     }
     @Override
     public boolean onSupportNavigateUp() {
@@ -237,8 +245,14 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             startToast("로그인 성공 : "+user.getEmail());
-                            startMainActivity();
-                            finish();
+                            if (!isTutorCheckBox.isChecked()) {
+                                startDashboardActivity();
+                                finish();
+                            }
+                            else {
+                                startDashboardActivityTutor();
+                                finish();
+                            }
                             //updateUI(user);
                         } else {
                             startToast("로그인 실패");
@@ -281,8 +295,16 @@ public class LoginActivity extends AppCompatActivity {
                                 FirebaseUser user = mAuth.getCurrentUser();
 
                                 startToast("로그인 성공");
-                                startMainActivity();
-                                finish();
+                                // 튜티가 로그인할때
+                                if (!isTutorCheckBox.isChecked()) {
+                                    startDashboardActivity();
+                                    finish();
+                                }
+                                // 튜터가 로그인할때
+                                else {
+                                    startDashboardActivityTutor();
+                                    finish();
+                                }
                             } else {
                                 progressDialog.dismiss();
                                 startToast("로그인 실패!");
@@ -313,14 +335,20 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void startMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
+    private void startDashboardActivity() {
+        Intent intent = new Intent(this,DashboardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
     private void startSignupActivity() {
         Intent intent = new Intent(this,SignUpActivity.class);
+        startActivity(intent);
+    }
+
+    private void startDashboardActivityTutor() {
+        Intent intent = new Intent(this,DashboardActivityTutor.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

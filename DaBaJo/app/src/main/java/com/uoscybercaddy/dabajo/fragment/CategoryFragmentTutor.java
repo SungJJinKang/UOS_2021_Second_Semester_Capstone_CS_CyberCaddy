@@ -2,10 +2,6 @@ package com.uoscybercaddy.dabajo.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,17 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.uoscybercaddy.dabajo.R;
-import com.uoscybercaddy.dabajo.activity.MainActivity;
 import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CategoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class CategoryFragment extends Fragment {
+import com.uoscybercaddy.dabajo.activity.DashboardActivityTutor;
+import com.uoscybercaddy.dabajo.activity.MainActivity;
+
+public class CategoryFragmentTutor extends Fragment {
     FirebaseAuth firebaseAuth;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,7 +31,8 @@ public class CategoryFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public CategoryFragment() {
+
+    public CategoryFragmentTutor() {
         // Required empty public constructor
     }
 
@@ -49,8 +46,8 @@ public class CategoryFragment extends Fragment {
      * @return A new instance of fragment CategoryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CategoryFragment newInstance(String param1, String param2) {
-        CategoryFragment fragment = new CategoryFragment();
+    public static CategoryFragmentTutor newInstance(String param1, String param2) {
+        CategoryFragmentTutor fragment = new CategoryFragmentTutor();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,16 +70,16 @@ public class CategoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
-        View view = inflater.inflate(R.layout.fragment_category, container, false);
+        View view = inflater.inflate(R.layout.fragment_category_tutor, container, false);
         button = (Button)view.findViewById(R.id.buttonSport);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), CategorySportActivity.class);
-            intent.putExtra("튜티", "tutee");
-            startActivity(intent);
-            getActivity().finish();
+                Intent intent = new Intent(getActivity(), CategorySportActivity.class);
+                intent.putExtra("튜터", "tutor");
+                startActivity(intent);
+                getActivity().finish();
             }
         });
         return view;
@@ -93,7 +90,7 @@ public class CategoryFragment extends Fragment {
         if(user!=null){
             //profileTv.setText(user.getEmail());
         } else{
-            startActivity(new Intent(getActivity(), MainActivity.class));
+            startActivity(new Intent(getActivity(), DashboardActivityTutor.class));
             getActivity().finish();
         }
     }

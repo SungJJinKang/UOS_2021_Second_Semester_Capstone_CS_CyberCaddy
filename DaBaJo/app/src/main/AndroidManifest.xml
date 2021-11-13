@@ -36,10 +36,14 @@
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true"></activity>
+        <activity
+            android:name=".activity.DashboardActivityTutor"
+            android:exported="false" />
         <activity android:name=".activity.MemberinfoinitActivity" />
+        <activity android:name=".activity.MemberinfoinitTutorActivity" />
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.PostActivity" />
-
+        <activity android:name=".activity.NoticeActivity" />
 
         <activity android:name=".activity.CategorySportActivity"></activity>
 

@@ -1,11 +1,8 @@
 package com.uoscybercaddy.dabajo.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,44 +10,48 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.uoscybercaddy.dabajo.R;
-import com.uoscybercaddy.dabajo.activity.MainActivity;
 import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CategoryFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class CategoryFragment extends Fragment {
-    FirebaseAuth firebaseAuth;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+import com.uoscybercaddy.dabajo.activity.DashboardActivity;
+import com.uoscybercaddy.dabajo.activity.DashboardActivityTutor;
+import com.uoscybercaddy.dabajo.activity.MainActivity;
+
+public class HomeFragmentTutor extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    FirebaseAuth firebaseAuth;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    public CategoryFragment() {
+    public HomeFragmentTutor() {
         // Required empty public constructor
     }
 
-    Button button;
+    Button sportButton;
+    TextView showAll;
+
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment CategoryFragment.
+     * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CategoryFragment newInstance(String param1, String param2) {
-        CategoryFragment fragment = new CategoryFragment();
+    public static HomeFragmentTutor newInstance(String param1, String param2) {
+        HomeFragmentTutor fragment = new HomeFragmentTutor();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -71,29 +72,40 @@ public class CategoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        firebaseAuth = FirebaseAuth.getInstance();
-        View view = inflater.inflate(R.layout.fragment_category, container, false);
-        button = (Button)view.findViewById(R.id.buttonSport);
+        //        textView = (TextView)view.findViewById(R.id.textView5);
+        View view = inflater.inflate(R.layout.fragment_home_tutor, container, false);
+        sportButton = (Button)view.findViewById(R.id.buttonSport);
+        showAll = (TextView)view.findViewById(R.id.viewAll);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        sportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), CategorySportActivity.class);
-            intent.putExtra("튜티", "tutee");
-            startActivity(intent);
-            getActivity().finish();
+                Intent intent = new Intent(getActivity(), CategorySportActivity.class);
+                intent.putExtra("튜터", "tutor");
+                startActivity(intent);
+                getActivity().finish();
             }
         });
+
+        showAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), DashboardActivityTutor.class);
+                intent.putExtra("카테고리로", "tutor");
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+        // Inflate the layout for this fragment
+        firebaseAuth = FirebaseAuth.getInstance();
         return view;
     }
-
     private void checkUserStatus(){
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user!=null){
             //profileTv.setText(user.getEmail());
         } else{
-            startActivity(new Intent(getActivity(), MainActivity.class));
+            startActivity(new Intent(getActivity(), DashboardActivityTutor.class));
             getActivity().finish();
         }
     }
@@ -110,10 +122,14 @@ public class CategoryFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id== R.id.action_logout){
-            firebaseAuth.signOut();
-            checkUserStatus();
+        switch(id){
+            case R.id.action_logout:
+                firebaseAuth.signOut();
+                checkUserStatus();
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
+
