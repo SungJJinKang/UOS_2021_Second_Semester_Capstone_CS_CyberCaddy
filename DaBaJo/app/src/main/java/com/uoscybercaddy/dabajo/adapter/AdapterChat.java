@@ -71,11 +71,28 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
     public void onBindViewHolder(@NonNull MyHolder holder, @SuppressLint("RecyclerView") int position) {
         String message = chatList.get(position).getMessage();
         String timeStamp = chatList.get(position).getTimestamp();
+        String type = chatList.get(position).getType();
+
         Calendar cal = Calendar.getInstance(Locale.KOREA);
         cal.setTimeInMillis(Long.parseLong(timeStamp));
 
         String dateTime = DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
 
+        if(type != null && type.equals("image")){
+            holder.messageTv.setVisibility(View.GONE);
+            holder.messageIv.setVisibility(View.VISIBLE);
+            try{
+                Glide.with(context).load(message).centerCrop().override(500).into(holder.messageIv);
+            }catch (Exception e){
+                Glide.with(context).load(R.drawable.ic_image_black).centerCrop().override(500).into(holder.messageIv);
+            }
+
+        }else{
+            holder.messageTv.setVisibility(View.VISIBLE);
+            holder.messageIv.setVisibility(View.GONE);
+
+            holder.messageTv.setText(message);
+        }
 
         holder.timeTv.setText(dateTime);
         holder.messageTv.setText(message);
@@ -178,13 +195,14 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
     }
 
     class MyHolder extends RecyclerView.ViewHolder{
-        ImageView profileIv;
+        ImageView profileIv, messageIv;
         TextView messageTv, timeTv, isSeenTv;
         LinearLayout messageLayout;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
             profileIv = itemView.findViewById(R.id.profileIv);
+            messageIv = itemView.findViewById(R.id.messageIv);
             messageTv = itemView.findViewById(R.id.messageTv);
             timeTv = itemView.findViewById(R.id.timeTv);
             isSeenTv = itemView.findViewById(R.id.isSeenTv);

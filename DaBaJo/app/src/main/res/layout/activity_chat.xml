@@ -64,6 +64,12 @@
         android:gravity="center"
         android:orientation="horizontal"
         >
+        <ImageButton
+            android:id="@+id/attachBtn"
+            android:src="@drawable/ic_attach_black"
+            android:background="@null"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
         <EditText
             android:layout_width="0dp"
             android:inputType="textCapSentences|textMultiLine"
