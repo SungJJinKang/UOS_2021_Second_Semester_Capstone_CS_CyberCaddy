@@ -182,9 +182,24 @@
         android:layout_marginLeft="20sp"
         android:layout_marginTop="420sp"
         android:layout_marginRight="20sp"
+        android:orientation="vertical"
         android:layout_weight="1"
         android:gravity="center">
-
+        <TextView
+            android:id="@+id/showUsersTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="유저 검색,채팅"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/showChattingListTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅창리스트"
+            android:textSize="20sp"
+            />
     </LinearLayout>
 
 

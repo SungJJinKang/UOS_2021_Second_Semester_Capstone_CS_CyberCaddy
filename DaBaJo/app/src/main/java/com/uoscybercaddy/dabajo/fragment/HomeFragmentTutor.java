@@ -26,7 +26,7 @@ import com.uoscybercaddy.dabajo.activity.MainActivity;
 public class HomeFragmentTutor extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    TextView showUsersTv,showChattingListTv;
     FirebaseAuth firebaseAuth;
 
     // TODO: Rename and change types of parameters
@@ -98,6 +98,23 @@ public class HomeFragmentTutor extends Fragment {
         });
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
+
+        showUsersTv = (TextView) view.findViewById(R.id.showUsersTv);
+        showChattingListTv = (TextView) view.findViewById(R.id.showChattingListTv);
+        showUsersTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsersFragment usersFragment= new UsersFragment();
+                ((DashboardActivityTutor)getActivity()).replaceFragment(usersFragment, "유저");
+            }
+        });
+        showChattingListTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChatListFragment chatListFragment= new ChatListFragment();
+                ((DashboardActivityTutor)getActivity()).replaceFragment(chatListFragment,"채팅");
+            }
+        });
         return view;
     }
     private void checkUserStatus(){

@@ -1,6 +1,10 @@
 package com.uoscybercaddy.dabajo.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,6 +18,8 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,6 +45,7 @@ public class UsersFragment extends Fragment {
     AdapterUsers adapterUsers;
     FirebaseAuth firebaseAuth;
     List<ModelUsers> usersList;
+    ActionBar actionBar;
     private static final String TAG = "UserFragment";
     public UsersFragment(){
 
@@ -60,6 +67,7 @@ public class UsersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -75,6 +83,8 @@ public class UsersFragment extends Fragment {
         recyclerView = view.findViewById(R.id.users_recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        actionBar.show();
 
         usersList = new ArrayList<>();
 
@@ -142,8 +152,19 @@ public class UsersFragment extends Fragment {
                                 String name, nickName, photoUrl, sex, tutortuty, introduction, search,uid;
                                 name = document.getData().get("name").toString();
                                 nickName = document.getData().get("nickName").toString();
-                                photoUrl = document.getData().get("photoUrl").toString();
-                                tutortuty = document.getData().get("tutortuty").toString();
+                                Object photo = document.getData().get("photoUrl");
+                                if(photo != null){
+                                    photoUrl = photo.toString();
+                                }else{
+                                    photoUrl = null;
+                                }
+                                Object tt = document.getData().get("tutortuty");
+                                if(tt!=null){
+                                    tutortuty = tt.toString();
+                                }else{
+                                    tutortuty = null;
+                                }
+
                                 introduction = document.getData().get("introduction").toString();
                                 sex = document.getData().get("sex").toString();
                                 uid = document.getId();
@@ -212,6 +233,23 @@ public class UsersFragment extends Fragment {
     }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FC5943")));
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            getActivity().getActionBar().hide(); //getSupportActionBar() for API<11
+        } else {
+            getActivity().getActionBar().show(); //getSupportActionBar() for API<11
+        }
+    }
 
     //handle menu item clicks
 

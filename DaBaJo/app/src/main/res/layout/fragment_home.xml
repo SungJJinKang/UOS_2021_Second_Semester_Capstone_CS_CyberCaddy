@@ -189,7 +189,7 @@
             android:id="@+id/showUsersTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="유저 전체보고 채팅하기"
+            android:text="유저 검색,채팅"
             android:textSize="20sp"
             />
         <TextView
