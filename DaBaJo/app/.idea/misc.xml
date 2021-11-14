@@ -27,7 +27,7 @@
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_member_info_init.xml" value="0.264" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_member_info_init_tutor.xml" value="0.264" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_notice.xml" value="0.4" />
-        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_post.xml" value="0.17300724637681159" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_post.xml" value="0.264" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_sign_up.xml" value="0.2" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_sign_up_tutor.xml" value="0.264" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_sport.xml" value="0.4" />
@@ -42,7 +42,10 @@
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_profile.xml" value="0.264" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_profile_tutor.xml" value="0.264" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_users.xml" value="0.21770833333333334" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/item_comment.xml" value="0.536" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/item_post.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/like_tutor.xml" value="0.1296875" />
+        <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/row_chat_left.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/row_users.xml" value="0.23125" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/menu/menu_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/army6/Documents/GitHub/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/menu/menu_nav.xml" value="0.25364583333333335" />
