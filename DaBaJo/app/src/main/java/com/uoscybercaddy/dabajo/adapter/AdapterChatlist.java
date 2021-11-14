@@ -45,6 +45,7 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
         String userImage = userList.get(position).getPhotoUrl();
         String userName = userList.get(position).getName();
         String lastMessage = lastMessageMap.get(hisUid);
+        String onlineStatus = userList.get(position).getOnlineStatus();
         holder.nameTv.setText(userName);
         if(lastMessage == null || lastMessage.equals("default")){
             holder.lastMessageTv.setVisibility(View.GONE);
@@ -58,7 +59,7 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
         }catch (Exception e){
             Glide.with(context).load(R.drawable.ic_profile_black).centerCrop().override(500).into(holder.profileIv);
         }
-        if(userList.get(position).getOnlineStatus().equals("online")){
+        if(onlineStatus != null && onlineStatus.equals("online")){
             holder.onlineStatusIv.setImageResource(R.drawable.circle_online);
         }else{
             holder.onlineStatusIv.setImageResource(R.drawable.circle_offline);
