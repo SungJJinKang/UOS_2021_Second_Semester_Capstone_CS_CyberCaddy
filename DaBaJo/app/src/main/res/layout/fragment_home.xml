@@ -182,6 +182,7 @@
         android:layout_marginLeft="20sp"
         android:layout_marginTop="420sp"
         android:layout_marginRight="20sp"
+        android:orientation="vertical"
         android:layout_weight="1"
         android:gravity="center">
         <TextView
@@ -189,6 +190,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="유저 전체보고 채팅하기"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:layout_marginTop="20dp"
+            android:id="@+id/showChattingListTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅창리스트"
             android:textSize="20sp"
             />
     </LinearLayout>

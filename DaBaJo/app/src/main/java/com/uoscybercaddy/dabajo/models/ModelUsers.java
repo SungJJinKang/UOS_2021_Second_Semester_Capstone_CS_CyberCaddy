@@ -1,7 +1,7 @@
 package com.uoscybercaddy.dabajo.models;
 
 public class ModelUsers {
-    String name, nickName, photoUrl, sex, tutortuty, introduction, search, uid;
+    String name, nickName, photoUrl, sex, tutortuty, introduction, search, uid, onlineStatus, typingTo;
 
     public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String uid) {
         this.name = name;
@@ -13,20 +13,31 @@ public class ModelUsers {
         this.uid = uid;
     }
 
-    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction) {
+    public ModelUsers() {
+    }
+
+    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String onlineStatus, String typingTo) {
         this.name = name;
         this.nickName = nickName;
         this.photoUrl = photoUrl;
         this.sex = sex;
         this.tutortuty = tutortuty;
         this.introduction = introduction;
-    }
-    public String getUid() {
-        return uid;
+        this.onlineStatus = onlineStatus;
+        this.typingTo = typingTo;
     }
 
-    public void setUid(String uid) {
+    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search, String uid, String onlineStatus, String typingTo) {
+        this.name = name;
+        this.nickName = nickName;
+        this.photoUrl = photoUrl;
+        this.sex = sex;
+        this.tutortuty = tutortuty;
+        this.introduction = introduction;
+        this.search = search;
         this.uid = uid;
+        this.onlineStatus = onlineStatus;
+        this.typingTo = typingTo;
     }
 
     public String getName() {
@@ -83,5 +94,29 @@ public class ModelUsers {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
+    }
+
+    public String getTypingTo() {
+        return typingTo;
+    }
+
+    public void setTypingTo(String typingTo) {
+        this.typingTo = typingTo;
     }
 }
