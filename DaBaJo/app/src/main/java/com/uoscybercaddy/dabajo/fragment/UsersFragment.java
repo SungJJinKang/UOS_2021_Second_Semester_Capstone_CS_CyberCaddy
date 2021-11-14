@@ -99,8 +99,17 @@ public class UsersFragment extends Fragment {
                                 String name, nickName, photoUrl, sex, tutortuty, introduction, search,uid;
                                 name = document.getData().get("name").toString();
                                 nickName = document.getData().get("nickName").toString();
-                                photoUrl = document.getData().get("photoUrl").toString();
-                                tutortuty = document.getData().get("tutortuty").toString();
+                                if(document.getData().get("photoUrl") != null){
+                                    photoUrl = document.getData().get("photoUrl").toString();
+                                }else{
+                                    photoUrl = null;
+                                }
+                                if(document.getData().get("tutortuty") != null){
+                                    tutortuty = document.getData().get("tutortuty").toString();
+                                }else{
+                                    tutortuty = null;
+                                }
+
                                 introduction = document.getData().get("introduction").toString();
                                 sex = document.getData().get("sex").toString();
                                 uid = document.getId();

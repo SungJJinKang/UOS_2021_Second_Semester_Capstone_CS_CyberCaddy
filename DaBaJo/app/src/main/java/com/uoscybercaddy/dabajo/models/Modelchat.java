@@ -1,18 +1,27 @@
 package com.uoscybercaddy.dabajo.models;
 
 public class Modelchat {
-    String message, receiver, sender, timeStamp;
+    String message, receiver, sender, timestamp, type;
     boolean isSeen;
 
     public Modelchat() {
     }
 
-    public Modelchat(String message, String receiver, String sender, String timeStamp, boolean isSeen) {
+    public Modelchat(String message, String receiver, String sender, String timestamp, String type, boolean isSeen) {
         this.message = message;
         this.receiver = receiver;
         this.sender = sender;
-        this.timeStamp = timeStamp;
+        this.timestamp = timestamp;
+        this.type = type;
         this.isSeen = isSeen;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMessage() {
@@ -39,12 +48,12 @@ public class Modelchat {
         this.sender = sender;
     }
 
-    public String getTimeStamp() {
-        return timeStamp;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimeStamp(String timestamp) {
-        this.timeStamp = timestamp;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public boolean isSeen() {
