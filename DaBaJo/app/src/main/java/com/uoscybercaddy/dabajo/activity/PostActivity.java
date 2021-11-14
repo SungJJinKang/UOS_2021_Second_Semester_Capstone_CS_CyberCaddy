@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -26,11 +27,14 @@ public class PostActivity extends AppCompatActivity {
 
     private LinearLayout parent;
     private LinearLayout commentLayout;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+        actionBar = getSupportActionBar();
+        actionBar.hide();
 
         WriteInfo writeInfo = (WriteInfo) getIntent().getSerializableExtra("writeInfo");
         TextView titleTextView = findViewById(R.id.item_post_title);

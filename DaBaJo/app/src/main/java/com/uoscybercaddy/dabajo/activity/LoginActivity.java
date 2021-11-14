@@ -297,7 +297,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startToast("로그인 성공");
                                 // 튜티가 로그인할때
                                 if (!isTutorCheckBox.isChecked()) {
-                                    startDashboardActivity();
+                                    startDashboardActivity();;
                                     finish();
                                 }
                                 // 튜터가 로그인할때
@@ -338,6 +338,11 @@ public class LoginActivity extends AppCompatActivity {
     private void startDashboardActivity() {
         Intent intent = new Intent(this,DashboardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
     }
 

@@ -4,6 +4,7 @@ import static com.uoscybercaddy.dabajo.activity.ImageDirectoryHelper.GetImageDir
 import static com.uoscybercaddy.dabajo.activity.ImageDirectoryHelper.GetVideoDirecotry;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,12 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +39,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firestore.v1.Write;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
@@ -52,7 +56,9 @@ public class WritePostActivity extends AppCompatActivity {
     private static final int IMAGE_PICK_GALLERY_IMAGE_CODE = 301;
     private static final int IMAGE_PICK_GALLERY_VIDEO_CODE = 302;
     private static final int IMAGE_PICK_CAMERA_CODE = 400;
-
+    ActionBar actionBar;
+    EditText postTitle, postBody;
+    ImageButton goBackFeed;
 
     private LinearLayout parent;
 
@@ -173,9 +179,26 @@ public class WritePostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
         parent = findViewById(R.id.contentsLayout);
+        actionBar = getSupportActionBar();
+        actionBar.hide();
+        postTitle = findViewById(R.id.postTitle);
+        postBody = findViewById(R.id.postBody);
+        goBackFeed = findViewById(R.id.goBackButton);
         findViewById(R.id.postButton).setOnClickListener(onClickListener);
         findViewById(R.id.imageButton).setOnClickListener(onClickListener);
         findViewById(R.id.videoButton).setOnClickListener(onClickListener);
+
+        Intent intent = getIntent();
+        if(intent.hasExtra("튜티")) {
+            goBackFeed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(WritePostActivity.this, FeedActivity.class);
+                    intent.putExtra("튜티", 1);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -250,10 +273,10 @@ public class WritePostActivity extends AppCompatActivity {
     private void writePost() {
         final String title = ((EditText) findViewById(R.id.postTitle)).getText().toString();
         final String contents = ((EditText) findViewById(R.id.postBody)).getText().toString();
+        postTitle.setFocusable(true);
+        postBody.setFocusable(true);
 
         if (title.length() > 0 && contents.length() > 0) {
-
-
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             WriteInfo writeInfo = new WriteInfo(title, contents, user.getUid(), new Date());
@@ -293,6 +316,7 @@ public class WritePostActivity extends AppCompatActivity {
 
     private void startActivityShortcut(Class c) {
         Intent intent = new Intent(this, c);
+        intent.putExtra("튜티", 1);
         startActivity(intent);
     } // startactivity 한번에 사용하기
 

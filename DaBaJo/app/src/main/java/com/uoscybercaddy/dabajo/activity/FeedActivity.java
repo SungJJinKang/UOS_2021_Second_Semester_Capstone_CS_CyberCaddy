@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,16 +35,41 @@ public class FeedActivity extends AppCompatActivity {
     private RecyclerView feedRecyclerView;
     private PostAdapter mAdapter;
     private ArrayList<WriteInfo> mDatas;
-
+    ActionBar actionBar;
+    ImageButton goBackSport;
+    ImageButton writeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-
+        actionBar = getSupportActionBar();
+        actionBar.hide();
+        goBackSport = findViewById(R.id.goBackButton);
         findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
 
+        Intent intent = getIntent();
 
+        if(intent.hasExtra("튜터")) {
+            goBackSport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(FeedActivity.this, CategorySportActivity.class);
+                    intent.putExtra("튜터", 1);
+                    startActivity(intent);
+                }
+            });
+        }
+        else {
+            goBackSport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(FeedActivity.this, CategorySportActivity.class);
+                    intent.putExtra("튜티", 1);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     // 피드 화면에서 최대로 글 몇줄 출력할 것인지
@@ -85,7 +112,6 @@ public class FeedActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.writePostButton:
-                    startToast("works");
                     startActivityShortcut(WritePostActivity.class);
                     break;
 
@@ -99,6 +125,7 @@ public class FeedActivity extends AppCompatActivity {
 
     private void startActivityShortcut(Class c) {
         Intent intent = new Intent(this, c);
+        intent.putExtra("튜티", 1);
         startActivity(intent);
     }
 }
