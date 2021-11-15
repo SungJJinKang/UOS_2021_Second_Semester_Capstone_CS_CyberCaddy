@@ -38,7 +38,7 @@ public class ProfileFragmentTutor extends Fragment {
     FirebaseUser user;
     FirebaseFirestore db;
     ImageView avatarIv;
-    TextView nickNameTv, fieldTv, descriptionTv;
+    TextView nickNameTv, fieldTv, descriptionTv,textView12;
     ImageButton chatting, myEval, notice, logout;
     FloatingActionButton fab;
     ProgressDialog pd;
@@ -99,6 +99,7 @@ public class ProfileFragmentTutor extends Fragment {
         myEval = (ImageButton) view.findViewById(R.id.myEvalButton);
         notice = (ImageButton) view.findViewById(R.id.noticeButton);
         logout = (ImageButton) view.findViewById(R.id.logoutButton);
+        textView12 = (TextView) view.findViewById(R.id.textView12);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -146,7 +147,15 @@ public class ProfileFragmentTutor extends Fragment {
                 getActivity().finish();
             }
         });
-
+        textView12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
