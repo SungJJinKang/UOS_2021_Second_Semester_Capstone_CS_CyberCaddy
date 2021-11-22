@@ -204,7 +204,10 @@ public class ChatListFragment extends Fragment {
                                     chat.getSender().equals(currentUser.getUid())){
                                 if(chat.getType()!=null && chat.getType().equals("image")){
                                     theLastMessage = "사진을 보냈습니다...";
-                                }else{
+                                }else if(chat.getType()!=null && chat.getType().equals("video")){
+                                    theLastMessage = "동영상을 보냈습니다...";
+                                }
+                                else{
                                     theLastMessage = chat.getMessage();
                                 }
 

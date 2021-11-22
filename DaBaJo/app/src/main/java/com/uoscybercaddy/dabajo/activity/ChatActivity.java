@@ -105,11 +105,15 @@ public class ChatActivity extends AppCompatActivity {
     private static final int IMAGE_PICK_CAMERA_CODE = 300;
     private static final int IMAGE_PICK_GALLERY_CODE = 400;
 
+    private static final int VIDEO_PICK_GALLERY_CODE = 500;
+    private static final int VIDEO_PICK_CAMERA_CODE = 600;
+
     String[] cameraPermissions;
+    boolean isVideo = false;
     String[] storagePermissions;
 
     Uri image_rui = null;
-
+    private Uri videoUri= null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +129,7 @@ public class ChatActivity extends AppCompatActivity {
         messageEt = findViewById(R.id.messageEt);
         sendBtn = findViewById(R.id.sendBtn);
         attachBtn = findViewById(R.id.attachBtn);
-
+        isVideo = false;
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -252,11 +256,12 @@ public class ChatActivity extends AppCompatActivity {
         seenMessage();
     }
     private void showImagePicDialog(){
-        String options[] = {"사진 촬영", "갤러리"};
+        String options[] = {"사진 촬영","사진갤러리", "동영상 촬영","동영상 갤러리"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("골라주세요");
         builder.setItems(options, (dialog, which) ->{
             if(which == 0){
+                isVideo = false;
                 if(!checkCameraPermission()){
                     requestCameraPermission();
                     Log.e("리퀘스트 카메라 퍼미션 ","리퀘스트 카메라 퍼미션");
@@ -266,12 +271,32 @@ public class ChatActivity extends AppCompatActivity {
                     Log.e("pickFromCamera","pickFromCamera");
                 }
             }else if(which ==1){
-                //갤러리
+                //사진갤러리
+                isVideo = false;
                 if(!checkStoragePermission()){
                     requestStoragePermission();
                 }
                 else{
                     pickFromGallery();
+                }
+            }else if(which==2){
+                isVideo = true;
+                if(!checkCameraPermission()){
+                    requestCameraPermission();
+                    Log.e("리퀘스트 카메라 퍼미션 ","리퀘스트 카메라 퍼미션");
+                }
+                else{
+                    videoPickCamera();
+                    Log.e("pickFromCamera","pickFromCamera");
+                }
+            }else if(which==3){
+                //비디오갤러리
+                isVideo = true;
+                if(!checkStoragePermission()){
+                    requestStoragePermission();
+                }
+                else{
+                    videoPickGallery();
                 }
             }
         });
@@ -292,7 +317,8 @@ public class ChatActivity extends AppCompatActivity {
     private boolean checkCameraPermission(){
         boolean result1 = checkSelfPermission(Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
         boolean result2 = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        return result1 && result2;
+        boolean result3 = checkSelfPermission(Manifest.permission.WAKE_LOCK) == (PackageManager.PERMISSION_GRANTED);
+        return result1 && result2 && result3;
     }
     private void requestCameraPermission(){
         requestPermissions(cameraPermissions, CAMERA_REQUEST_CODE);
@@ -330,7 +356,12 @@ public class ChatActivity extends AppCompatActivity {
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     if(cameraAccepted && writeStorageAccepted){
-                        pickFromCamera();
+                        if(isVideo){
+                            videoPickCamera();
+                        }else{
+                            pickFromCamera();
+                        }
+
                     }else{
                         if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) && shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
                             startToast("카메라&저장소를 승인해주세요.");
@@ -361,7 +392,12 @@ public class ChatActivity extends AppCompatActivity {
                 if(grantResults.length > 0 ){
                     boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if(writeStorageAccepted){
-                        pickFromGallery();
+                        if(isVideo){
+                            videoPickGallery();
+                        }else{
+                            pickFromGallery();
+                        }
+
                     }else{
                         if(shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
                             startToast("저장소를 승인해주세요.");
@@ -399,6 +435,16 @@ public class ChatActivity extends AppCompatActivity {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_rui);
         startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
     }
+    private void videoPickCamera(){
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        startActivityForResult(intent, VIDEO_PICK_CAMERA_CODE);
+    }
+    private void videoPickGallery(){
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "동영상 선택"),VIDEO_PICK_GALLERY_CODE);
+    }
     private void pickFromGallery(){
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
@@ -417,6 +463,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("resultCode : ",""+resultCode);
         Log.e("RESULT_OK : ",""+ RESULT_OK);
+        Log.e("requestCode : ",""+ requestCode);
         if(resultCode == RESULT_OK){
             if(requestCode == IMAGE_PICK_GALLERY_CODE){
                 image_rui = data.getData();
@@ -426,12 +473,23 @@ public class ChatActivity extends AppCompatActivity {
                 sendImageMessage(image_rui);
 
             }
-            if(requestCode == IMAGE_PICK_CAMERA_CODE){
+            else if(requestCode == IMAGE_PICK_CAMERA_CODE){
                 Log.e("이미지 uri",""+image_rui);
                // profileImageView.setImageURI(null);
                // profileImageView.setImageURI(image_rui);
                 sendImageMessage(image_rui);
 
+            }
+            else if(requestCode == VIDEO_PICK_GALLERY_CODE){
+                videoUri = data.getData();
+                Log.e("이미지 uri",""+videoUri);
+                // profileImageView.setImageURI(null);
+                // profileImageView.setImageURI(image_rui);
+                sendImageMessage(videoUri);
+            }
+            else if(requestCode == VIDEO_PICK_CAMERA_CODE){
+                videoUri = data.getData();
+                sendImageMessage(videoUri);
             }
         }
     }
@@ -518,57 +576,105 @@ public class ChatActivity extends AppCompatActivity {
 
         notify = true;
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("이미지 전송중...");
+        progressDialog.setMessage("파일 전송중...");
         progressDialog.show();
         String timeStamp = ""+System.currentTimeMillis();
         String fileNameAndPath = "ChatImages/"+"post_"+timeStamp;
 
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_rui);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte[] data = baos.toByteArray();
-            StorageReference ref = FirebaseStorage.getInstance().getReference().child(fileNameAndPath);
-            ref.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressDialog.dismiss();
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while(!uriTask.isSuccessful());
-                    String downloadUri = uriTask.getResult().toString();
+            if(isVideo){
+                StorageReference ref = FirebaseStorage.getInstance().getReference().child(fileNameAndPath);
+                ref.putFile(image_rui)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                progressDialog.dismiss();
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while(!uriTask.isSuccessful());
+                                String downloadUri = uriTask.getResult().toString();
 
-                    if(uriTask.isSuccessful()){
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("sender", myUid);
-                        data.put("receiver", hisUid);
-                        data.put("message",downloadUri);
-                        data.put("timestamp", timeStamp);
-                        data.put("type", "image");
-                        data.put("isSeen",false);
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("chats")
-                                .add(data)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error adding document", e);
-                                    }
-                                });
-                    }
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
+                                if(uriTask.isSuccessful()){
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("sender", myUid);
+                                    data.put("receiver", hisUid);
+                                    data.put("message",downloadUri);
+                                    data.put("timestamp", timeStamp);
+                                    data.put("type", "video");
+                                    data.put("isSeen",false);
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    db.collection("chats")
+                                            .add(data)
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
+                                                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error adding document", e);
+                                                }
+                                            });
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+            }else{
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_rui);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] data = baos.toByteArray();
+                StorageReference ref = FirebaseStorage.getInstance().getReference().child(fileNameAndPath);
+                ref.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        progressDialog.dismiss();
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while(!uriTask.isSuccessful());
+                        String downloadUri = uriTask.getResult().toString();
+
+                        if(uriTask.isSuccessful()){
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("sender", myUid);
+                            data.put("receiver", hisUid);
+                            data.put("message",downloadUri);
+                            data.put("timestamp", timeStamp);
+                            data.put("type", "image");
+                            data.put("isSeen",false);
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            db.collection("chats")
+                                    .add(data)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error adding document", e);
+                                        }
+                                    });
                         }
-                    });
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                            }
+                        });
+            }
+
+
+
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             final DocumentReference docRef = db.collection("users").document(myUid);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -583,7 +689,7 @@ public class ChatActivity extends AppCompatActivity {
                     if (snapshot != null && snapshot.exists()) {
                         Log.d(TAG+"여기는??", "Current data: " + snapshot.getData());
                         if(notify){
-                            senNotification(hisUid, snapshot.getData().get("name").toString(), "사진을 보냈습니다...");
+                            senNotification(hisUid, snapshot.getData().get("name").toString(), "미디어 파일을 보냈습니다...");
                         }
                         notify = false;
 

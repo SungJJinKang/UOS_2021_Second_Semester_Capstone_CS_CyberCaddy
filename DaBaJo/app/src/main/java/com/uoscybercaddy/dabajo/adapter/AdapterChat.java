@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,8 +37,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.ChatActivity;
+import com.uoscybercaddy.dabajo.activity.DashboardActivity;
+import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
+import com.uoscybercaddy.dabajo.activity.VideoActivity;
 import com.uoscybercaddy.dabajo.models.Modelchat;
 
 import java.util.ArrayList;
@@ -87,10 +98,27 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
                 Glide.with(context).load(R.drawable.ic_image_black).centerCrop().override(500).into(holder.messageIv);
             }
 
-        }else{
+        }else if(type != null && type.equals("video")){
+            //holder.progressBar.setVisibility(View.VISIBLE);
+            holder.messageTv.setVisibility(View.GONE);
+            holder.messageIv.setVisibility(View.VISIBLE);
+            try{
+                Glide.with(context).load(R.drawable.ic_videoplay_black).centerCrop().override(500).into(holder.messageIv);
+            }catch (Exception e){
+                Glide.with(context).load(R.drawable.ic_videoplay_black).centerCrop().override(500).into(holder.messageIv);
+            }
+            holder.messageLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, VideoActivity.class);
+                    intent.putExtra("message",message);
+                    context.startActivity(intent);
+                }
+            });
+        }
+        else{
             holder.messageTv.setVisibility(View.VISIBLE);
             holder.messageIv.setVisibility(View.GONE);
-
             holder.messageTv.setText(message);
         }
 
@@ -120,7 +148,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
                     }
                 });
                 builder.create().show();
-                return false;
+                return true;
             }
         });
         if(position == chatList.size()-1){
@@ -140,6 +168,22 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
         String msgTimeStamp = chatList.get(position).getTimestamp();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference citiesRef = db.collection("chats");
+        if(!chatList.get(position).getType().equals("text")){
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference httpsReference = storage.getReferenceFromUrl(chatList.get(position).getMessage());
+            httpsReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // File deleted successfully
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Uh-oh, an error occurred!
+                }
+            });
+        }
+
 
         citiesRef.whereEqualTo("timestamp",msgTimeStamp)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -154,6 +198,19 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
                             if (doc.get("sender") != null) {
                                 if(doc.getString("sender").equals(myUid)){
                                     doc.getReference().update("message", "메세지가 삭제됐습니다...")
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "메세지삭제 ");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error writing document", e);
+                                                }
+                                            });
+                                    doc.getReference().update("type", "text")
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -200,7 +257,6 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
         LinearLayout messageLayout;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
-
             profileIv = itemView.findViewById(R.id.profileIv);
             messageIv = itemView.findViewById(R.id.messageIv);
             messageTv = itemView.findViewById(R.id.messageTv);
