@@ -178,7 +178,7 @@ public class ChatListFragment extends Fragment {
 
     private void lastMessage(String userId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("chats")
+        db.collection("chats").orderBy("timestamp")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value,
