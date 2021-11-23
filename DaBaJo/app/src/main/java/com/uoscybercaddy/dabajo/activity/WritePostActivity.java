@@ -4,8 +4,9 @@ import static com.uoscybercaddy.dabajo.activity.ImageDirectoryHelper.GetImageDir
 import static com.uoscybercaddy.dabajo.activity.ImageDirectoryHelper.GetVideoDirecotry;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -39,7 +40,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.firestore.v1.Write;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
@@ -53,9 +53,13 @@ public class WritePostActivity extends AppCompatActivity {
     private FirebaseUser user;
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
-    private static final int IMAGE_PICK_GALLERY_IMAGE_CODE = 301;
-    private static final int IMAGE_PICK_GALLERY_VIDEO_CODE = 302;
-    private static final int IMAGE_PICK_CAMERA_CODE = 400;
+
+    private static final int PICK_IMAGE_FROM_GALLERY = 301;
+    private static final int PICK_VIDEO_FROM_GALLERY = 302;
+
+    private static final int TAKE_IMAGE_CODE = 303;
+    private static final int TAKE_VIDEO_CODE = 304;
+
     ActionBar actionBar;
     EditText postTitle, postBody;
     ImageButton goBackFeed;
@@ -174,9 +178,39 @@ public class WritePostActivity extends AppCompatActivity {
     }
 
 
+    private void takeImageFromCamera(){
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "Temp Pic");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
+
+        image_url = this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_url);
+        startActivityForResult(cameraIntent, TAKE_IMAGE_CODE);
+    }
+    private void takeVideoFromCamera(){
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        startActivityForResult(intent, TAKE_VIDEO_CODE);
+    }
+    private void pickVideoFromGallery(){
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "동영상 선택"), PICK_VIDEO_FROM_GALLERY);
+    }
+    private void pickImageFromGallery(){
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, PICK_IMAGE_FROM_GALLERY);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
         setContentView(R.layout.activity_write_post);
         parent = findViewById(R.id.contentsLayout);
         actionBar = getSupportActionBar();
@@ -211,24 +245,62 @@ public class WritePostActivity extends AppCompatActivity {
                     startActivityShortcut(FeedActivity.class);
                     break;
                 case R.id.imageButton:
-                    if(!checkStoragePermission()){
-                        requestStoragePermission();
-                    }
-                    else{
-                        pickFromGalleryImage();
-                    }
+                    showImageDialog();
                     break;
                 case R.id.videoButton:
-                    if(!checkStoragePermission()){
-                        requestStoragePermission();
-                    }
-                    else{
-                        pickFromGalleryVideo();
-                    }
+                    showVideoDialog();
                     break;
             }
         }
     };
+
+    private void showImageDialog() {
+        String options[] = {"사진 촬영", "사진갤러리"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("골라주세요");
+        builder.setItems(options, (dialog, which) -> {
+            if (which == 0) {
+                if (!checkCameraPermission()) {
+                    requestCameraPermission();
+                    Log.e("리퀘스트 카메라 퍼미션 ", "리퀘스트 카메라 퍼미션");
+                } else {
+                    takeImageFromCamera();
+                    Log.e("pickFromCamera", "pickFromCamera");
+                }
+            } else if (which == 1) {
+                if (!checkStoragePermission()) {
+                    requestStoragePermission();
+                } else {
+                    pickImageFromGallery();
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showVideoDialog() {
+        String options[] = {"동영상 촬영", "동영상 갤러리"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("골라주세요");
+        builder.setItems(options, (dialog, which) -> {
+            if (which == 0) {
+                if (!checkCameraPermission()) {
+                    requestCameraPermission();
+                    Log.e("리퀘스트 카메라 퍼미션 ", "리퀘스트 카메라 퍼미션");
+                } else {
+                    takeVideoFromCamera();
+                    Log.e("pickFromCamera", "pickFromCamera");
+                }
+            } else if (which == 1) {
+                if (!checkStoragePermission()) {
+                    requestStoragePermission();
+                } else {
+                    pickVideoFromGallery();
+                }
+            }
+        });
+        builder.create().show();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -236,7 +308,7 @@ public class WritePostActivity extends AppCompatActivity {
         Log.e("resultCode : ",""+resultCode);
         Log.e("RESULT_OK : ",""+ RESULT_OK);
         if(resultCode == RESULT_OK){
-            if(requestCode == IMAGE_PICK_GALLERY_IMAGE_CODE){
+            if(requestCode == PICK_IMAGE_FROM_GALLERY){
                 image_url = data.getData();
                 String imagePath = data.getStringExtra("imagePath");
                 Log.e("이미지 uri",""+image_url);
@@ -254,13 +326,28 @@ public class WritePostActivity extends AppCompatActivity {
 //                parent.addView(editText);
 
             }
-            else if(requestCode == IMAGE_PICK_CAMERA_CODE){
+            else if(requestCode == TAKE_IMAGE_CODE){
+
+                String imagePath = data.getStringExtra("imagePath");
                 Log.e("이미지 uri",""+image_url);
-//                profileImageView.setImageURI(null);
-//                profileImageView.setImageURI(image_url);
+
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ImageView imageView = new ImageView(WritePostActivity.this);
+                imageView.setLayoutParams(layoutParams);
+                Glide.with(this).load(image_url).override(1000).into(imageView);
+                parent.addView(imageView);
+                uploadedImageList.add(imageView);
 
             }
-            else if(requestCode == IMAGE_PICK_GALLERY_VIDEO_CODE)
+            else if(requestCode == PICK_VIDEO_FROM_GALLERY)
+            {
+                Uri selecteVideoUri = data.getData();
+                if(selecteVideoUri != null)
+                {
+                    uploadedVideoUriList.add(selecteVideoUri);
+                }
+            }
+            else if(requestCode == TAKE_VIDEO_CODE)
             {
                 Uri selecteVideoUri = data.getData();
                 if(selecteVideoUri != null)
@@ -320,17 +407,18 @@ public class WritePostActivity extends AppCompatActivity {
         startActivity(intent);
     } // startactivity 한번에 사용하기
 
-    private void pickFromGalleryImage(){
+    private void pickFromGalleryImage()
+    {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_IMAGE_CODE);
+        startActivityForResult(galleryIntent, PICK_IMAGE_FROM_GALLERY);
     }
 
     private void pickFromGalleryVideo(){
         Intent intent = new Intent();
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, IMAGE_PICK_GALLERY_VIDEO_CODE);
+        startActivityForResult(intent, PICK_VIDEO_FROM_GALLERY);
     }
 
     private String gteVideoPath(Uri uri) {
