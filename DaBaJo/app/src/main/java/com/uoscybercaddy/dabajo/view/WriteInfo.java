@@ -7,6 +7,10 @@ import java.util.Date;
 import java.util.List;
 
 public class WriteInfo implements Serializable {
+
+    // 업데이트 용도로 사용
+    public String FirebaseWriteInfoID;
+    
     private String title;
     private String body;
     private String writer;
@@ -19,10 +23,21 @@ public class WriteInfo implements Serializable {
     //public int[] videoSize;
     public List<String> videoExtensions;
     public transient  boolean isVideoDataLoaded = false;
-    public ArrayList<String> commentList;
+
+
+    public static class Comment implements Serializable
+    {
+        public String CommentText;
+        public String WriterUID;
+    }
+    public List<Comment> commentList;
+
     public WriteInfo() {
 
     }
+
+
+
     public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;
         this.body = contents;

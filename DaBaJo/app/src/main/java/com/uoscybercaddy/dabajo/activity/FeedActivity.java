@@ -87,9 +87,10 @@ public class FeedActivity extends AppCompatActivity {
                             mDatas = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                mDatas.add(
-                                        document.toObject(WriteInfo.class)
-                                );
+
+                                WriteInfo writeInfo = document.toObject(WriteInfo.class);
+                                writeInfo.FirebaseWriteInfoID = document.getId();
+                                mDatas.add(writeInfo);
 
                             } // DATE 순으로 정렬 필요
                             // 댓글 postactivity
