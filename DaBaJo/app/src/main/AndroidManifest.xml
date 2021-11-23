@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DaBaJo">
         <activity
+            android:name=".activity.PictureActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.VideoActivity"
             android:exported="false" />
 

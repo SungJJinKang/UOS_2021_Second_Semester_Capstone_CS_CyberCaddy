@@ -43,6 +43,7 @@ import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.ChatActivity;
 import com.uoscybercaddy.dabajo.activity.DashboardActivity;
 import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
+import com.uoscybercaddy.dabajo.activity.PictureActivity;
 import com.uoscybercaddy.dabajo.activity.VideoActivity;
 import com.uoscybercaddy.dabajo.models.Modelchat;
 
@@ -97,6 +98,14 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder>{
             }catch (Exception e){
                 Glide.with(context).load(R.drawable.ic_image_black).centerCrop().override(500).into(holder.messageIv);
             }
+            holder.messageLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, PictureActivity.class);
+                    intent.putExtra("message",message);
+                    context.startActivity(intent);
+                }
+            });
 
         }else if(type != null && type.equals("video")){
             //holder.progressBar.setVisibility(View.VISIBLE);
