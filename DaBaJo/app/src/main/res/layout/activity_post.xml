@@ -43,19 +43,20 @@
         <LinearLayout
             android:id="@+id/item_post_layout"
             android:layout_width="match_parent"
-            android:layout_height="470dp"
+            android:layout_height="345dp"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/item_post_comment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="bottom"
             android:orientation="vertical">
 
-        </LinearLayout>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 
@@ -66,7 +67,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/commentText"
+            android:id="@+id/writeCommentText"
             android:layout_width="321dp"
             android:layout_height="wrap_content"
             android:hint="댓글"

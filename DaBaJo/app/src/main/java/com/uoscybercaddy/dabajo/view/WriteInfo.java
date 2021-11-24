@@ -5,8 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.uoscybercaddy.dabajo.view.Comment;
 
-public class WriteInfo extends Comment implements Serializable {
+public class WriteInfo implements Serializable {
 
     // 업데이트 용도로 사용
     public String FirebaseWriteInfoID;
@@ -25,7 +26,7 @@ public class WriteInfo extends Comment implements Serializable {
     public transient  boolean isVideoDataLoaded = false;
 
 
-    public List<Comment> commentList;
+    public ArrayList<Comment> commentList;
 
     public WriteInfo() {
 
