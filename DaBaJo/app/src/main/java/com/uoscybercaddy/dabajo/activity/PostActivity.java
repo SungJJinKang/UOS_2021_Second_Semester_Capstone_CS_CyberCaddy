@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,6 +32,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,6 +44,7 @@ import com.uoscybercaddy.dabajo.adapter.CommentAdapter;
 import com.uoscybercaddy.dabajo.adapter.PostAdapter;
 import com.uoscybercaddy.dabajo.view.Comment;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -209,10 +213,29 @@ public class PostActivity extends AppCompatActivity {
     void AddCommentFromCurrentClient(String inputString)
     {
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        user.getNi
+
         if(user!=null){
             String clientUID = user.getUid();
-            AddComment(inputString, clientUID);
+            String nickName;
+            DocumentReference docRef = db.collection("users").document(clientUID);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String nickName = document.getData().get("nickName").toString();
+                            AddComment(inputString, nickName);
+                        } else {
+                            Log.d(TAG, " ");
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+
+//            AddComment(inputString, clientUID);
         } else{
             startActivity(new Intent(this, MainActivity.class));
             finish();
