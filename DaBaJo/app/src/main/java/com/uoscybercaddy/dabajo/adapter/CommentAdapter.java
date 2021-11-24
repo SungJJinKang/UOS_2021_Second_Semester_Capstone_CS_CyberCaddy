@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
-    private ArrayList<String> mDataset;
+    private ArrayList<Comment> mDataset;
     private Activity activity;
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -34,7 +34,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         }
     }
 
-    public CommentAdapter(Activity activity, ArrayList<String> myDataset) {
+    public CommentAdapter(Activity activity, ArrayList<Comment> myDataset) {
         mDataset = myDataset;
         this.activity = activity;
     }
@@ -57,9 +57,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     @Override
     public void onBindViewHolder(@NonNull final CommentViewHolder holder, int position) {
         CardView cardView = holder.cardView;
-        TextView textView = cardView.findViewById(R.id.testText);
-        textView.setText(mDataset.get(position));
-        Log.e("로그: ","데이터: "+mDataset.get(position));
+        TextView writerView = cardView.findViewById(R.id.item_comment_writer);
+        TextView contentView = cardView.findViewById(R.id.item_comment_contents);
+        writerView.setText(mDataset.get(position).WriterUID123);
+        contentView.setText(mDataset.get(position).CommentContent123);
+//        TextView textView = cardView.findViewById(R.id.testText);
+//        textView.setText(mDataset.get(position));
+//        Log.e("로그: ","데이터: "+mDataset.get(position));
 
     }
 

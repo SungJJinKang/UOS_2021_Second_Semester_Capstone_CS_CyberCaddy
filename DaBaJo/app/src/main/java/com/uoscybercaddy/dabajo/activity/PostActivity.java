@@ -113,17 +113,18 @@ public class PostActivity extends AppCompatActivity {
         ViewGroup.LayoutParams commentParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         findViewById(R.id.commentSendButton).setOnClickListener(onClickListener);
 
-        commentListi = CurrentWriteInfo.commentList;
-        ArrayList<String> arrayList = new ArrayList<>();
-        for(Comment comment : commentListi) {
-            arrayList.add(comment.CommentContent123);
-        }
+//        commentListi = CurrentWriteInfo.commentList;
+//        ArrayList<String> arrayList = new ArrayList<>();
+//        for(Comment comment : commentListi) {
+//            arrayList.add(comment.CommentContent123);
+//        }
         RecyclerView recyclerView = findViewById(R.id.item_post_comment);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        RecyclerView.Adapter mAdapter = new CommentAdapter(this,arrayList);
+        RecyclerView.Adapter mAdapter = new CommentAdapter(this, CurrentWriteInfo.commentList);
         recyclerView.setAdapter(mAdapter);
+
 //        commentListi = CurrentWriteInfo.commentList;
 //        postRecyclerView = findViewById(R.id.item_post_comment);
 //        commentAdapter = new CommentAdapter(PostActivity.this, CurrentWriteInfo);
@@ -186,6 +187,11 @@ public class PostActivity extends AppCompatActivity {
 
         updatePost(CurrentWriteInfo);
         UpdateCommnetList();
+        finish();//인텐트 종료
+        overridePendingTransition(0, 0);//인텐트 효과 없애기
+        Intent intent = getIntent(); //인텐트
+        startActivity(intent); //액티비티 열기
+        overridePendingTransition(0, 0);//인텐트 효과 없애기
     }
 
     public void hideKeyboard()
@@ -203,6 +209,7 @@ public class PostActivity extends AppCompatActivity {
     void AddCommentFromCurrentClient(String inputString)
     {
         FirebaseUser user = firebaseAuth.getCurrentUser();
+        user.getNi
         if(user!=null){
             String clientUID = user.getUid();
             AddComment(inputString, clientUID);

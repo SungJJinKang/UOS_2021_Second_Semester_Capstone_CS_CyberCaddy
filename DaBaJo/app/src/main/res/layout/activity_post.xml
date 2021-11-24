@@ -83,7 +83,7 @@
             android:fontFamily="@font/roboto_black"
             android:text="입력"
             android:textColor="@android:color/white"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
