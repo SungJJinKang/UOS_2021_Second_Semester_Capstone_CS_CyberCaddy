@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.view.Comment;
 import com.uoscybercaddy.dabajo.view.WriteInfo;
 
 import java.text.SimpleDateFormat;
@@ -107,10 +108,10 @@ public class PostActivity extends AppCompatActivity {
     {
         if(CurrentWriteInfo.commentList == null)
         {
-            CurrentWriteInfo.commentList = new ArrayList<WriteInfo.Comment>();
+            CurrentWriteInfo.commentList = new ArrayList<Comment>();
         }
 
-        WriteInfo.Comment newComment = new WriteInfo.Comment();
+        Comment newComment = new Comment();
         newComment.CommentText = commentText;
         newComment.WriterUID = WriterUID;
 
