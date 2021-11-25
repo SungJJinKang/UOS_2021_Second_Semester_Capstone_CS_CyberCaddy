@@ -208,6 +208,13 @@ public class FeedActivity extends AppCompatActivity {
             CurrentCategoryId = getIntent().getStringExtra(PostHelper.GetCategoryIntentExtraName());
             CategoryLabel.setText(CurrentCategoryId);
         }
+        else if(getIntent().hasExtra(PostHelper.GetSpecificUserSearchIntentExtraName()))
+        {
+            CategoryLabel.setText(getIntent().getStringExtra
+                    (
+                            PostHelper.GetSpecificUserSearchIntentExtraName()
+                    ) +  "의 글, 댓글");
+        }
         else
         {
             assert(false);

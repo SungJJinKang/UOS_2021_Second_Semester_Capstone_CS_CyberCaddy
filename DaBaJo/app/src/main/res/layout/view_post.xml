@@ -10,7 +10,7 @@
     <!--    피드에 올라가는 item 입니다-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="150dp"
         android:layout_margin="2dp"
         android:orientation="vertical">
 
@@ -18,19 +18,35 @@
             android:id="@+id/item_post_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="5dp"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             tools:text="Title" />
 
         <TextView
             android:id="@+id/item_post_contents"
-            android:layout_width="wrap_content"
+            android:layout_width="287dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="1dp"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             tools:text="Contents" />
+
+        <ImageView
+            android:id="@+id/item_post_writer_img"
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:adjustViewBounds="false"
+            android:baselineAlignBottom="false"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/item_post_writerid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="WriterIdText" />
 
         <TextView
             android:id="@+id/item_post_createdAt"
