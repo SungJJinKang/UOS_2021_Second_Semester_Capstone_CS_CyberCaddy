@@ -4,6 +4,8 @@ import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,6 +86,16 @@ public class PostActivity extends AppCompatActivity {
 
         TextView contentTextView = findViewById(R.id.item_post_contents);
         contentTextView.setText(CurrentWriteInfo.getBody());
+
+        TextView writeNickName = findViewById(R.id.item_post_writer_nickname);
+        writeNickName.setText( getIntent().getStringExtra("writerNickName"));
+
+        String writerProfileImgUrl = getIntent().getStringExtra("writerImage");
+        if(writerProfileImgUrl != null)
+        {
+            ImageView writerProfileImageImageView = findViewById(R.id.item_post_profileImage);
+            Glide.with(this).load(writerProfileImgUrl).centerCrop().override(500).into(writerProfileImageImageView);
+        }
 
         commentTextImputUI = findViewById(R.id.writeCommentText);
 

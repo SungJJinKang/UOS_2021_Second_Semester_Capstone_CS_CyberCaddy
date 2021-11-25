@@ -4,6 +4,8 @@ import static com.uoscybercaddy.dabajo.activity.UserProfileHelepr.GetUserProfile
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +53,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             public void onClick(View v) {
                 Intent intent = new Intent(activity, PostActivity.class);
                 intent.putExtra("writeInfo", datas.get(postViewHolder.getAdapterPosition()));
+                intent.putExtra("writerNickName", postViewHolder.WriteNickname.getText());
+                intent.putExtra("writerImage", postViewHolder.WriterUserImageUrl);
                 activity.startActivity(intent);
+
             }
         });
 
@@ -95,6 +100,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                         if(photo != null)
                                         {
                                             String photoUrl = photo.toString();
+                                            holder.WriterUserImageUrl = photoUrl;
                                             Glide.with(activity).load(photoUrl).centerCrop().override(500).into(holder.WriterUserImageImageView);
                                             holder.WriterUserImageImageView.setVisibility(View.VISIBLE);
                                         }
@@ -127,6 +133,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         public TextView WriteNickname;
         public ImageView WriterUserImageImageView;
+        public String WriterUserImageUrl;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
