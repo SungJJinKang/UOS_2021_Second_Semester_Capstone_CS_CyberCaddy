@@ -3,6 +3,7 @@ package com.uoscybercaddy.dabajo.activity;
 import static android.content.ContentValues.TAG;
 
 import static com.uoscybercaddy.dabajo.activity.PostHelper.GetCategoryIntentExtraName;
+import static com.uoscybercaddy.dabajo.activity.PostHelper.GetSpecificUserSearchIntentExtraName;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,18 +48,33 @@ public class FeedActivity extends AppCompatActivity {
 
     private TextView CategoryLabel;
 
-    // 특정 유저가 쓴 글, 댓글 보는 방법
+    // 특정 유저가 쓴 글, 댓글 보는 방법 ( 이걸로 들어가면 카테고리는 모든 카테고리의 글을 보여준다 ).
     //
     // Intent intent = ~~activity~~~~;
-    // intent.putExtra("특정유저", targetUID); <- Intent로 특정유저랑 원하는 유저의 UID를 입력해주세요
+    // intent.putExtra(GetSpecificUserSearchIntentExtraName(), targetUID); <- Intent로 특정유저랑 원하는 유저의 UID를 입력해주세요
     // startActivity(intent);
     //
     ///////////////////////////////
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+    
+    // 현재 클라이언트 유저의 UID 보는법
     // FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     // firebaseAuth.getUid() <- 현재 클라이언트 유저의 UID
     //
 
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    // 특정 카테고리의 피드 보는법
+    // Intent intent = new Intent(돌아갈 액티비티, FeedActivity.class);
+    // intent.putExtra("튜티", 1);
+    //UI에 쓰여있는 텍스트를 기반으로 카테고리 글 가져온다.
+    // intent.putExtra(PostHelper.GetCategoryIntentExtraName(), button.getText());
+    //startActivity(intent);
+
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,16 +203,29 @@ public class FeedActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        CurrentCategoryId = getIntent().getStringExtra(PostHelper.GetCategoryIntentExtraName());
-        CategoryLabel.setText(CurrentCategoryId);
+        if(getIntent().hasExtra(PostHelper.GetCategoryIntentExtraName()))
+        {
+            CurrentCategoryId = getIntent().getStringExtra(PostHelper.GetCategoryIntentExtraName());
+            CategoryLabel.setText(CurrentCategoryId);
+        }
+        else
+        {
+            assert(false);
+        }
 
-        if(getIntent().hasExtra(PostHelper.GetCategoryIntentExtraName()) == true)
+
+        if
+        (
+                getIntent().hasExtra(PostHelper.GetCategoryIntentExtraName()) == true &&
+                getIntent().hasExtra(PostHelper.GetSpecificUserSearchIntentExtraName()) == false
+        )
         {
             writePostButton.setVisibility(View.VISIBLE);
         }
         else
         {
-            // 카테고리 Intent Extra 없으면 글 쓰기 버튼 안보인다.
+            // 카테고리 Intent Extra 없으면 글 쓰기 버튼 안보인다 OR
+            // 특정 유저의 글, 댓글 검색한 경우 글 쓰기 버튼 안보인다.
             writePostButton.setVisibility(View.INVISIBLE);
         }
 
@@ -213,9 +242,9 @@ public class FeedActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
 
-                            if(getIntent().hasExtra("특정유저"))
+                            if(getIntent().hasExtra(GetSpecificUserSearchIntentExtraName()))
                             {// 특정 유저가 쓴 글이나 특정 유저가 쓴 댓글의 글을 보기 위한 용도
-                                String targetUserUID = getIntent().getStringExtra("특정유저");
+                                String targetUserUID = getIntent().getStringExtra(GetSpecificUserSearchIntentExtraName());
                                 mDatas = GetAllPostWrittenByTargetUser(task, targetUserUID, PostFilter.PostsAndCommnetsWrittenByTargetUser);
                             }
                             else

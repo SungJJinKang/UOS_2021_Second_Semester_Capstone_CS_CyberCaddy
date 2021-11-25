@@ -4,10 +4,40 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/drawable/ic_sports_soccer_black_24dp.xml" value="0.14583333333333334" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_chat.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_dashboard.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_dashboard_tutor.xml" value="0.1" />
         <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_feed.xml" value="0.16666666666666666" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_gallery.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_member_info_init.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_member_info_init_tutor.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_notice.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_picture.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_post.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_sign_up.xml" value="0.1" />
         <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_sport.xml" value="0.14666666666666667" />
-        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_category.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_video.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/activity_write_post.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/chat.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_category.xml" value="0.16666666666666666" />
         <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_category_tutor.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_chat_list.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_favorite.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_home_tutor.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_profile.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_profile_tutor.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/fragment_users.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/item_comment.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/item_post.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/like_tutor.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/row_chat_left.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/row_chat_right.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/row_chatlist.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/row_users.xml" value="0.1" />
+        <entry key="..\:/UOS_2021_Second_Semester_Capstone_CS_CyberCaddy/DaBaJo/app/src/main/res/layout/view_post.xml" value="0.1" />
         <entry key="..\:/Users/Sooyeong/Desktop/cap/DaBaJo/app/src/main/res/drawable/bottom_icon_color.xml" value="0.21875" />
         <entry key="..\:/Users/Sooyeong/Desktop/cap/DaBaJo/app/src/main/res/layout/activity_feed.xml" value="0.2557544757033248" />
         <entry key="..\:/Users/Sooyeong/Desktop/cap/DaBaJo/app/src/main/res/layout/activity_main.xml" value="0.3619791666666667" />
