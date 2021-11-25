@@ -22,7 +22,7 @@
             app:srcCompat="@drawable/ic_navigate_before_black_24dp" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/CategorryLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"

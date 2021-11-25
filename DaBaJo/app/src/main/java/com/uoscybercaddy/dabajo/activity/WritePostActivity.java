@@ -60,6 +60,8 @@ public class WritePostActivity extends AppCompatActivity {
     private static final int TAKE_IMAGE_CODE = 303;
     private static final int TAKE_VIDEO_CODE = 304;
 
+    private String CurrentCategoryID;
+
     ActionBar actionBar;
     EditText postTitle, postBody;
     ImageButton goBackFeed;
@@ -205,6 +207,14 @@ public class WritePostActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart()
+    {
+        super.onStart();
+        CurrentCategoryID = getIntent().getStringExtra(PostHelper.GetCategoryIntentExtraName());
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -222,6 +232,7 @@ public class WritePostActivity extends AppCompatActivity {
         findViewById(R.id.imageButton).setOnClickListener(onClickListener);
         findViewById(R.id.videoButton).setOnClickListener(onClickListener);
 
+
         Intent intent = getIntent();
         if(intent.hasExtra("튜티")) {
             goBackFeed.setOnClickListener(new View.OnClickListener() {
@@ -229,6 +240,7 @@ public class WritePostActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intent = new Intent(WritePostActivity.this, FeedActivity.class);
                     intent.putExtra("튜티", 1);
+                    intent.putExtra(PostHelper.GetCategoryIntentExtraName(), CurrentCategoryID);
                     startActivity(intent);
                 }
             });
@@ -242,7 +254,7 @@ public class WritePostActivity extends AppCompatActivity {
                 case R.id.postButton:
                     startToast("works");
                     writePost();
-                    startActivityShortcut(FeedActivity.class);
+                    GoToFeedActivity(CurrentCategoryID);
                     break;
                 case R.id.imageButton:
                     showImageDialog();
@@ -370,6 +382,8 @@ public class WritePostActivity extends AppCompatActivity {
             UpdateImage(writeInfo);
             UpdateVideo(writeInfo);
 
+            writeInfo.Category = CurrentCategoryID;
+
             uploadPost(writeInfo);
 
         } else {
@@ -401,9 +415,10 @@ public class WritePostActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void startActivityShortcut(Class c) {
-        Intent intent = new Intent(this, c);
+    private void GoToFeedActivity(String categoryID) {
+        Intent intent = new Intent(this, FeedActivity.class);
         intent.putExtra("튜티", 1);
+        intent.putExtra(PostHelper.GetCategoryIntentExtraName(), categoryID);
         startActivity(intent);
     } // startactivity 한번에 사용하기
 
