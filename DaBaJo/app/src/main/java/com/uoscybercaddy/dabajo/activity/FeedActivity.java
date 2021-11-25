@@ -2,11 +2,14 @@ package com.uoscybercaddy.dabajo.activity;
 
 import static android.content.ContentValues.TAG;
 
+import static com.uoscybercaddy.dabajo.activity.PostHelper.GetCategoryIntentExtraName;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,7 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firestore.v1.Write;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.PostAdapter;
 import com.uoscybercaddy.dabajo.view.Comment;
@@ -39,7 +41,11 @@ public class FeedActivity extends AppCompatActivity {
     private ArrayList<WriteInfo> mDatas;
     ActionBar actionBar;
     ImageButton goBackSport;
-    ImageButton writeButton;
+    ImageButton writePostButton;
+
+    private String CurrentCategoryId;
+
+    private TextView CategoryLabel;
 
     // 특정 유저가 쓴 글, 댓글 보는 방법
     //
@@ -61,6 +67,9 @@ public class FeedActivity extends AppCompatActivity {
         actionBar.hide();
         goBackSport = findViewById(R.id.goBackButton);
         findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
+
+        writePostButton = findViewById(R.id.writePostButton);
+        CategoryLabel = findViewById(R.id.CategorryLabel);
 
         Intent intent = getIntent();
 
@@ -86,7 +95,7 @@ public class FeedActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<WriteInfo> GetAllPost(@NonNull Task<QuerySnapshot> task)
+    private ArrayList<WriteInfo> GetAllPostFromCategory(@NonNull Task<QuerySnapshot> task, String categoryID)
     {
         ArrayList<WriteInfo> posts = new ArrayList<>();
 
@@ -95,7 +104,16 @@ public class FeedActivity extends AppCompatActivity {
 
             WriteInfo writeInfo = document.toObject(WriteInfo.class);
             writeInfo.FirebaseWriteInfoID = document.getId();
-            posts.add(writeInfo);
+
+            if(writeInfo.Category != null)
+            {
+                if(writeInfo.Category.compareTo(categoryID) == 0)
+                {
+                    posts.add(writeInfo);
+                }
+            }
+
+
 
         } // DATE 순으로 정렬 필요
 
@@ -169,7 +187,25 @@ public class FeedActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        db.collection("posts")
+        CurrentCategoryId = getIntent().getStringExtra(PostHelper.GetCategoryIntentExtraName());
+        CategoryLabel.setText(CurrentCategoryId);
+
+        if(getIntent().hasExtra(PostHelper.GetCategoryIntentExtraName()) == true)
+        {
+            writePostButton.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            // 카테고리 Intent Extra 없으면 글 쓰기 버튼 안보인다.
+            writePostButton.setVisibility(View.INVISIBLE);
+        }
+
+
+        assert(getIntent().hasExtra(GetCategoryIntentExtraName()));
+
+        String dbPath = "posts";
+
+        db.collection(dbPath)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -185,7 +221,7 @@ public class FeedActivity extends AppCompatActivity {
                             else
                             {// 일반적으로 사용
                                 // 모든 유저의 글을 보기 위한 용도
-                                mDatas = GetAllPost(task);
+                                mDatas = GetAllPostFromCategory(task, CurrentCategoryId);
                             }
                             
                             // 댓글 postactivity
@@ -208,7 +244,8 @@ public class FeedActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.writePostButton:
-                    startActivityShortcut(WritePostActivity.class);
+
+                    GoToWritePostActivity(CurrentCategoryId);
                     break;
 
             }
@@ -219,9 +256,13 @@ public class FeedActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void startActivityShortcut(Class c) {
-        Intent intent = new Intent(this, c);
+    private void GoToWritePostActivity(String caterogryID) {
+        Intent intent = new Intent(this, WritePostActivity.class);
         intent.putExtra("튜티", 1);
+        intent.putExtra(PostHelper.GetCategoryIntentExtraName(), caterogryID);
         startActivity(intent);
     }
+
+
+
 }

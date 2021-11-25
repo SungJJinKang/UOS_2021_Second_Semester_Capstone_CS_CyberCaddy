@@ -11,7 +11,9 @@ public class WriteInfo implements Serializable {
 
     // 업데이트 용도로 사용
     public String FirebaseWriteInfoID;
-    
+
+    public String Category;
+
     private String title;
     private String body;
     private String writer;
