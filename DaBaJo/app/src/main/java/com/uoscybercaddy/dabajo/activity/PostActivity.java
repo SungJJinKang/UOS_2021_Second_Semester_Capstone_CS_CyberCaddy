@@ -286,6 +286,14 @@ public class PostActivity extends AppCompatActivity {
 
     }
 
+    // 특정 유저가 쓴 댓글이나 포스트를 모두 보여줌
+    public void ShowPostOrCommentsWrittenByTargetUser(String targetUID)
+    {
+        Intent intent = new Intent(this, FeedActivity.class);
+        intent.putExtra("특정유저", targetUID);
+        startActivity(intent);
+    }
+
 
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
