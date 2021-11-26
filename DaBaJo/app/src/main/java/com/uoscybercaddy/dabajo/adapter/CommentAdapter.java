@@ -59,8 +59,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         CardView cardView = holder.cardView;
         TextView writerView = cardView.findViewById(R.id.item_comment_writer);
         TextView contentView = cardView.findViewById(R.id.item_comment_contents);
+        TextView createdAtView = cardView.findViewById(R.id.item_comment_createdAt);
         writerView.setText(mDataset.get(position).WriterUID123);
         contentView.setText(mDataset.get(position).CommentContent123);
+        String temptime = mDataset.get(position).createdAt.toString();
+        createdAtView.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(mDataset.get(position).createdAt));
 //        TextView textView = cardView.findViewById(R.id.testText);
 //        textView.setText(mDataset.get(position));
 //        Log.e("로그: ","데이터: "+mDataset.get(position));

@@ -50,6 +50,7 @@ import com.uoscybercaddy.dabajo.view.WriteInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -129,11 +130,6 @@ public class PostActivity extends AppCompatActivity {
         ViewGroup.LayoutParams commentParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         findViewById(R.id.commentSendButton).setOnClickListener(onClickListener);
 
-//        commentListi = CurrentWriteInfo.commentList;
-//        ArrayList<String> arrayList = new ArrayList<>();
-//        for(Comment comment : commentListi) {
-//            arrayList.add(comment.CommentContent123);
-//        }
         RecyclerView recyclerView = findViewById(R.id.item_post_comment);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -141,50 +137,11 @@ public class PostActivity extends AppCompatActivity {
         RecyclerView.Adapter mAdapter = new CommentAdapter(this, CurrentWriteInfo.commentList);
         recyclerView.setAdapter(mAdapter);
 
-//        commentListi = CurrentWriteInfo.commentList;
-//        postRecyclerView = findViewById(R.id.item_post_comment);
-//        commentAdapter = new CommentAdapter(PostActivity.this, CurrentWriteInfo);
-//        postRecyclerView.setAdapter(commentAdapter);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-//        commentListi = CurrentWriteInfo.commentList;
-//        postRecyclerView = findViewById(R.id.item_post_comment);
-//        commentAdapter = new CommentAdapter(PostActivity.this, CurrentWriteInfo);
-//        postRecyclerView.setAdapter(commentAdapter);
-
-//        db.collection("posts")
-//                .orderBy("createdAt", Query.Direction.DESCENDING)
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            commentListi = new ArrayList<>();
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d(TAG, document.getId() + " => " + document.getData());
-//
-//                                Comment comment = document.toObject(Comment.class);
-//                                comment.FirebaseWriteInfoID = document.getId();
-//                                commentListi.add(writeInfo);
-//
-//                            } // DATE 순으로 정렬 필요
-//                            // 댓글 postactivity
-//                            feedRecyclerView = findViewById(R.id.feedRecyclerView);
-//
-//                            mAdapter = new PostAdapter(FeedActivity.this, mDatas);
-//                            feedRecyclerView.setAdapter(mAdapter);
-//
-//                        } else {
-//                            Log.d(TAG, "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-
 
     }
 
@@ -198,6 +155,7 @@ public class PostActivity extends AppCompatActivity {
         Comment newComment = new Comment();
         newComment.setCommentText(addCommentString);
         newComment.setWriterUID(WriterUID);
+        newComment.setCreatedAt(new Date());
 
         CurrentWriteInfo.commentList.add(newComment);
 
@@ -266,11 +224,6 @@ public class PostActivity extends AppCompatActivity {
 
                     hideKeyboard();
 
-//                    commentListi = CurrentWriteInfo.commentList;
-//                    postRecyclerView = findViewById(R.id.item_post_comment);
-//                    commentAdapter = new CommentAdapter(PostActivity.this, CurrentWriteInfo);
-//                    postRecyclerView.setAdapter(commentAdapter);
-
                     startToast("Success to update comment");
 
                     break;
@@ -286,15 +239,10 @@ public class PostActivity extends AppCompatActivity {
 
     // 이 액티비티에서는 댓글 업로드하기 위해 사용
     private void updatePost(WriteInfo writeInfo){
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("posts")
                 .document(writeInfo.FirebaseWriteInfoID)
                 .set(writeInfo);
-//        commentListi = writeInfo.commentList;
-//        postRecyclerView = findViewById(R.id.item_post_comment);
-//        commentAdapter = new CommentAdapter(PostActivity.this, CurrentWriteInfo);
-//        postRecyclerView.setAdapter(commentAdapter);
 
     }
 
