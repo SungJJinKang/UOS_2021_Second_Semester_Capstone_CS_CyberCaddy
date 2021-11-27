@@ -96,7 +96,7 @@ public class ProfileFragmentTutor extends Fragment {
         fieldTv = (TextView) view.findViewById(R.id.fieldTv);
         descriptionTv = (TextView) view.findViewById(R.id.descriptionTv);
         chatting = (ImageButton) view.findViewById(R.id.chattingListButton);
-        myEval = (ImageButton) view.findViewById(R.id.myEvalButton);
+        myEval = (ImageButton) view.findViewById(R.id.reviewButton);
         notice = (ImageButton) view.findViewById(R.id.noticeButton);
         logout = (ImageButton) view.findViewById(R.id.logoutButton);
         textView12 = (TextView) view.findViewById(R.id.textView12);
