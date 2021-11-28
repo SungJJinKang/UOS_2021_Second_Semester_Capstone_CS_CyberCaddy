@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    Button sportButton;
+    Button buttons[] = new Button[4];
     TextView showAll;
 
 
@@ -83,18 +83,27 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         //        textView = (TextView)view.findViewById(R.id.textView5);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        sportButton = (Button)view.findViewById(R.id.buttonSport);
         showAll = (TextView)view.findViewById(R.id.viewAll);
 
-        sportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CategorySportActivity.class);
-                intent.putExtra("튜티", "tutee");
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
+
+        buttons[0] = (Button)view.findViewById(R.id.buttonSport);
+        buttons[1] = (Button)view.findViewById(R.id.buttonArtPhy);
+        buttons[2] = (Button)view.findViewById(R.id.buttonHealth);
+        buttons[3] = (Button)view.findViewById(R.id.buttonEdu);
+
+        for(int i = 0 ; i < 4 ; i++) {
+            int finalI = i;
+            buttons[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), CategorySportActivity.class);
+                    intent.putExtra("튜티", "tutee");
+                    intent.putExtra("BigCategory", buttons[finalI].getText());
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+        }
 
         showAll.setOnClickListener(new View.OnClickListener() {
             @Override
