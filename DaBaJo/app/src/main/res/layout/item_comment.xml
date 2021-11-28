@@ -33,7 +33,14 @@
             android:textSize="16sp"
             tools:text="Contents" />
 
-<!--        <TextView-->
+        <TextView
+            android:id="@+id/item_comment_createdAt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="createdAt" />
+
+        <!--        <TextView-->
 <!--            android:id="@+id/item_comment_createdAt"-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->

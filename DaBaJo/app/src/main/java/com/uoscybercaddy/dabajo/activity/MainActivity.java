@@ -89,6 +89,7 @@ public class MainActivity extends FragmentActivity {
         findViewById(R.id.gotoMainButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoFeedButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoWritePost).setOnClickListener(onClickListener);
+        findViewById(R.id.gotoTuteeToTutorProfile).setOnClickListener(onClickListener);
 
     }
     private void checkUserStatus(){
@@ -132,6 +133,8 @@ public class MainActivity extends FragmentActivity {
                     startActivityShortcut(AddPostActivity.class);
                     break;
 
+                case R.id.gotoTuteeToTutorProfile:
+                    startActivityShortcut(TuteeToTutorProfileActivity.class);
             }
         }
     };

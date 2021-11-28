@@ -33,6 +33,19 @@
             android:textSize="16sp"
             tools:text="Contents" />
 
+        <ImageView
+            android:id="@+id/item_post_profileImage"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/item_post_writer_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="TextView" />
+
         <TextView
             android:id="@+id/item_post_createdAt"
             android:layout_width="match_parent"
