@@ -177,6 +177,7 @@ public class HomeFragmentTutor extends Fragment {
         return view;
     }
     private void checkUserStatus(){
+        firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user!=null){
             //profileTv.setText(user.getEmail());
