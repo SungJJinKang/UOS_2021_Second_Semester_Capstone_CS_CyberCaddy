@@ -88,6 +88,7 @@ public class MainActivity extends FragmentActivity {
         findViewById(R.id.writeButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoMainButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoFeedButton).setOnClickListener(onClickListener);
+        findViewById(R.id.gotoWritePost).setOnClickListener(onClickListener);
 
     }
     private void checkUserStatus(){
@@ -126,7 +127,10 @@ public class MainActivity extends FragmentActivity {
                     break;
                 case R.id.gotoFeedButton:
                     startActivityShortcut(FeedActivity.class);
-
+                    break;
+                case R.id.gotoWritePost:
+                    startActivityShortcut(AddPostActivity.class);
+                    break;
 
             }
         }

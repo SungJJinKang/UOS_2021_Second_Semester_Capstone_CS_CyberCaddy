@@ -15,24 +15,24 @@
     </style>
     <!-- 액션바 없을 때 -->
     <style name="AppThemeNo" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-    <style name="SplashActivityTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_image</item>
-    </style>
-    <style name="ShapeAppearance.App.CircleImageView" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
-    </style>
-    <style name="CustomRadioButton" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">#FB5943</item>
-    </style>
-    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
-        <item name="colorAccent">#FB5943</item>
-        <item name="android:textColorSecondary">#545454</item>
-    </style>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+</style>
+<style name="SplashActivityTheme" parent="Theme.AppCompat.NoActionBar">
+    <item name="android:windowBackground">@drawable/splash_image</item>
+</style>
+<style name="ShapeAppearance.App.CircleImageView" parent="">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">50%</item>
+</style>
+<style name="CustomRadioButton" parent="Theme.AppCompat.Light">
+    <item name="colorAccent">#FB5943</item>
+</style>
+<style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+    <item name="colorAccent">#FB5943</item>
+    <item name="android:textColorSecondary">#545454</item>
+</style>
 <!--    <style name="EditTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
 <!--        <item name="colorAccent">#FB5943</item>-->
 <!--        <item name="colorControlNormal">#545454</item>-->

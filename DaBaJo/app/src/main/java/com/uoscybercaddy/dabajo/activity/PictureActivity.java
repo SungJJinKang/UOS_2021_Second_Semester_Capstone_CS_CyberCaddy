@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -21,9 +22,9 @@ public class PictureActivity extends AppCompatActivity {
         message = intent.getStringExtra("message");
         pictureView = (ImageView) findViewById(R.id.pictureView);
         try{
-            Glide.with(PictureActivity.this).load(message).centerCrop().override(500).into(pictureView);
+            Glide.with(PictureActivity.this).load(message).override(1000).into(pictureView);
         }catch (Exception e){
-            Glide.with(PictureActivity.this).load(R.drawable.ic_profile_black).centerCrop().override(500).into(pictureView);
+            Glide.with(PictureActivity.this).load(R.drawable.ic_profile_black).override(1000).into(pictureView);
         }
     }
 }

@@ -407,7 +407,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         progressDialog.show();
         rb_woman.setError(null);
         if(nickName.length()<1){
-            editTextNickName.setError("비밀번호가 일치하지 않습니다.");
+            editTextNickName.setError("닉네임을 입력해주세요..");
             editTextNickName.setFocusable(true);
         }
         else if(name.length()<1){
