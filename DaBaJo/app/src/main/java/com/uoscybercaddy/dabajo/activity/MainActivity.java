@@ -103,11 +103,39 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private void IfMemberInfoDataNotExist_StartMemerInfoInitActivity()
+    {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference hisdocRef = db.collection("users").document(fUser.getUid());
+        hisdocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+              {
+                  @Override
+                  public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                      if (task.isSuccessful()) {
+                          DocumentSnapshot document = task.getResult();
+                          if (document.exists() == false)
+                          {
+                              Intent intent = new Intent(getApplicationContext(), MemberinfoinitActivity.class);
+                              intent.putExtra("fromProfileEdit","fromProfileEdit");
+                              startActivity(intent);
+                          }
+
+                      }
+                  }
+              }
+        );
+    }
+
     @Override
     protected void onStart() {
         //check on start of app
-        checkUserStatus();
         super.onStart();
+
+        checkUserStatus();
+
+
+        IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
