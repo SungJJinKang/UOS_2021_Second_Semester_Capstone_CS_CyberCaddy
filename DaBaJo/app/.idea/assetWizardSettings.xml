@@ -14,8 +14,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_heart" />
-                            <entry key="sourceFile" value="C:\Users\army6\Downloads\heart.svg" />
+                            <entry key="outputName" value="ic_heart_filled" />
+                            <entry key="sourceFile" value="C:\Users\army6\Downloads\heart_filled.svg" />
                           </map>
                         </option>
                       </PersistentState>

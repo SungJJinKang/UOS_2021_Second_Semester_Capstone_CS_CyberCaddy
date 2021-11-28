@@ -61,12 +61,12 @@
         <activity android:name=".activity.PostActivity" />
         <activity android:name=".activity.NoticeActivity" />
         <activity android:name=".activity.CategorySportActivity" />
-        <activity android:name=".activity.MemberinfoinitActivity" />
-        <activity android:name=".activity.CategorySport" />
-        <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.WritePostActivity" />
         <activity android:name=".activity.FeedActivity" />
-        <activity android:name=".activity.PostActivity" />
+        <activity android:name=".activity.TuteeToTutorProfileActivity" />
+        <activity android:name=".activity.TutorToTuteeProfileActivity" />
+        <activity android:name=".activity.ReviewTutorActivity" />
+        <activity android:name=".activity.EvalTutorActivity" />
     </application>
 
 </manifest>
