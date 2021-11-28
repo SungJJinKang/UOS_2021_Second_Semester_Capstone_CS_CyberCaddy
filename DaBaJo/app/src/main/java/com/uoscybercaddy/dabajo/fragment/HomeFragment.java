@@ -17,12 +17,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
 import com.uoscybercaddy.dabajo.activity.DashboardActivity;
 import com.uoscybercaddy.dabajo.activity.MainActivity;
+import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
@@ -68,6 +75,40 @@ public class HomeFragment extends Fragment {
         return fragment;
     }
 
+    private void IfMemberInfoDataNotExist_StartMemerInfoInitActivity()
+    {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference hisdocRef = db.collection("users").document(fUser.getUid());
+        hisdocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+          {
+              @Override
+              public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                  if (task.isSuccessful()) {
+                      DocumentSnapshot document = task.getResult();
+                      if (document.exists() == false)
+                      {
+                          Intent intent = new Intent(getContext(), MemberinfoinitActivity.class);
+                          intent.putExtra("fromProfileEdit","fromProfileEdit");
+                          startActivity(intent);
+                      }
+
+                  }
+              }
+          }
+        );
+    }
+    private void checkUserStatus(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if(user!=null){
+            //profileTv.setText(user.getEmail());
+        } else{
+            startActivity(new Intent(getActivity(), MainActivity.class));
+            getActivity().finish();
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -76,6 +117,29 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        checkUserStatus();
+
+
+        IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkUserStatus();
+
+
+        IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkUserStatus();
+
+
+        IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
     }
 
     @Override
@@ -135,15 +199,7 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
-    private void checkUserStatus(){
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        if(user!=null){
-            //profileTv.setText(user.getEmail());
-        } else{
-            startActivity(new Intent(getActivity(), MainActivity.class));
-            getActivity().finish();
-        }
-    }
+
 
     //inflate option menu
     @Override

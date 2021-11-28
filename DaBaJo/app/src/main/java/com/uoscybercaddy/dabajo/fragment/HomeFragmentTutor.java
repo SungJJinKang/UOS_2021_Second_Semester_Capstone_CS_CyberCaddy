@@ -15,13 +15,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
 import com.uoscybercaddy.dabajo.activity.DashboardActivity;
 import com.uoscybercaddy.dabajo.activity.DashboardActivityTutor;
 import com.uoscybercaddy.dabajo.activity.MainActivity;
+import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
 
 public class HomeFragmentTutor extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -67,6 +73,51 @@ public class HomeFragmentTutor extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        checkUserStatus();
+        IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkUserStatus();
+
+
+        IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkUserStatus();
+
+
+        IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
+    }
+
+    private void IfMemberInfoDataNotExist_StartMemerInfoInitActivity()
+    {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference hisdocRef = db.collection("users").document(fUser.getUid());
+        hisdocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                                              {
+                                                  @Override
+                                                  public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                      if (task.isSuccessful()) {
+                                                          DocumentSnapshot document = task.getResult();
+                                                          if (document.exists() == false)
+                                                          {
+                                                              Intent intent = new Intent(getContext(), MemberinfoinitActivity.class);
+                                                              intent.putExtra("fromProfileEdit","fromProfileEdit");
+                                                              startActivity(intent);
+                                                          }
+
+                                                      }
+                                                  }
+                                              }
+        );
     }
 
     @Override
