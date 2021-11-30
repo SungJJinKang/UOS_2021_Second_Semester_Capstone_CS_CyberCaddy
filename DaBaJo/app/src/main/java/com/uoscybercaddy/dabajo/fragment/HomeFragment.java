@@ -164,7 +164,7 @@ public class HomeFragment extends Fragment {
                     intent.putExtra("튜티", "tutee");
                     intent.putExtra("BigCategory", buttons[finalI].getText());
                     startActivity(intent);
-                    getActivity().finish();
+//                    getActivity().finish();
                 }
             });
         }
@@ -175,7 +175,7 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), DashboardActivity.class);
                 intent.putExtra("카테고리로", 1);
                 startActivity(intent);
-                getActivity().finish();
+//                getActivity().finish();
             }
         });
         // Inflate the layout for this fragment

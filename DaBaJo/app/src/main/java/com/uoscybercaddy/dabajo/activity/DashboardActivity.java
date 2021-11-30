@@ -57,25 +57,19 @@ public class DashboardActivity extends AppCompatActivity {
             ProfileFragment fragment4= new ProfileFragment();
             FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
             ft4.replace(R.id.content, fragment4, "");
-            ft4.addToBackStack(null);
             ft4.commit();
-            fragmentFlag = 3;
             navigationView.getMenu().getItem(3).setChecked(true);
             //nav_profile fragment transaction
         } else if(intent.hasExtra("카테고리로")) {
             CategoryFragment fragment2 = new CategoryFragment();
             FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
             ft2.replace(R.id.content, fragment2, "");
-            ft2.addToBackStack(null);
             ft2.commit();
-            fragmentFlag = 2;
             navigationView.getMenu().getItem(1).setChecked(true);
         } else {
             HomeFragment fragment1= new HomeFragment();
             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
             ft1.replace(R.id.content, fragment1, "");
-            ft1.addToBackStack(null);
-            fragmentFlag = 0;
             ft1.commit();
         }
         checkUserStatus();
@@ -102,7 +96,6 @@ public class DashboardActivity extends AppCompatActivity {
 
 //    @Override
 //    public void onBackPressed() {
-//        if(fragmentFlag == 0) {
 //            if (pressedTime == 0) {
 //                Toast.makeText(DashboardActivity.this, " 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
 //                pressedTime = System.currentTimeMillis();
@@ -114,11 +107,11 @@ public class DashboardActivity extends AppCompatActivity {
 //                    pressedTime = 0;
 //                } else {
 //                    super.onBackPressed();
-////                finish(); // app 종료 시키기
+//                    System.exit(0);
+////                    finish(); // app 종료 시키기
 //                }
 //            }
 //        }
-//    }
 
         @Override
     public void onBackPressed() {
@@ -158,7 +151,7 @@ public class DashboardActivity extends AppCompatActivity {
                             HomeFragment fragment1= new HomeFragment();
                             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
                             ft1.replace(R.id.content, fragment1, "");
-                            ft1.addToBackStack(null);
+//                            ft1.addToBackStack(null);
                             ft1.commit();
                             fragmentFlag = 0;
                             return true;
@@ -166,7 +159,7 @@ public class DashboardActivity extends AppCompatActivity {
                             CategoryFragment fragment2= new CategoryFragment();
                             FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
                             ft2.replace(R.id.content, fragment2, "");
-                            ft2.addToBackStack(null);
+//                            ft2.addToBackStack(null);
                             ft2.commit();
                             fragmentFlag = 1;
                             //nav_category fragment transaction
@@ -175,7 +168,7 @@ public class DashboardActivity extends AppCompatActivity {
                             FavoriteFragment fragment3= new FavoriteFragment();
                             FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
                             ft3.replace(R.id.content, fragment3, "");
-                            ft3.addToBackStack(null);
+//                            ft3.addToBackStack(null);
                             ft3.commit();
                             fragmentFlag = 2;
                             //nav_favorite fragment transaction
@@ -184,7 +177,7 @@ public class DashboardActivity extends AppCompatActivity {
                             ProfileFragment fragment4= new ProfileFragment();
                             FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
                             ft4.replace(R.id.content, fragment4, "");
-                            ft4.addToBackStack(null);
+//                            ft4.addToBackStack(null);
                             ft4.commit();
                             fragmentFlag = 3;
                             //nav_profile fragment transaction
