@@ -38,5 +38,11 @@
             android:layout_height="wrap_content"
             android:text="피드" />
 
+        <Button
+            android:id="@+id/gotoTuteeToTutorProfile"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:text="튜티가 튜터 클릭시 프로필" />
+
     </LinearLayout>
 </LinearLayout>

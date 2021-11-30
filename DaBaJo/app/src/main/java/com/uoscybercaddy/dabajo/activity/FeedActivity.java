@@ -95,6 +95,7 @@ public class FeedActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intent = new Intent(FeedActivity.this, CategorySportActivity.class);
                     intent.putExtra("튜터", 1);
+                    intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
                     startActivity(intent);
                 }
             });
@@ -105,6 +106,7 @@ public class FeedActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intent = new Intent(FeedActivity.this, CategorySportActivity.class);
                     intent.putExtra("튜티", 1);
+                    intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
                     startActivity(intent);
                 }
             });
@@ -295,6 +297,7 @@ public class FeedActivity extends AppCompatActivity {
     private void GoToWritePostActivity(String caterogryID) {
         Intent intent = new Intent(this, WritePostActivity.class);
         intent.putExtra("튜티", 1);
+        intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
         intent.putExtra(PostHelper.GetCategoryIntentExtraName(), caterogryID);
         startActivity(intent);
     }

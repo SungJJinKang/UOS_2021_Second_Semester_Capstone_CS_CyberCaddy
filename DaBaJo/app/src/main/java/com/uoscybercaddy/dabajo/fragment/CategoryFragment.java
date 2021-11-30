@@ -39,7 +39,7 @@ public class CategoryFragment extends Fragment {
         // Required empty public constructor
     }
 
-    Button button;
+    Button buttons[] = new Button[4];
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -74,17 +74,25 @@ public class CategoryFragment extends Fragment {
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
         View view = inflater.inflate(R.layout.fragment_category, container, false);
-        button = (Button)view.findViewById(R.id.buttonSport);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), CategorySportActivity.class);
-            intent.putExtra("튜티", "tutee");
-            startActivity(intent);
-            getActivity().finish();
-            }
-        });
+        buttons[0] = (Button)view.findViewById(R.id.buttonSport);
+        buttons[1] = (Button)view.findViewById(R.id.buttonArtPhy);
+        buttons[2] = (Button)view.findViewById(R.id.buttonHealth);
+        buttons[3] = (Button)view.findViewById(R.id.buttonEdu);
+
+        for(int i = 0 ; i < 4 ; i++) {
+            int finalI = i;
+            buttons[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), CategorySportActivity.class);
+                    intent.putExtra("튜티", "tutee");
+                    intent.putExtra("BigCategory", buttons[finalI].getText());
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+        }
         return view;
     }
 

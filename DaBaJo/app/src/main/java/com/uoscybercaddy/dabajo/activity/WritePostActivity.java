@@ -241,6 +241,7 @@ public class WritePostActivity extends AppCompatActivity {
                     Intent intent = new Intent(WritePostActivity.this, FeedActivity.class);
                     intent.putExtra("튜티", 1);
                     intent.putExtra(PostHelper.GetCategoryIntentExtraName(), CurrentCategoryID);
+                    intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
                     startActivity(intent);
                 }
             });
@@ -419,6 +420,7 @@ public class WritePostActivity extends AppCompatActivity {
         Intent intent = new Intent(this, FeedActivity.class);
         intent.putExtra("튜티", 1);
         intent.putExtra(PostHelper.GetCategoryIntentExtraName(), categoryID);
+        intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
         startActivity(intent);
     } // startactivity 한번에 사용하기
 

@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="21dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginRight="55dp"
             android:layout_weight="80"
             android:fontFamily="@font/roboto_black"
             android:gravity="center"
@@ -44,13 +44,16 @@
         android:layout_marginTop="140dp"
         android:orientation="vertical">
 
-        <RatingBar
+        <androidx.appcompat.widget.AppCompatRatingBar
             android:id="@+id/ratingBar"
             style="?android:attr/ratingBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:isIndicator="false"
+            android:progressTint="@color/star"
+            android:progressBackgroundTint="@color/grey"
+            android:secondaryProgressTint="#00000000"
             android:numStars="5"
             android:rating="0.0"
             android:stepSize='0.5' />
@@ -62,11 +65,12 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="60dp"
             android:layout_marginRight="15dp"
+            android:lineSpacingExtra="8dp"
             android:background="@drawable/round_corner_eval"
             android:ems="0"
-            android:fontFamily="@font/roboto_black"
+            android:fontFamily="@font/roboto_medium"
             android:hint="                  솔직한 리뷰를 남겨주세요"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textNoSuggestions"
             android:lines="8"
             android:minHeight="48dp"
             android:paddingLeft="15dp"
@@ -90,6 +94,19 @@
 
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/ratingScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="102dp"
+        android:fontFamily="@font/roboto_black"
+        android:gravity="center"
+        android:text="0.0 점"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
 
 
 </RelativeLayout>
