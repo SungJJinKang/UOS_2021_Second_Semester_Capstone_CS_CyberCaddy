@@ -20,6 +20,7 @@
             android:name=".activity.AddPostActivity"
             android:exported="false" />
         <activity android:name=".activity.PostFeedActivity"
+            android:theme="@style/AppThemeNo"
             android:exported="false"/>
         <activity
             android:name=".activity.PictureActivity"

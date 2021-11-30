@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +44,7 @@ import java.util.Locale;
 
 
 public class PostFeedActivity extends AppCompatActivity {
-
+    Toolbar toolbar;
     FirebaseAuth firebaseAuth;
     ImageButton writePostButton;
     ActionBar actionBar;
@@ -68,9 +69,8 @@ public class PostFeedActivity extends AppCompatActivity {
         goBackButton = (ImageButton)findViewById(R.id.goBackButton);
         findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
         tutortuty = "튜티";
-        actionBar = getSupportActionBar();
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
         //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#0000ff")));
-
         checkUserStatus();
         intent = getIntent();
         if(intent.hasExtra("category")){
@@ -78,7 +78,8 @@ public class PostFeedActivity extends AppCompatActivity {
         }else{
             category = "soccer";
         }
-        actionBar.setTitle(category);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         pCategoryEt.setText(category);
         recyclerView = (RecyclerView)findViewById(R.id.postsRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -191,9 +192,11 @@ public class PostFeedActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case R.id.nav_tuty:
                             tutortuty = "튜티";
+                            loadPosts();
                             return true;
                         case R.id.nav_tutor:
                             tutortuty = "튜터";
+                            loadPosts();
                             //nav_category fragment transaction
                             return true;
                     }
@@ -266,6 +269,8 @@ public class PostFeedActivity extends AppCompatActivity {
         if(id== R.id.action_logout){
             firebaseAuth.signOut();
             checkUserStatus();
+        }else if(id == R.id.action_refresh){
+            loadPosts();
         }
         return super.onOptionsItemSelected(item);
     }
