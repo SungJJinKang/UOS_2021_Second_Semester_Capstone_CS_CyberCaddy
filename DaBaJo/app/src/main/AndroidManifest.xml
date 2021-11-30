@@ -19,6 +19,8 @@
         <activity
             android:name=".activity.AddPostActivity"
             android:exported="false" />
+        <activity android:name=".activity.PostFeedActivity"
+            android:exported="false"/>
         <activity
             android:name=".activity.PictureActivity"
             android:exported="false" />

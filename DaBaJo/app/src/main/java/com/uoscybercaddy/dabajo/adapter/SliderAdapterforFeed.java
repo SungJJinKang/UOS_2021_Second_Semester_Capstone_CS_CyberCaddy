@@ -24,18 +24,19 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.PictureActivity;
 import com.uoscybercaddy.dabajo.activity.VideoActivity;
+import com.uoscybercaddy.dabajo.models.URLS;
 
 import java.util.List;
 
-public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder>{
+public class SliderAdapterforFeed extends RecyclerView.Adapter<SliderAdapterforFeed.SliderViewHolder>{
 
-    private List<List> uris;
+    private List<URLS> pImage;
     private ViewPager2 viewPager2;
     Context context;
 
-    public SliderAdapter(Context context, List<List> uris, ViewPager2 viewPager2) {
+    public SliderAdapterforFeed(Context context, List<URLS> pImage, ViewPager2 viewPager2) {
         this.context = context;
-        this.uris = uris;
+        this.pImage = pImage;
         this.viewPager2 = viewPager2;
     }
 
@@ -44,7 +45,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new SliderViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.slide_item_container,
+                        R.layout.slide_item_container_forfeed,
                         parent,
                         false
                 )
@@ -53,10 +54,10 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-        if(((String)uris.get(position).get(0)).equals("image")){
+        if(((String)pImage.get(position).getImagevideo()).equals("image")){
             holder.imageView.setVisibility(View.VISIBLE);
             holder.videoView.setVisibility(View.GONE);
-            Uri message = (Uri)uris.get(position).get(1);
+            Uri message = Uri.parse(pImage.get(position).getUrls());
             holder.setImage(message);
             holder.viewPageLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -66,10 +67,10 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                     context.startActivity(intent);
                 }
             });
-        }else if(((String)uris.get(position).get(0)).equals("video")){
+        }else if(((String)pImage.get(position).getImagevideo()).equals("video")){
             holder.imageView.setVisibility(View.GONE);
             holder.videoView.setVisibility(View.VISIBLE);
-            Uri videoUri = (Uri)uris.get(position).get(1);
+            Uri videoUri = Uri.parse(pImage.get(position).getUrls());
             MediaController mediaController = new MediaController(context);
             mediaController.setAnchorView(holder.videoView);
             holder.videoView.setMediaController(mediaController);
@@ -118,7 +119,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     @Override
     public int getItemCount() {
-        return uris.size();
+        return pImage.size();
     }
 
     class SliderViewHolder extends RecyclerView.ViewHolder{
@@ -137,7 +138,11 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
             progressBar = itemView.findViewById(R.id.progressBar);
         }
         void setImage(Uri uri){
-            imageView.setImageURI(uri);
+            Glide.with(context)
+                    .load(uri)
+                    .fitCenter()
+                    .placeholder(R.drawable.ic_default_image_black)
+                    .into(imageView);
         }
     }
 }

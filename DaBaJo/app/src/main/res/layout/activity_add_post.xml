@@ -56,16 +56,6 @@
             tools:layout_editor_absoluteX="93dp"
             android:singleLine="true"
             tools:layout_editor_absoluteY="105dp" />
-<!--
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/pImageIv"
-            android:background="@color/colorPrimary"
-            android:minHeight="200dp"
-            android:visibility="gone"/>
--->
-
             <androidx.viewpager2.widget.ViewPager2
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

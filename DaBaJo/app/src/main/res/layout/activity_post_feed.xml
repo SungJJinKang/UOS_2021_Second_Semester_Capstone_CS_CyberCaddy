@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".activity.PostFeedActivity"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:id="@+id/header"
+        android:visibility="gone"
+        >
+
+        <ImageButton
+            android:id="@+id/goBackButton"
+            android:layout_width="30dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="0dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/ic_navigate_before_black_24dp" />
+
+        <TextView
+            android:id="@+id/CategorryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:layout_marginRight="-5dp"
+            android:layout_weight="100"
+            android:gravity="center"
+            android:text="축구"
+            android:layout_marginLeft="40dp"
+            android:fontFamily="@font/roboto_black"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <ImageButton
+            android:id="@+id/action_search"
+            android:title="검색"
+            app:showAsAction="always"
+            app:actionViewClass="android.widget.SearchView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="14dp"
+
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/ic_search_black_24dp"
+
+            />
+        />
+        <ImageButton
+            android:id="@+id/writePostButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="14dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            app:srcCompat="@drawable/ic_create_black_24dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/postsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+
+        />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@drawable/top_stroke"
+        app:itemIconTint="@drawable/bottom_icon_color"
+        app:itemTextColor="@drawable/bottom_icon_color"
+        app:menu="@menu/menu_feed"/>
+
+</LinearLayout>

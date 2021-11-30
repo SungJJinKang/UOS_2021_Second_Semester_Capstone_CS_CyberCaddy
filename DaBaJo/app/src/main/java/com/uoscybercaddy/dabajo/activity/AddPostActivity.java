@@ -2,24 +2,19 @@ package com.uoscybercaddy.dabajo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,20 +22,20 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -51,17 +46,13 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.SliderAdapter;
+import com.uoscybercaddy.dabajo.models.URLS;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-class URLS implements Serializable
-{
-    public String imagevideo;
-    public String urls;
-}
+
 public class AddPostActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     EditText titleEt, descriptionEt;
@@ -71,7 +62,7 @@ public class AddPostActivity extends AppCompatActivity {
     AppCompatButton videoButton;
     private LinearLayout layoutIndicators;
     SliderAdapter sliderAdapter;
-    URLS urls;
+    URLS uri;
     private ViewPager2 viewPager2;
     List<List> uris = new ArrayList<>();
     List<URLS> uploadUrls = new ArrayList<>();
@@ -92,11 +83,16 @@ public class AddPostActivity extends AppCompatActivity {
     Uri image_rui = null;
     private Uri videoUri= null;
 
+    ImageButton goBackButton;
+    TextView pCategoryEt;
+
     //유저정보
     String name, email, uid, dp;
-
+    Intent intent;
     ProgressDialog pd;
-
+    String category;
+    ActionBar actionBar;
+    String tutortuty;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +111,17 @@ public class AddPostActivity extends AppCompatActivity {
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         pd = new ProgressDialog(this);
-
+        intent = getIntent();
+        goBackButton = (ImageButton)findViewById(R.id.goBackButton);
+        pCategoryEt = (TextView) findViewById(R.id.pCategoryEt);
+        if(intent.hasExtra("category")){
+            category = intent.getStringExtra("category");
+        }else{
+            category = "soccer";
+        }
+        actionBar = getSupportActionBar();
+        actionBar.hide();
+        pCategoryEt.setText(category);
   /*      viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
         viewPager2.setOffscreenPageLimit(3);
@@ -159,7 +165,7 @@ public class AddPostActivity extends AppCompatActivity {
                     descriptionEt.setFocusable(true);
                 }
                 else if(image_rui == null){
-                    uploadData(title, description, "noImage");
+                    uploadData(title, description, null);
                 }else{
                     //업로드
                     uploadData(title, description, String.valueOf(image_rui));
@@ -175,14 +181,21 @@ public class AddPostActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData().get("tutortuty"));
+                        Object position = document.getData().get("tutortuty");
+                        if(position != null){
+                            tutortuty = position.toString();
+                        }else{
+                            tutortuty = "튜티";
+                        }
+                        Log.e("튜터튜티 : ",tutortuty);
                         if(document.getData().get("photoUrl") != null){
                             dp = (document.getData().get("photoUrl").toString());
                         }else{
                             dp = null;
                         }
                         //downloadUrl = (document.getData().get("photoUrl").toString());
-                        name = document.getData().get("name").toString();
+                        name = document.getData().get("nickName").toString();
                     } else {
                         Log.d(TAG, "정보없음");
                     }
@@ -251,15 +264,15 @@ public class AddPostActivity extends AppCompatActivity {
     }
     private void uploadStorage( String timeStamp){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference washingtonRef = db.collection("Posts").document(timeStamp);
+        DocumentReference washingtonRef = db.collection("Posts").document(tutortuty).collection(category).document(timeStamp);
         for (int i = 0; i< uris.size(); i++){
             final int index = i;
-            urls = new URLS();
+            uri = new URLS();
             final Uri putUri = ((Uri)uris.get(index).get(1));
             final String imagevideo = (String) uris.get(index).get(0);
 
             uris.get(index).set(1, "");
-            String filePathAndName = "Posts1/"+"post_" + timeStamp + putUri;
+            String filePathAndName = "Posts1/"+"post_" + timeStamp + "/"+ index;
             Log.e("(Uri)uris.get(index).get(1)", "" + putUri);
             StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
             StorageTask uploadTask  = ref.putFile(putUri);
@@ -269,15 +282,12 @@ public class AddPostActivity extends AppCompatActivity {
                             try{
                                 Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                                 while(!uriTask.isSuccessful());
-                                Uri uri2 = uriTask.getResult();
-                                String downloadUri = uri2.toString();
+                                String downloadUri = uriTask.getResult().toString();
                                 if (uriTask.isSuccessful()) {
                                     Log.e("downloadUri",""+downloadUri);
-                                    urls.imagevideo = imagevideo;
-                                    urls.urls = downloadUri;
-                                    //uploadUrls.add(urls);
-                                    washingtonRef.update("pImage", FieldValue.arrayUnion(urls));
-                                    //uris.get(index).set(1, downloadUri);
+                                    uri.imagevideo = imagevideo;
+                                    uri.urls = downloadUri;
+                                    washingtonRef.update("pImage", FieldValue.arrayUnion(uri));
                                 }
                             }catch (Exception e){
                                 Log.e("아 뭐가 문제야 ",""+e.getMessage());
@@ -300,12 +310,8 @@ public class AddPostActivity extends AppCompatActivity {
         pd.setMessage("포스트 업로드중...");
         pd.show();
         String timeStamp = String.valueOf(System.currentTimeMillis());
-
-        Log.e("uris : ",""+uris);
-        if(!uri.equals("noImage")){
+        if(!uri.equals(null)){
             Log.e("uris 사이즈",""+uris.size());
-
-
             Map<String, Object> city = new HashMap<>();
             city.put("uid", uid);
             city.put("uName", name);
@@ -314,12 +320,14 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("pId", timeStamp);
             city.put("pTitle", title);
             city.put("pDescr",description);
-            city.put("pImage", uploadUrls);
+
             city.put("pTime", timeStamp);
             city.put("arrayCount", uris.size());
             Log.e("city : ",city+"");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Posts").document(timeStamp).set(city)
+            CollectionReference citiesRef = db.collection("Posts");
+            citiesRef.document(tutortuty).collection(category).document(timeStamp)
+                    .set(city)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -352,15 +360,17 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("pId", timeStamp);
             city.put("pTitle", title);
             city.put("pDescr",description);
-            city.put("pImage", "noImage");
+            city.put("pImage", null);
             city.put("pTime", timeStamp);
             city.put("arrayCount", 0);
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Posts").document(timeStamp).set(city)
+            db.collection("Posts").document(tutortuty).collection(category).document(timeStamp)
+                    .set(city)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "DocumentSnapshot successfully written!");
+                            pd.dismiss();
                             startToast("업로드 성공");
 
 
@@ -370,14 +380,16 @@ public class AddPostActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.w(TAG, "Error writing document", e);
-
+                            pd.dismiss();
                             startToast("업로드 실패");
 
                         }
                     });
 
         }
-        pd.dismiss();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void showImagePickDialog() {
@@ -672,6 +684,7 @@ public class AddPostActivity extends AppCompatActivity {
         if(user!=null){
             email = user.getEmail();
             uid = user.getUid();
+
         } else{
             startActivity(new Intent(AddPostActivity.this, MainActivity.class));
             finish();
