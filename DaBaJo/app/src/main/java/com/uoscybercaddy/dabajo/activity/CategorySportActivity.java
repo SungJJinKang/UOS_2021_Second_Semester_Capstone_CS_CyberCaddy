@@ -180,9 +180,10 @@ public class CategorySportActivity extends AppCompatActivity {
                 }
             });
         }
+    }
 
-
-
-
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

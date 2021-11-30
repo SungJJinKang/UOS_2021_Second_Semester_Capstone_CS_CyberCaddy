@@ -38,17 +38,19 @@
             android:theme="@style/AppThemeNo" />
         <activity
             android:name=".activity.DashboardActivity"
-            android:exported="false" />
+            android:exported="false">
+        </activity>
+
         <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/SplashActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true" />
