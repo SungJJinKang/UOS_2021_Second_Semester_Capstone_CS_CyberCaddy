@@ -34,6 +34,11 @@ public class DashboardActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ActionBar actionBar;
     String mUID;
+    int fragmentFlag = 0;
+    // fragmentFlag 0 : home
+    // fragmentFlag 1 : category
+    // fragmentFlag 2 : like(-> chat)
+    // fragmentFlag 3 : profile
     private static final String TAG = "DashboardActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
