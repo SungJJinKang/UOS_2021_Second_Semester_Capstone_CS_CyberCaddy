@@ -1,6 +1,9 @@
 package com.uoscybercaddy.dabajo.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +23,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +40,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.AdapterPosts;
 import com.uoscybercaddy.dabajo.models.ModelPost;
+import com.uoscybercaddy.dabajo.models.URLS;
 import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
 import com.uoscybercaddy.dabajo.notifications.Token;
 
@@ -70,6 +75,8 @@ public class PostFeedActivity extends AppCompatActivity {
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
         goBackButton = (ImageButton)findViewById(R.id.goBackButton);
         findViewById(R.id.writePostButton).setOnClickListener(onClickListener);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("deletePost"));
         tutortuty = "튜티";
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#0000ff")));
@@ -123,7 +130,13 @@ public class PostFeedActivity extends AppCompatActivity {
             }
         }
     };
-
+    public BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("브로드케스트리시버작동", "브로드케스트리시버작동");
+            loadPosts();
+        }
+    };
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -140,10 +153,14 @@ public class PostFeedActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
-                                postList.add(modelPost);
-                                adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
-                                recyclerView.setAdapter(adapterPosts);
+                                //List<URLS> post = modelPost.getpImage();
+                                //if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                //{
+                                    postList.add(modelPost);
+                                //}
                             }
+                            adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
+                            recyclerView.setAdapter(adapterPosts);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
@@ -165,11 +182,15 @@ public class PostFeedActivity extends AppCompatActivity {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
                                 if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
-                                    postList.add(modelPost);
+                                   // List<URLS> post = modelPost.getpImage();
+                                   // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                    //{
+                                        postList.add(modelPost);
+                                    //}
                                 }
-                                adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
-                                recyclerView.setAdapter(adapterPosts);
                             }
+                            adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
+                            recyclerView.setAdapter(adapterPosts);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }

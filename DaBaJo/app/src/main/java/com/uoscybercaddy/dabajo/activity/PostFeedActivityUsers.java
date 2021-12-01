@@ -5,10 +5,14 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -38,6 +42,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.AdapterPosts;
 import com.uoscybercaddy.dabajo.models.ModelPost;
+import com.uoscybercaddy.dabajo.models.URLS;
 import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
 import com.uoscybercaddy.dabajo.notifications.Token;
 
@@ -80,6 +85,8 @@ public class PostFeedActivityUsers extends AppCompatActivity {
         noPost = (TextView)findViewById(R.id.noPost);
         category = "";
         check = 0;
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("deletePost"));
         //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#0000ff")));
         checkUserStatus();
         intent = getIntent();
@@ -186,7 +193,17 @@ public class PostFeedActivityUsers extends AppCompatActivity {
 
 
     }
-
+    public BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("브로드케스트리시버작동", "브로드케스트리시버작동");
+            if(category.equals("")){
+                loadPostsAll();
+            }else{
+                loadPosts(category);
+            }
+        }
+    };
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -206,12 +223,16 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Log.d(TAG, document.getId() + " => " + document.getData());
                                     ModelPost modelPost = document.toObject(ModelPost.class);
-                                    postList.add(modelPost);
-                                    if(index == categories.size()-1){
-                                        Collections.sort(postList);
-                                        adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
-                                        recyclerView.setAdapter(adapterPosts);
-                                    }
+                                   // List<URLS> post = modelPost.getpImage();
+                                   // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                    //{
+                                        postList.add(modelPost);
+                                   // }
+                                }
+                                if(index == categories.size()-1){
+                                    Collections.sort(postList);
+                                    adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                                    recyclerView.setAdapter(adapterPosts);
                                 }
                             } else {
                                 Log.d(TAG, "Error getting documents: ", task.getException());
@@ -236,13 +257,17 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                                     Log.d(TAG, document.getId() + " => " + document.getData());
                                     ModelPost modelPost = document.toObject(ModelPost.class);
                                     if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
-                                        postList.add(modelPost);
+                                       // List<URLS> post = modelPost.getpImage();
+                                        //if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                        //{
+                                            postList.add(modelPost);
+                                        //}
                                     }
-                                    if(index == categories.size()-1){
-                                        Collections.sort(postList);
-                                        adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
-                                        recyclerView.setAdapter(adapterPosts);
-                                    }
+                                }
+                                if(index == categories.size()-1){
+                                    Collections.sort(postList);
+                                    adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                                    recyclerView.setAdapter(adapterPosts);
                                 }
                             } else {
                                 Log.d(TAG, "Error getting documents: ", task.getException());
@@ -264,10 +289,14 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
-                                postList.add(modelPost);
-                                adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
-                                recyclerView.setAdapter(adapterPosts);
+                                //List<URLS> post = modelPost.getpImage();
+                                //if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                               // {
+                                    postList.add(modelPost);
+                               // }
                             }
+                            adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                            recyclerView.setAdapter(adapterPosts);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
@@ -288,11 +317,15 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
                                 if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
-                                    postList.add(modelPost);
+                                    //List<URLS> post = modelPost.getpImage();
+                                   // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                   // {
+                                        postList.add(modelPost);
+                                   // }
                                 }
-                                adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
-                                recyclerView.setAdapter(adapterPosts);
                             }
+                            adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                            recyclerView.setAdapter(adapterPosts);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }

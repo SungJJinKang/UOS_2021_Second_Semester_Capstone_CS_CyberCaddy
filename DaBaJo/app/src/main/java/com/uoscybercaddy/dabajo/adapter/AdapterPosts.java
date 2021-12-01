@@ -1,25 +1,39 @@
 package com.uoscybercaddy.dabajo.adapter;
 
+import static android.content.ContentValues.TAG;
+
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.models.ModelPost;
@@ -55,6 +69,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         SliderAdapterforFeed sliderAdapterforFeed;
         String uid = postList.get(position).getUid();
+        String pCategory = postList.get(position).getpCategory();
+        String pTutortuty = postList.get(position).getpTutortuty();
         String uEmail = postList.get(position).getuEmail();
         String uName = postList.get(position).getuName();
         String uDp = postList.get(position).getuDp();
@@ -68,6 +84,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             holder.viewPager2.setVisibility(View.GONE);
         }
         else{
+
+            holder.viewPager2.setVisibility(View.VISIBLE);
             sliderAdapterforFeed  = (new SliderAdapterforFeed(context, pImage, holder.viewPager2));
             holder.viewPager2.setAdapter(sliderAdapterforFeed);
             for(int i = 0; i< arrayCount; i++) {
@@ -110,7 +128,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.moreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "More", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "클릭 !!! ");
+                showMoreOptions(holder.moreBtn, uid, myUid, pId, pImage, arrayCount, pCategory, pTutortuty);
             }
         });
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +168,114 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.pDescriptionTv.setText(pDescription);
 
 
+    }
+
+    private void showMoreOptions(ImageButton moreBtn, String uid, String myUid, String pId, List<URLS> pImage,int arrayCount,String pCategory,String pTutortuty ) {
+        PopupMenu popupMenu = new PopupMenu(context ,moreBtn, Gravity.END);
+        
+        if(uid.equals(myUid)){
+            popupMenu.getMenu().add(Menu.NONE, 0, 0, "삭제");
+        }
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id = item.getItemId();
+                if( id ==0 ){
+                    //삭제
+                    beginDelete(pId, arrayCount, pCategory, pTutortuty);
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
+    private void beginDelete(String pId, int arrayCount,String pCategory,String pTutortuty) {
+        if(arrayCount == 0){
+            deleteWithoutImage(pId,pCategory, pTutortuty);
+        }else{
+            deleteWithImage(pId, pCategory, pTutortuty, arrayCount);
+        }
+
+    }
+
+    private void deleteWithImage(String pId,String pCategory,String pTutortuty, int arrayCount) {
+        ProgressDialog pd = new ProgressDialog(context);
+        pd.setMessage("Deleting...");
+        pd.show();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        for(int i=0; i<arrayCount; i++){
+            final int index = i;
+            StorageReference desertRef = storageRef.child("Posts/"+"post_" + pId + "/"+ index);
+            // Delete the file
+            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // File deleted successfully
+                    //데이터베이스 삭제 ㄱ
+                    if(index == arrayCount -1){
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("Posts").document(pTutortuty).collection(pCategory).document(pId)
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show();
+                                        pd.dismiss();
+                                        Intent intent = new Intent("deletePost");
+                                        //            intent.putExtra("quantity",Integer.parseInt(quantity.getText().toString()));
+                                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, "삭제 실패...", Toast.LENGTH_SHORT).show();
+                                        pd.dismiss();
+                                        Log.w(TAG, "Error deleting document", e);
+                                    }
+                                });
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Uh-oh, an error occurred!
+                    pd.dismiss();
+                    Toast.makeText(context, "삭제 실패...", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void deleteWithoutImage(String pId,String pCategory,String pTutortuty) {
+        ProgressDialog pd = new ProgressDialog(context);
+        pd.setMessage("Deleting...");
+        pd.show();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Posts").document(pTutortuty).collection(pCategory).document(pId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(context, "삭제 완료", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                        Intent intent = new Intent("deletePost");
+                        //            intent.putExtra("quantity",Integer.parseInt(quantity.getText().toString()));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "삭제 실패...", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
     }
 
     @Override

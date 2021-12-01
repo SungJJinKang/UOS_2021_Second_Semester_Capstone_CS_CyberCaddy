@@ -50,6 +50,7 @@ import com.uoscybercaddy.dabajo.models.URLS;
 import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class AddPostActivity extends AppCompatActivity {
     AppCompatButton videoButton;
     private LinearLayout layoutIndicators;
     SliderAdapter sliderAdapter;
-    URLS uri;
+
     private ViewPager2 viewPager2;
     List<List> uris = new ArrayList<>();
     List<URLS> uploadUrls = new ArrayList<>();
@@ -262,17 +263,19 @@ public class AddPostActivity extends AppCompatActivity {
         });
         builder.create().show();
     }
-    private void uploadStorage( String timeStamp){
+    private void uploadStorage( String documentName, Map<String, Object> city){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference washingtonRef = db.collection("Posts").document(tutortuty).collection(category).document(timeStamp);
-        for (int i = 0; i< uris.size(); i++){
+        DocumentReference washingtonRef = db.collection("Posts").document(tutortuty).collection(category).document(documentName);
+        int urisSize = uris.size();
+        uploadUrls.clear();
+        for (int i = 0; i< urisSize; i++){
             final int index = i;
-            uri = new URLS();
+            final URLS uri = new URLS();
+            uri.setOrder(index);
             final Uri putUri = ((Uri)uris.get(index).get(1));
             final String imagevideo = (String) uris.get(index).get(0);
-
             uris.get(index).set(1, "");
-            String filePathAndName = "Posts1/"+"post_" + timeStamp + "/"+ index;
+            String filePathAndName = "Posts/"+"post_" + documentName + "/"+ index;
             Log.e("(Uri)uris.get(index).get(1)", "" + putUri);
             StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
             StorageTask uploadTask  = ref.putFile(putUri);
@@ -285,9 +288,37 @@ public class AddPostActivity extends AppCompatActivity {
                                 String downloadUri = uriTask.getResult().toString();
                                 if (uriTask.isSuccessful()) {
                                     Log.e("downloadUri",""+downloadUri);
-                                    uri.imagevideo = imagevideo;
-                                    uri.urls = downloadUri;
-                                    washingtonRef.update("pImage", FieldValue.arrayUnion(uri));
+                                    uri.setImagevideo(imagevideo);
+                                    uri.setUrls(downloadUri);
+                                    uploadUrls.add(uri);
+                                    if(index == urisSize-1){
+                                        Log.e("uploadUrls ",""+uploadUrls);
+                                        Collections.sort(uploadUrls);
+                                        city.put("pImage", uploadUrls);
+                                        washingtonRef.set(city)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                        startToast("업로드 성공");
+                                                        //uploadStorage(documentName);
+                                                        //Intent intent = new Intent(MemberinfoinitActivity.this,DashboardActivity.class);
+                                                        //startActivity(intent);
+                                                        //finish();
+                                                        pd.dismiss();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.w(TAG, "Error writing document", e);
+                                                        startToast("업로드 실패");
+                                                        pd.dismiss();
+                                                    }
+                                                });
+                                        //washingtonRef.update("pImage", uploadUrls);
+                                    }
+                                    //washingtonRef.update("pImage", FieldValue.arrayUnion(uri));
                                 }
                             }catch (Exception e){
                                 Log.e("아 뭐가 문제야 ",""+e.getMessage());
@@ -316,6 +347,7 @@ public class AddPostActivity extends AppCompatActivity {
                         categoriesCount, FieldValue.increment(1)
                 );
         String timeStamp = String.valueOf(System.currentTimeMillis());
+        String documentName = timeStamp + uid;
         if(!uri.equals(null)){
             Log.e("uris 사이즈",""+uris.size());
             Map<String, Object> city = new HashMap<>();
@@ -323,23 +355,26 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("uName", name);
             city.put("uEmail", email);
             city.put("uDp", dp);
-            city.put("pId", timeStamp);
+            city.put("pId", documentName);
             city.put("pTitle", title);
             city.put("pDescr",description);
-
             city.put("pTime", timeStamp);
             city.put("arrayCount", uris.size());
+            city.put("pCategory", category);
+            city.put("pTutortuty", tutortuty);
             Log.e("city : ",city+"");
+            uploadStorage(documentName, city);
+            /*
             db = FirebaseFirestore.getInstance();
             CollectionReference citiesRef = db.collection("Posts");
-            citiesRef.document(tutortuty).collection(category).document(timeStamp)
+            citiesRef.document(tutortuty).collection(category).document(documentName)
                     .set(city)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "DocumentSnapshot successfully written!");
                             startToast("업로드 성공");
-                            uploadStorage(timeStamp);
+                            //uploadStorage(documentName);
                             //Intent intent = new Intent(MemberinfoinitActivity.this,DashboardActivity.class);
                             //startActivity(intent);
                             //finish();
@@ -355,6 +390,8 @@ public class AddPostActivity extends AppCompatActivity {
                             pd.dismiss();
                         }
                     });
+
+             */
         }
         else{
             //이미지없이
@@ -363,14 +400,16 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("uName", name);
             city.put("uEmail", email);
             city.put("uDp", dp);
-            city.put("pId", timeStamp);
+            city.put("pId", documentName);
             city.put("pTitle", title);
             city.put("pDescr",description);
             city.put("pImage", null);
             city.put("pTime", timeStamp);
             city.put("arrayCount", 0);
+            city.put("pCategory", category);
+            city.put("pTutortuty", tutortuty);
             db = FirebaseFirestore.getInstance();
-            db.collection("Posts").document(tutortuty).collection(category).document(timeStamp)
+            db.collection("Posts").document(tutortuty).collection(category).document(documentName)
                     .set(city)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
