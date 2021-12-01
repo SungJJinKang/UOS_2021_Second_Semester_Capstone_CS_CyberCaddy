@@ -37,7 +37,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.AdapterPosts;
-import com.uoscybercaddy.dabajo.adapter.AdapterPostsUsers;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
 import com.uoscybercaddy.dabajo.notifications.Token;
@@ -62,7 +61,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     List<ModelPost> postList;
     HashMap<String, Long> usersCategoriesCounts;
     Spinner categoriesSpinner;
-    AdapterPostsUsers adapterPostsUsers;
+    AdapterPosts adapterPosts;
     Intent intent;
     ImageButton goBackButton;
     String tutortuty;
@@ -210,8 +209,8 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                                     postList.add(modelPost);
                                     if(index == categories.size()-1){
                                         Collections.sort(postList);
-                                        adapterPostsUsers = new AdapterPostsUsers(PostFeedActivityUsers.this, postList);
-                                        recyclerView.setAdapter(adapterPostsUsers);
+                                        adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                                        recyclerView.setAdapter(adapterPosts);
                                     }
                                 }
                             } else {
@@ -241,8 +240,8 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                                     }
                                     if(index == categories.size()-1){
                                         Collections.sort(postList);
-                                        adapterPostsUsers = new AdapterPostsUsers(PostFeedActivityUsers.this, postList);
-                                        recyclerView.setAdapter(adapterPostsUsers);
+                                        adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                                        recyclerView.setAdapter(adapterPosts);
                                     }
                                 }
                             } else {
@@ -266,8 +265,8 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
                                 postList.add(modelPost);
-                                adapterPostsUsers = new AdapterPostsUsers(PostFeedActivityUsers.this, postList);
-                                recyclerView.setAdapter(adapterPostsUsers);
+                                adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                                recyclerView.setAdapter(adapterPosts);
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -291,8 +290,8 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                                 if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
                                     postList.add(modelPost);
                                 }
-                                adapterPostsUsers = new AdapterPostsUsers(PostFeedActivityUsers.this, postList);
-                                recyclerView.setAdapter(adapterPostsUsers);
+                                adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                                recyclerView.setAdapter(adapterPosts);
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());

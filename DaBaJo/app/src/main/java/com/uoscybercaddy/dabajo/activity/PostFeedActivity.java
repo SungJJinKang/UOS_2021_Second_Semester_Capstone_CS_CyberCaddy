@@ -141,7 +141,7 @@ public class PostFeedActivity extends AppCompatActivity {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
                                 postList.add(modelPost);
-                                adapterPosts = new AdapterPosts(PostFeedActivity.this, postList);
+                                adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
                                 recyclerView.setAdapter(adapterPosts);
                             }
                         } else {
@@ -167,7 +167,7 @@ public class PostFeedActivity extends AppCompatActivity {
                                 if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
                                     postList.add(modelPost);
                                 }
-                                adapterPosts = new AdapterPosts(PostFeedActivity.this, postList);
+                                adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
                                 recyclerView.setAdapter(adapterPosts);
                             }
                         } else {

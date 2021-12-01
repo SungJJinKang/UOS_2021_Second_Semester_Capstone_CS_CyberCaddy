@@ -34,12 +34,14 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
     Context context;
     List<ModelPost> postList;
     String myUid;
+    boolean isUsers;
 
     public AdapterPosts(){}
-    public AdapterPosts(Context context, List<ModelPost> postList) {
+    public AdapterPosts(Context context, List<ModelPost> postList, boolean isUsers) {
         this.context = context;
         this.postList = postList;
         myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        this.isUsers = isUsers;
     }
 
     @NonNull
@@ -129,14 +131,17 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 Toast.makeText(context, "Share", Toast.LENGTH_SHORT).show();
             }
         });
-        holder.profileLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, PostFeedActivityUsers.class);
-                intent.putExtra("uid",uid);
-                context.startActivity(intent);
-            }
-        });
+        if(!isUsers){
+            holder.profileLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, PostFeedActivityUsers.class);
+                    intent.putExtra("uid",uid);
+                    context.startActivity(intent);
+                }
+            });
+        }
+
 
         holder.uNameTv.setText(uName);
         holder.pTimeTv.setText(pTime);
