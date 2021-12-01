@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.models.ModelPost;
@@ -32,11 +33,13 @@ import java.util.Locale;
 public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
     Context context;
     List<ModelPost> postList;
-    public AdapterPosts(){}
+    String myUid;
 
+    public AdapterPosts(){}
     public AdapterPosts(Context context, List<ModelPost> postList) {
         this.context = context;
         this.postList = postList;
+        myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @NonNull

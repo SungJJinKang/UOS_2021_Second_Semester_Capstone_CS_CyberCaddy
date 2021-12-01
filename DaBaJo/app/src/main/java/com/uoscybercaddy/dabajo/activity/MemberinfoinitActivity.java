@@ -522,6 +522,8 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     }
     private void uploader(MemberInfo memberInfo){
         //Post들 업데이트
+        memberInfo.setCategoriesCount(usersCategoriesCounts);
+        memberInfo.setTutortuty(tutortuty);
         String uUid = user.getUid();
         for(int i = 0; i< categories.size() ; i++) {
             final int index = i;
