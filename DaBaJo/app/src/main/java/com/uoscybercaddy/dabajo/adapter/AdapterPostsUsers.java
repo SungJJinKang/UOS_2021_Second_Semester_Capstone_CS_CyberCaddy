@@ -24,17 +24,16 @@ import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.URLS;
 
-
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
+public class AdapterPostsUsers extends RecyclerView.Adapter<AdapterPostsUsers.MyHolder> {
     Context context;
     List<ModelPost> postList;
-    public AdapterPosts(){}
+    public AdapterPostsUsers(){}
 
-    public AdapterPosts(Context context, List<ModelPost> postList) {
+    public AdapterPostsUsers(Context context, List<ModelPost> postList) {
         this.context = context;
         this.postList = postList;
     }
@@ -124,14 +123,6 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, "Share", Toast.LENGTH_SHORT).show();
-            }
-        });
-        holder.profileLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, PostFeedActivityUsers.class);
-                intent.putExtra("uid",uid);
-                context.startActivity(intent);
             }
         });
 

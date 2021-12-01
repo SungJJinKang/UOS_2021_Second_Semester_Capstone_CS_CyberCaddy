@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-
-    tools:context=".activity.PostFeedActivity"
+    tools:context=".activity.PostFeedActivityUsers"
     >
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -36,29 +35,20 @@
                     android:background="@color/white"
                     app:srcCompat="@drawable/ic_navigate_before_black_24dp" />
 
-                <TextView
-                    android:id="@+id/CategorryLabel"
+                <Spinner
+                    android:id="@+id/categoriesSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="100"
                     android:layout_gravity="center"
                     android:text="축구"
+                    android:backgroundTint="@color/main_color"
                     android:textAlignment="center"
                     android:fontFamily="@font/roboto_black"
                     android:textColor="@color/black"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <ImageButton
-                    android:layout_gravity="center"
-                    android:id="@+id/writePostButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    app:srcCompat="@drawable/ic_create_black_24dp" />
+                    android:textStyle="bold"
+                    />
             </LinearLayout>
             <!--
             <RelativeLayout
@@ -79,11 +69,18 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#F5F0F0"/>
-
-
     </com.google.android.material.appbar.AppBarLayout>
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:text="게시물 없음"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:id="@+id/noPost"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postsRecyclerView"
         android:layout_width="match_parent"
@@ -91,20 +88,7 @@
         android:layout_weight="1"
         android:layout_below="@+id/header"
 
-        />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#F5F0F0"/>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="41dp"
-        android:layout_gravity="bottom"
-        android:background="@color/white"
-        app:itemIconTint="@drawable/bottom_icon_color"
-        app:itemTextColor="@drawable/bottom_icon_color"
-        app:menu="@menu/menu_feed"
+
         />
 
 

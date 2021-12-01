@@ -45,7 +45,7 @@ public class SliderAdapterforFeed extends RecyclerView.Adapter<SliderAdapterforF
     public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new SliderViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(
-                        R.layout.slide_item_container_forfeed,
+                        R.layout.slide_item_container,
                         parent,
                         false
                 )

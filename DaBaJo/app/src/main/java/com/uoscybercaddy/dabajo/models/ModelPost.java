@@ -2,7 +2,7 @@ package com.uoscybercaddy.dabajo.models;
 
 import java.util.List;
 
-public class ModelPost {
+public class ModelPost implements Comparable<ModelPost> {
     String pId, pTitle, pDescr, pTime, uid, uEmail, uDp, uName;
     int arrayCount;
     List<URLS> pImage;
@@ -104,4 +104,8 @@ public class ModelPost {
         }
 
 
+    @Override
+    public int compareTo(ModelPost o) {
+        return this.pTime.compareTo(o.getpTime());
+    }
 }

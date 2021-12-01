@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         android:id="@+id/videoView"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="450dp"
         android:visibility="gone"
         android:layout_centerVertical="true"/>
 
@@ -23,7 +23,8 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:minHeight="200dp"
         android:id="@+id/imageSlide"
         android:adjustViewBounds="true"

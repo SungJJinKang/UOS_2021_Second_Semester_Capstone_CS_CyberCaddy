@@ -47,6 +47,7 @@ import com.google.firebase.storage.UploadTask;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.SliderAdapter;
 import com.uoscybercaddy.dabajo.models.URLS;
+import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +83,6 @@ public class AddPostActivity extends AppCompatActivity {
 
     Uri image_rui = null;
     private Uri videoUri= null;
-
     ImageButton goBackButton;
     TextView pCategoryEt;
 
@@ -117,7 +117,7 @@ public class AddPostActivity extends AppCompatActivity {
         if(intent.hasExtra("category")){
             category = intent.getStringExtra("category");
         }else{
-            category = "soccer";
+            category = "축구";
         }
         actionBar = getSupportActionBar();
         actionBar.hide();
@@ -309,6 +309,12 @@ public class AddPostActivity extends AppCompatActivity {
     private void uploadData(String title, String description, String uri) {
         pd.setMessage("포스트 업로드중...");
         pd.show();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String categoriesCount = "categoriesCount."+category;
+        db.collection("users").document(uid)
+                .update(
+                        categoriesCount, FieldValue.increment(1)
+                );
         String timeStamp = String.valueOf(System.currentTimeMillis());
         if(!uri.equals(null)){
             Log.e("uris 사이즈",""+uris.size());
@@ -324,7 +330,7 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("pTime", timeStamp);
             city.put("arrayCount", uris.size());
             Log.e("city : ",city+"");
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();
             CollectionReference citiesRef = db.collection("Posts");
             citiesRef.document(tutortuty).collection(category).document(timeStamp)
                     .set(city)
@@ -363,7 +369,7 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("pImage", null);
             city.put("pTime", timeStamp);
             city.put("arrayCount", 0);
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();
             db.collection("Posts").document(tutortuty).collection(category).document(timeStamp)
                     .set(city)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {

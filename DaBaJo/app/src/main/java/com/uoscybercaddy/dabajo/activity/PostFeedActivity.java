@@ -36,6 +36,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.AdapterPosts;
 import com.uoscybercaddy.dabajo.models.ModelPost;
+import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
 import com.uoscybercaddy.dabajo.notifications.Token;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class PostFeedActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ImageButton writePostButton;
     ActionBar actionBar;
+
     String mUID;
     RecyclerView recyclerView;
     List<ModelPost> postList;
@@ -73,10 +75,11 @@ public class PostFeedActivity extends AppCompatActivity {
         //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#0000ff")));
         checkUserStatus();
         intent = getIntent();
+
         if(intent.hasExtra("category")){
             category = intent.getStringExtra("category");
         }else{
-            category = "soccer";
+            category = "축구";
         }
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -126,13 +129,14 @@ public class PostFeedActivity extends AppCompatActivity {
     }
     private void loadPosts() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        postList.clear();
         db.collection("Posts").document(tutortuty).collection(category)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            postList.clear();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
@@ -149,13 +153,14 @@ public class PostFeedActivity extends AppCompatActivity {
     }
     private void searchPosts(String searchQuery){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        postList.clear();
         db.collection("Posts").document(tutortuty).collection(category)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            postList.clear();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 ModelPost modelPost = document.toObject(ModelPost.class);
