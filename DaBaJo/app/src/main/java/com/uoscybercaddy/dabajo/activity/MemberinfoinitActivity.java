@@ -38,12 +38,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.uoscybercaddy.dabajo.adapter.AdapterPostsUsers;
 import com.uoscybercaddy.dabajo.models.MemberInfo;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.models.ModelPost;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MemberinfoinitActivity extends AppCompatActivity {
     private ImageView profileImageView;
@@ -54,6 +67,9 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     RadioButton rb_woman;
     Button infoSubmitButton;
     String sex="";
+    String tutortuty;
+    HashMap<String, Long> usersCategoriesCounts;
+    List<String> categories;
     private FirebaseAuth mAuth;
     private static final String TAG = "MemberinfoinitActivity";
     private static final int RC_SIGN_IN = 100;
@@ -133,6 +149,32 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                             Glide.with(MemberinfoinitActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(profileImageView);
                             downloadUrl = (document.getData().get("photoUrl").toString());
                         }
+                        //post업데이트
+                        Object position = document.getData().get("tutortuty");
+                        if(position != null){
+                            tutortuty = position.toString();
+                        }else{
+                            tutortuty = "튜티";
+                        }
+                        usersCategoriesCounts = (HashMap<String, Long>) document.getData().get("categoriesCount");
+                        if(usersCategoriesCounts != null) {
+                            List<Map.Entry<String, Long>> list_entries = new ArrayList<Map.Entry<String, Long>>(usersCategoriesCounts.entrySet());
+                            // 비교함수 Comparator를 사용하여 내림차순으로 정렬
+                            Collections.sort(list_entries, new Comparator<Map.Entry<String, Long>>() {
+                                // compare로 값을 비교
+                                public int compare(Map.Entry<String, Long> obj1, Map.Entry<String, Long> obj2) {
+                                    // 오름 차순 정렬
+                                    return obj2.getValue().compareTo(obj1.getValue());
+                                }
+                            });
+                            // 결과 출력
+                            categories = new ArrayList<String>();
+                            for (Map.Entry<String, Long> entry : list_entries) {
+                                categories.add(entry.getKey() + "");
+                            }
+                        }
+                        ///////
+
                         //downloadUrl = (document.getData().get("photoUrl").toString());
                         editTextNickName.setText(document.getData().get("nickName").toString());
                         nameEditText.setText(document.getData().get("name").toString());
@@ -479,8 +521,32 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
     private void uploader(MemberInfo memberInfo){
+        //Post들 업데이트
+        String uUid = user.getUid();
+        for(int i = 0; i< categories.size() ; i++) {
+            final int index = i;
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Posts").document(tutortuty).collection(categories.get(i))
+                    .whereEqualTo("uid", uUid)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    document.getReference().update("uName",memberInfo.getNickName());
+                                    document.getReference().update("uDp",memberInfo.getPhotoUrl());
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(user.getUid()).set(memberInfo)
+        db.collection("users").document(uUid).set(memberInfo)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

@@ -55,7 +55,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     String mUID;
     String uid;
     int check;
-    MenuItem item;
+    private MenuItem item;
     MenuItem refreshitem;
     TextView noPost;
     RecyclerView recyclerView;
