@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -182,7 +183,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 int id = item.getItemId();
                 if( id ==0 ){
                     //삭제
-                    beginDelete(pId, arrayCount, pCategory, pTutortuty);
+                    beginDelete(pId, arrayCount, pCategory, pTutortuty, uid);
                 }
                 return false;
             }
@@ -190,7 +191,13 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         popupMenu.show();
     }
 
-    private void beginDelete(String pId, int arrayCount,String pCategory,String pTutortuty) {
+    private void beginDelete(String pId, int arrayCount,String pCategory,String pTutortuty, String uid) {
+        String categoriesCount = "categoriesCount."+pCategory;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(uid)
+                .update(
+                        categoriesCount, FieldValue.increment(-1)
+                );
         if(arrayCount == 0){
             deleteWithoutImage(pId,pCategory, pTutortuty);
         }else{
