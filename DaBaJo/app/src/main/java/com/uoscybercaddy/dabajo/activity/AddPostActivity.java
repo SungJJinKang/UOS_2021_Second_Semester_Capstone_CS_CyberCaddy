@@ -498,6 +498,7 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("arrayCount", urisSize);
             city.put("pCategory", category);
             city.put("pTutortuty", tutortuty);
+            city.put("pLikes", 0);
             Log.e("city : ",city+"");
             uploadStorage(documentName, city);
             /*
@@ -544,6 +545,7 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("arrayCount", 0);
             city.put("pCategory", category);
             city.put("pTutortuty", tutortuty);
+            city.put("pLikes", 0);
             db = FirebaseFirestore.getInstance();
             db.collection("Posts").document(tutortuty).collection(category).document(documentName)
                     .set(city)

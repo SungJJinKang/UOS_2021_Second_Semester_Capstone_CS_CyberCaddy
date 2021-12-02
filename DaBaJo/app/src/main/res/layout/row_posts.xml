@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="관심"
-                android:drawableLeft="@drawable/ic_heart_orange"
+                android:drawableLeft="@drawable/ic_heart_orange_border"
                 android:drawablePadding="5dp"
 
                 />

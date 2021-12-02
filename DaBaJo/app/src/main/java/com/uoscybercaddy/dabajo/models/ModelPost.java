@@ -4,8 +4,42 @@ import java.util.List;
 
 public class ModelPost implements Comparable<ModelPost> {
     String pId, pTitle, pDescr, pTime, uid, uEmail, uDp, uName, pCategory, pTutortuty;
-    int arrayCount;
+    int arrayCount, pLikes;
     List<URLS> pImage;
+    List<String> pLikers;
+
+    public int getpLikes() {
+        return pLikes;
+    }
+
+    public void setpLikes(int pLikes) {
+        this.pLikes = pLikes;
+    }
+
+    public List<String> getpLikers() {
+        return pLikers;
+    }
+
+    public void setpLikers(List<String> pLikers) {
+        this.pLikers = pLikers;
+    }
+
+    public ModelPost(String pId, String pTitle, String pDescr, String pTime, String uid, String uEmail, String uDp, String uName, String pCategory, String pTutortuty, int arrayCount, int pLikes, List<URLS> pImage, List<String> pLikers) {
+        this.pId = pId;
+        this.pTitle = pTitle;
+        this.pDescr = pDescr;
+        this.pTime = pTime;
+        this.uid = uid;
+        this.uEmail = uEmail;
+        this.uDp = uDp;
+        this.uName = uName;
+        this.pCategory = pCategory;
+        this.pTutortuty = pTutortuty;
+        this.arrayCount = arrayCount;
+        this.pLikes = pLikes;
+        this.pImage = pImage;
+        this.pLikers = pLikers;
+    }
 
     public String getpCategory() {
         return pCategory;
@@ -21,21 +55,6 @@ public class ModelPost implements Comparable<ModelPost> {
 
     public void setpTutortuty(String pTutortuty) {
         this.pTutortuty = pTutortuty;
-    }
-
-    public ModelPost(String pId, String pTitle, String pDescr, String pTime, String uid, String uEmail, String uDp, String uName, String pCategory, String pTutortuty, int arrayCount, List<URLS> pImage) {
-        this.pId = pId;
-        this.pTitle = pTitle;
-        this.pDescr = pDescr;
-        this.pTime = pTime;
-        this.uid = uid;
-        this.uEmail = uEmail;
-        this.uDp = uDp;
-        this.uName = uName;
-        this.pCategory = pCategory;
-        this.pTutortuty = pTutortuty;
-        this.arrayCount = arrayCount;
-        this.pImage = pImage;
     }
 
     public ModelPost(){

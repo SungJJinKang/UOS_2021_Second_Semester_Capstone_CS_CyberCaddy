@@ -28,9 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,6 +56,9 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
     List<ModelPost> postList;
     String myUid;
     boolean isUsers;
+    boolean mProcessLike = false;
+
+    CollectionReference postsColl;
 
     public AdapterPosts(){}
     public AdapterPosts(Context context, List<ModelPost> postList, boolean isUsers) {
@@ -58,6 +66,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         this.postList = postList;
         myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.isUsers = isUsers;
+        postsColl = FirebaseFirestore.getInstance().collection("Posts");
     }
 
     @NonNull
@@ -82,6 +91,9 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         String pTimeStamp = postList.get(position).getpTime();
         int arrayCount = postList.get(position).getArrayCount();
         List<URLS> pImage = postList.get(position).getpImage();
+        Integer pLikes = postList.get(position).getpLikes();
+        List<String> pLikers= postList.get(position).getpLikers();
+
         if(pImage == null){
             holder.viewPager2.setVisibility(View.GONE);
         }
@@ -120,6 +132,14 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         calendar.setTimeInMillis(Long.parseLong(pTimeStamp));
         String pTime = DateFormat.format("dd/MM/yyyy hh:mm aa", calendar).toString();
 
+        holder.pLikesTv.setText(pLikes.toString() + " 관심");
+        holder.uNameTv.setText(uName);
+        holder.pTimeTv.setText(pTime);
+        holder.pTitleTv.setText(pTitle);
+        holder.pDescriptionTv.setText(pDescription);
+
+        setLikes(holder, pId, pTutortuty, pCategory);
+
         try{
             Glide.with(context).load(uDp).centerCrop().override(500).into(holder.uPictureIv);
         }
@@ -137,7 +157,42 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show();
+                mProcessLike = true;
+                postsColl.document(pTutortuty).collection(pCategory).document(pId)
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                ModelPost modelPost = document.toObject(ModelPost.class);
+                                Integer likes = modelPost.getpLikes();
+                                List<String> likers = modelPost.getpLikers();
+                                DocumentReference docRef = document.getReference();
+                                if(likers!=null && likers.contains(myUid)){
+                                    docRef.update("pLikes", FieldValue.increment(-1));
+                                    docRef.update("pLikers", FieldValue.arrayRemove(myUid));
+                                    holder.likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_heart_orange_border, 0,0,0);
+                                    holder.likeBtn.setText("관심");
+                                    holder.pLikesTv.setText((likes-1) + " 관심");
+                                    mProcessLike = false;
+                                }else{
+                                    docRef.update("pLikes", FieldValue.increment(1));
+                                    docRef.update("pLikers", FieldValue.arrayUnion(myUid));
+                                    holder.likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_heart_red_filled, 0,0,0);
+                                    holder.likeBtn.setText("관심있음");
+                                    holder.pLikesTv.setText((likes+1) + " 관심");
+                                    mProcessLike = false;
+                                }
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
             }
         });
         holder.commentBtn.setOnClickListener(new View.OnClickListener() {
@@ -164,12 +219,38 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         }
 
 
-        holder.uNameTv.setText(uName);
-        holder.pTimeTv.setText(pTime);
-        holder.pTitleTv.setText(pTitle);
-        holder.pDescriptionTv.setText(pDescription);
 
 
+
+    }
+
+    private void setLikes(MyHolder holder, String pId, String pTutortuty, String pCategory) {
+        postsColl.document(pTutortuty).collection(pCategory).document(pId)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        ModelPost modelPost = document.toObject(ModelPost.class);
+                        List<String> likers = modelPost.getpLikers();
+                        DocumentReference docRef = document.getReference();
+                        if(likers!=null && likers.contains(myUid)){
+                            holder.likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_heart_red_filled, 0,0,0);
+                            holder.likeBtn.setText("관심있음");
+                        }else{
+                            holder.likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_heart_orange_border, 0,0,0);
+                            holder.likeBtn.setText("관심");
+                        }
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
     private void showMoreOptions(ImageButton moreBtn, String uid, String myUid, String pId, List<URLS> pImage,int arrayCount,String pCategory,String pTutortuty ) {
