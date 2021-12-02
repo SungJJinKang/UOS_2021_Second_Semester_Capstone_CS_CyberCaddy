@@ -91,12 +91,28 @@
             android:padding="15dp"
             android:layout_gravity="center"
             />
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/main_color"
-            android:text="1.2k 관심"
-            android:id="@+id/pLikesTv"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/main_color"
+                android:text="1.2k 관심"
+                android:id="@+id/pLikesTv"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.2k 댓글"
+                android:id="@+id/pCommentsTv"
+                android:gravity="end"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:textColor="@color/main_color"
+                />
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

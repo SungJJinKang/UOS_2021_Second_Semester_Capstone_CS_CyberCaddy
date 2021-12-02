@@ -42,14 +42,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.AddPostActivity;
+import com.uoscybercaddy.dabajo.activity.PostDetailActivity;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.URLS;
 
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
     Context context;
@@ -93,6 +96,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         List<URLS> pImage = postList.get(position).getpImage();
         Integer pLikes = postList.get(position).getpLikes();
         List<String> pLikers= postList.get(position).getpLikers();
+        Integer pComments = postList.get(position).getpComments();
 
         if(pImage == null){
             holder.viewPager2.setVisibility(View.GONE);
@@ -132,7 +136,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         calendar.setTimeInMillis(Long.parseLong(pTimeStamp));
         String pTime = DateFormat.format("dd/MM/yyyy hh:mm aa", calendar).toString();
 
-        holder.pLikesTv.setText(pLikes.toString() + " 관심");
+        holder.pLikesTv.setText(pLikes + " 관심");
+        holder.pCommentsTv.setText(pComments + " 댓글");
         holder.uNameTv.setText(uName);
         holder.pTimeTv.setText(pTime);
         holder.pTitleTv.setText(pTitle);
@@ -198,7 +203,11 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.commentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Comment", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, PostDetailActivity.class);
+                intent.putExtra("pId", pId);
+                intent.putExtra("pTutortuty",pTutortuty);
+                intent.putExtra("pCategory",pCategory);
+                context.startActivity(intent);
             }
         });
         holder.shareBtn.setOnClickListener(new View.OnClickListener() {
@@ -260,6 +269,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "삭제");
             popupMenu.getMenu().add(Menu.NONE, 1, 0, "수정");
         }
+        popupMenu.getMenu().add(Menu.NONE, 2, 0 , "댓글 달기");
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -277,6 +287,13 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                     intent.putExtra("pTutortuty",pTutortuty);
                     context.startActivity(intent);
                 }
+                else if( id==2){
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("pId", pId);
+                    intent.putExtra("pTutortuty",pTutortuty);
+                    intent.putExtra("pCategory",pCategory);
+                    context.startActivity(intent);
+                }
                 return false;
             }
         });
@@ -290,6 +307,21 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 .update(
                         categoriesCount, FieldValue.increment(-1)
                 );
+        Map<String,Object> updates = new HashMap<>();
+        updates.put("comments."+pTutortuty+"."+pCategory+"."+pId, FieldValue.delete());
+        db.collection("users").document(uid).update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "updates.put(\"comments.\"+pTutortuty+\".\"+pCategory+\".\"+pId, FieldValue.delete());");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error updating document"+"updates.put(\"comments.\"+pTutortuty+\".\"+pCategory+\".\"+pId, FieldValue.delete());", e);
+                    }
+                });
         if(arrayCount == 0){
             deleteWithoutImage(pId,pCategory, pTutortuty);
         }else{
@@ -402,7 +434,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
     class MyHolder extends RecyclerView.ViewHolder{
         ImageView uPictureIv;
-        TextView uNameTv, pTimeTv, pTitleTv, pDescriptionTv, pLikesTv;
+        TextView uNameTv, pTimeTv, pTitleTv, pDescriptionTv, pLikesTv, pCommentsTv;
         ImageButton moreBtn;
         Button likeBtn, commentBtn, shareBtn;
         ViewPager2 viewPager2;
@@ -411,6 +443,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         public MyHolder(@NonNull View itemView){
             super(itemView);
             layoutIndicators = itemView.findViewById(R.id.layoutIndicators);
+            pCommentsTv = itemView.findViewById(R.id.pCommentsTv);
             uPictureIv = itemView.findViewById(R.id.uPictureIv);
             uNameTv = itemView.findViewById(R.id.uNameTv);
             pTimeTv = itemView.findViewById(R.id.pTimeTv);

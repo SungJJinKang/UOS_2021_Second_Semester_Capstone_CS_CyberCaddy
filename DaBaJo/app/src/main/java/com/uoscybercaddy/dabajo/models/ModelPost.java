@@ -1,12 +1,59 @@
 package com.uoscybercaddy.dabajo.models;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ModelPost implements Comparable<ModelPost> {
     String pId, pTitle, pDescr, pTime, uid, uEmail, uDp, uName, pCategory, pTutortuty;
-    int arrayCount, pLikes;
+    int arrayCount, pLikes, pComments;
     List<URLS> pImage;
     List<String> pLikers;
+    HashMap<String, HashMap<String, Object>> Comments;
+    List<String> pCommenters;
+
+    public int getpComments() {
+        return pComments;
+    }
+
+    public void setpComments(int pComments) {
+        this.pComments = pComments;
+    }
+
+    public HashMap<String, HashMap<String, Object>> getComments() {
+        return Comments;
+    }
+
+    public void setComments(HashMap<String, HashMap<String, Object>> comments) {
+        Comments = comments;
+    }
+
+    public List<String> getpCommenters() {
+        return pCommenters;
+    }
+
+    public void setpCommenters(List<String> pCommenters) {
+        this.pCommenters = pCommenters;
+    }
+
+    public ModelPost(String pId, String pTitle, String pDescr, String pTime, String uid, String uEmail, String uDp, String uName, String pCategory, String pTutortuty, int arrayCount, int pLikes, int pComments, List<URLS> pImage, List<String> pLikers, HashMap<String, HashMap<String, Object>> comments, List<String> pCommenters) {
+        this.pId = pId;
+        this.pTitle = pTitle;
+        this.pDescr = pDescr;
+        this.pTime = pTime;
+        this.uid = uid;
+        this.uEmail = uEmail;
+        this.uDp = uDp;
+        this.uName = uName;
+        this.pCategory = pCategory;
+        this.pTutortuty = pTutortuty;
+        this.arrayCount = arrayCount;
+        this.pLikes = pLikes;
+        this.pComments = pComments;
+        this.pImage = pImage;
+        this.pLikers = pLikers;
+        Comments = comments;
+        this.pCommenters = pCommenters;
+    }
 
     public int getpLikes() {
         return pLikes;
@@ -24,22 +71,6 @@ public class ModelPost implements Comparable<ModelPost> {
         this.pLikers = pLikers;
     }
 
-    public ModelPost(String pId, String pTitle, String pDescr, String pTime, String uid, String uEmail, String uDp, String uName, String pCategory, String pTutortuty, int arrayCount, int pLikes, List<URLS> pImage, List<String> pLikers) {
-        this.pId = pId;
-        this.pTitle = pTitle;
-        this.pDescr = pDescr;
-        this.pTime = pTime;
-        this.uid = uid;
-        this.uEmail = uEmail;
-        this.uDp = uDp;
-        this.uName = uName;
-        this.pCategory = pCategory;
-        this.pTutortuty = pTutortuty;
-        this.arrayCount = arrayCount;
-        this.pLikes = pLikes;
-        this.pImage = pImage;
-        this.pLikers = pLikers;
-    }
 
     public String getpCategory() {
         return pCategory;

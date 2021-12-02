@@ -46,6 +46,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.uoscybercaddy.dabajo.models.MemberInfo;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.models.ModelPost;
+import com.uoscybercaddy.dabajo.models.ModelUsers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,6 +67,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
     String sex="";
     String tutortuty;
     HashMap<String, Long> usersCategoriesCounts;
+    HashMap<String, HashMap<String, HashMap<String,String>>> comments;
     List<String> categories;
     private FirebaseAuth mAuth;
     private static final String TAG = "MemberinfoinitActivity";
@@ -140,6 +143,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        ModelUsers modelUsers = document.toObject(ModelUsers.class);
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                         if(document.getData().get("photoUrl") != null){
                             Glide.with(MemberinfoinitActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(profileImageView);
@@ -152,6 +156,9 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                         }else{
                             tutortuty = "튜티";
                         }
+                        comments = modelUsers.getComments();
+
+
                         usersCategoriesCounts = (HashMap<String, Long>) document.getData().get("categoriesCount");
                         if(usersCategoriesCounts != null) {
                             List<Map.Entry<String, Long>> list_entries = new ArrayList<Map.Entry<String, Long>>(usersCategoriesCounts.entrySet());
@@ -542,6 +549,34 @@ public class MemberinfoinitActivity extends AppCompatActivity {
                         }
                     });
         }
+        if(comments!=null){
+            HashMap<String, HashMap<String,String>> innerTutorComments = comments.get("튜터");
+            if(innerTutorComments != null){
+                innerTutorComments.forEach((category, inner)->{
+                    inner.forEach((pid, cid)-> {
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                db.collection("Posts").document("튜터").collection(category).document(pid)
+                                        .update("Comments." + cid + "." + "uName", memberInfo.getNickName());
+                                db.collection("Posts").document("튜터").collection(category).document(pid)
+                                        .update("Comments." + cid + "." + "uDp", memberInfo.getPhotoUrl());
+                            });
+                });
+            }
+            HashMap<String, HashMap<String,String>> innerTutyComments = comments.get("튜티");
+            if(innerTutyComments != null){
+                innerTutyComments.forEach((category, inner)->{
+                    inner.forEach((pid, cid)-> {
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("Posts").document("튜터").collection(category).document(pid)
+                                .update("Comments." + cid + "." + "uName", memberInfo.getNickName());
+                        db.collection("Posts").document("튜터").collection(category).document(pid)
+                                .update("Comments." + cid + "." + "uDp", memberInfo.getPhotoUrl());
+                    });
+                });
+            }
+        }
+
+
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(uUid).set(memberInfo)

@@ -1,7 +1,43 @@
 package com.uoscybercaddy.dabajo.models;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class ModelUsers {
     String name, nickName, photoUrl, sex, tutortuty, introduction, search, uid, onlineStatus, typingTo;
+    HashMap<String, Long> categoriesCount;
+    HashMap<String, HashMap<String, HashMap<String,String>>> comments;
+
+    public HashMap<String, Long> getCategoriesCount() {
+        return categoriesCount;
+    }
+
+    public void setCategoriesCount(HashMap<String, Long> categoriesCount) {
+        this.categoriesCount = categoriesCount;
+    }
+
+    public HashMap<String, HashMap<String, HashMap<String, String>>> getComments() {
+        return comments;
+    }
+
+    public void setComments(HashMap<String, HashMap<String, HashMap<String, String>>> comments) {
+        this.comments = comments;
+    }
+
+    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search, String uid, String onlineStatus, String typingTo, HashMap<String, Long> categoriesCount, HashMap<String, HashMap<String, HashMap<String, String>>> comments) {
+        this.name = name;
+        this.nickName = nickName;
+        this.photoUrl = photoUrl;
+        this.sex = sex;
+        this.tutortuty = tutortuty;
+        this.introduction = introduction;
+        this.search = search;
+        this.uid = uid;
+        this.onlineStatus = onlineStatus;
+        this.typingTo = typingTo;
+        this.categoriesCount = categoriesCount;
+        this.comments = comments;
+    }
 
     public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String uid) {
         this.name = name;
@@ -12,6 +48,9 @@ public class ModelUsers {
         this.introduction = introduction;
         this.uid = uid;
     }
+
+
+
 
     public ModelUsers() {
     }

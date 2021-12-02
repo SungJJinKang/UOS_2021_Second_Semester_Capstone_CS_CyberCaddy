@@ -17,9 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DaBaJo">
         <activity
-            android:name=".activity.PostFeedActivityUsers"
+            android:name=".activity.PostDetailActivity"
             android:theme="@style/AppThemeNo"
             android:exported="false" />
+        <activity
+            android:name=".activity.PostFeedActivityUsers"
+            android:exported="false"
+            android:theme="@style/AppThemeNo" />
         <activity
             android:name=".activity.AddPostActivity"
             android:exported="false" />
