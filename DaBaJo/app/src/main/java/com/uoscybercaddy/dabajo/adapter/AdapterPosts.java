@@ -36,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.activity.AddPostActivity;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.URLS;
@@ -89,9 +90,9 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             holder.viewPager2.setVisibility(View.VISIBLE);
             sliderAdapterforFeed  = (new SliderAdapterforFeed(context, pImage, holder.viewPager2));
             holder.viewPager2.setAdapter(sliderAdapterforFeed);
+            ImageView[] indicators;
+            indicators = setupIndicators(arrayCount);
             for(int i = 0; i< arrayCount; i++) {
-                ImageView[] indicators = new ImageView[arrayCount];
-                indicators = setupIndicators(arrayCount);
                 holder.layoutIndicators.addView(indicators[i]);
             }
             holder.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -176,6 +177,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         
         if(uid.equals(myUid)){
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "삭제");
+            popupMenu.getMenu().add(Menu.NONE, 1, 0, "수정");
         }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -184,6 +186,15 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 if( id ==0 ){
                     //삭제
                     beginDelete(pId, arrayCount, pCategory, pTutortuty, uid);
+                }
+                else if( id == 1 ){
+                    //수정
+                    Intent intent = new Intent(context, AddPostActivity.class);
+                    intent.putExtra("key", "editPost");
+                    intent.putExtra("editPostId",pId);
+                    intent.putExtra("pCategory",pCategory);
+                    intent.putExtra("pTutortuty",pTutortuty);
+                    context.startActivity(intent);
                 }
                 return false;
             }

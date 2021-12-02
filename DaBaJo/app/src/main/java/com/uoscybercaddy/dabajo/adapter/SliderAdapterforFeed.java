@@ -54,7 +54,7 @@ public class SliderAdapterforFeed extends RecyclerView.Adapter<SliderAdapterforF
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-        if(((String)pImage.get(position).getImagevideo()).equals("image")){
+        if((pImage.get(position).getImagevideo()).equals("image")){
             holder.imageView.setVisibility(View.VISIBLE);
             holder.videoView.setVisibility(View.GONE);
             Uri message = Uri.parse(pImage.get(position).getUrls());

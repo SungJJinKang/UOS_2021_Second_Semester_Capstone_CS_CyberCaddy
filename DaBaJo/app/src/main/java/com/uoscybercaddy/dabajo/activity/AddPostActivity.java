@@ -15,6 +15,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,15 +41,22 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.adapter.AdapterPosts;
 import com.uoscybercaddy.dabajo.adapter.SliderAdapter;
+import com.uoscybercaddy.dabajo.adapter.SliderAdapterforFeed;
+import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.URLS;
 import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,12 +67,13 @@ public class AddPostActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     EditText titleEt, descriptionEt;
     //ImageView imageIv;
+    SliderAdapterforFeed sliderAdapterforFeed;
     AppCompatButton uploadBtn;
     AppCompatButton imageButton;
     AppCompatButton videoButton;
     private LinearLayout layoutIndicators;
     SliderAdapter sliderAdapter;
-
+    LinearLayout imageuploadBtnLayer;
     private ViewPager2 viewPager2;
     List<List> uris = new ArrayList<>();
     List<URLS> uploadUrls = new ArrayList<>();
@@ -87,6 +96,9 @@ public class AddPostActivity extends AppCompatActivity {
     ImageButton goBackButton;
     TextView pCategoryEt;
 
+    String editTitle, editDescription;
+    List<URLS> editImage = new ArrayList<>();
+
     //유저정보
     String name, email, uid, dp;
     Intent intent;
@@ -108,13 +120,32 @@ public class AddPostActivity extends AppCompatActivity {
         uploadBtn = (AppCompatButton)findViewById(R.id.pUploadBtn);
         imageButton = (AppCompatButton)findViewById(R.id.imageButton);
         videoButton = (AppCompatButton)findViewById(R.id.videoButton);
+        imageuploadBtnLayer = (LinearLayout)findViewById(R.id.imageuploadBtnLayer);
         isVideo = false;
+        goBackButton = (ImageButton)findViewById(R.id.goBackButton);
+        pCategoryEt = (TextView) findViewById(R.id.pCategoryEt);
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         pd = new ProgressDialog(this);
         intent = getIntent();
-        goBackButton = (ImageButton)findViewById(R.id.goBackButton);
-        pCategoryEt = (TextView) findViewById(R.id.pCategoryEt);
+        String isUpdateKey = ""+intent.getStringExtra("key");
+        String editPostId = ""+intent.getStringExtra("editPostId");
+        String editCategory = ""+intent.getStringExtra("pCategory");
+        String editTutortuty = ""+intent.getStringExtra("pTutortuty");
+        if(isUpdateKey.equals("editPost")){
+            pCategoryEt.setText(category +" (게시물 수정)");
+            imageuploadBtnLayer.setVisibility(View.GONE);
+            uploadBtn.setText("수정");
+            loadPostData(editPostId, editCategory, editTutortuty);
+        }
+        else{
+            imageuploadBtnLayer.setVisibility(View.VISIBLE);
+            pCategoryEt.setText(category);
+            uploadBtn.setText("업로드");
+        }
+
+
+
         if(intent.hasExtra("category")){
             category = intent.getStringExtra("category");
         }else{
@@ -122,7 +153,7 @@ public class AddPostActivity extends AppCompatActivity {
         }
         actionBar = getSupportActionBar();
         actionBar.hide();
-        pCategoryEt.setText(category);
+
   /*      viewPager2.setClipToPadding(false);
         viewPager2.setClipChildren(false);
         viewPager2.setOffscreenPageLimit(3);
@@ -165,11 +196,12 @@ public class AddPostActivity extends AppCompatActivity {
                     descriptionEt.setError("내용을 입력해주세요.");
                     descriptionEt.setFocusable(true);
                 }
-                else if(image_rui == null){
-                    uploadData(title, description, null);
-                }else{
+                else if(isUpdateKey.equals("editPost")){
+                    beginUpdate(title, description, editPostId, editCategory, editTutortuty);
+                }
+                else{
                     //업로드
-                    uploadData(title, description, String.valueOf(image_rui));
+                    uploadData(title, description);
                 }
             }
         });
@@ -205,6 +237,95 @@ public class AddPostActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void beginUpdate(String title, String description, String editPostId, String editCategory, String editTutortuty) {
+        pd.setMessage("업데이트 중...");
+        pd.show();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
+        DocumentReference washingtonRef = db.collection("Posts").document(editTutortuty).collection(editCategory).document(editPostId);
+        washingtonRef.update("pTitle", title);
+        washingtonRef.update("pDescr", description);
+        pd.dismiss();
+        startToast("업데이트 성공");
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+
+    }
+
+    private void loadPostData(String editPostId, String editCategory, String editTutortuty) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Posts").document(editTutortuty).collection(editCategory).document(editPostId)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        ModelPost modelPost = document.toObject(ModelPost.class);
+                        int arrayCount = modelPost.getArrayCount();
+                        editTitle = modelPost.getpTitle();
+                        editDescription = modelPost.getpDescr();
+                        editImage = modelPost.getpImage();
+
+                        titleEt.setText(editTitle);
+                        descriptionEt.setText(editDescription);
+                        viewPager2.setVisibility(View.VISIBLE);
+
+                        sliderAdapterforFeed  = (new SliderAdapterforFeed(AddPostActivity.this, editImage, viewPager2));
+                        viewPager2.setAdapter(sliderAdapterforFeed);
+                        ImageView[] indicators;
+                        indicators = setupIndicators(arrayCount);
+                        for(int i = 0; i< arrayCount; i++) {
+
+                            layoutIndicators.addView(indicators[i]);
+                        }
+                        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                            @Override
+                            public void onPageSelected(int position) {
+                                super.onPageSelected(position);
+                                int childCount = layoutIndicators.getChildCount();
+                                for (int i =0; i< childCount ; i++){
+                                    ImageView imageView = (ImageView) layoutIndicators.getChildAt(i);
+                                    if(i==position){
+                                        imageView.setImageDrawable(
+                                                ContextCompat.getDrawable(getApplicationContext(), R.drawable.indicator_active)
+                                        );
+                                    }else{
+                                        imageView.setImageDrawable(
+                                                ContextCompat.getDrawable(getApplicationContext(), R.drawable.indicator_inactive)
+                                        );
+                                    }
+                                }
+                            }
+                        });
+
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+    private ImageView[] setupIndicators(int arrayCount){
+        ImageView[] indicators = new ImageView[arrayCount];
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(8,0,8,0);
+        for(int i = 0 ; i< arrayCount; i++){
+            indicators[i] = new ImageView(getApplicationContext());
+            indicators[i].setImageDrawable(ContextCompat.getDrawable(
+                    getApplicationContext(),
+                    R.drawable.indicator_inactive
+            ));
+            indicators[i].setLayoutParams(layoutParams);
+        }
+        return indicators;
     }
     private void setupIndicators(){
         //ImageView indicators = new ImageView;
@@ -272,13 +393,27 @@ public class AddPostActivity extends AppCompatActivity {
             final int index = i;
             final URLS uri = new URLS();
             uri.setOrder(index);
-            final Uri putUri = ((Uri)uris.get(index).get(1));
             final String imagevideo = (String) uris.get(index).get(0);
-            uris.get(index).set(1, "");
-            String filePathAndName = "Posts/"+"post_" + documentName + "/"+ index;
-            Log.e("(Uri)uris.get(index).get(1)", "" + putUri);
-            StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
-            StorageTask uploadTask  = ref.putFile(putUri);
+            final Uri putUri = ((Uri)uris.get(index).get(1));
+            final String filePathAndName = "Posts/"+"post_" + documentName + "/"+ index;
+            final StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
+            StorageTask uploadTask;
+            if(imagevideo.equals("image")){
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), putUri);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    byte[] data = baos.toByteArray();
+                    uploadTask  = ref.putBytes(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    startToast("실패");
+                    return;
+                }
+            }
+            else{
+                uploadTask  = ref.putFile(putUri);
+            }
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -337,19 +472,20 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
 
-    private void uploadData(String title, String description, String uri) {
+    private void uploadData(String title, String description) {
         pd.setMessage("포스트 업로드중...");
         pd.show();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String categoriesCount = "categoriesCount."+category;
+        int urisSize = uris.size();
         db.collection("users").document(uid)
                 .update(
                         categoriesCount, FieldValue.increment(1)
                 );
         String timeStamp = String.valueOf(System.currentTimeMillis());
         String documentName = timeStamp + uid;
-        if(!uri.equals(null)){
-            Log.e("uris 사이즈",""+uris.size());
+        if(urisSize != 0){
+            Log.e("uris 사이즈",""+urisSize);
             Map<String, Object> city = new HashMap<>();
             city.put("uid", uid);
             city.put("uName", name);
@@ -359,7 +495,7 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("pTitle", title);
             city.put("pDescr",description);
             city.put("pTime", timeStamp);
-            city.put("arrayCount", uris.size());
+            city.put("arrayCount", urisSize);
             city.put("pCategory", category);
             city.put("pTutortuty", tutortuty);
             Log.e("city : ",city+"");
