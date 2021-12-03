@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), MemberinfoinitActivity.class);
                 intent.putExtra("fromProfileEdit","fromProfileEdit");
                 startActivity(intent);
-                getActivity().finish();
+//                getActivity().finish();
             }
         });
 
@@ -148,7 +148,7 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), NoticeActivity.class);
                 intent.putExtra("튜티",1);
                 startActivity(intent);
-                getActivity().finish();
+//                getActivity().finish();
             }
         });
 
@@ -158,7 +158,7 @@ public class ProfileFragment extends Fragment {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
-                getActivity().finish();
+//                getActivity().finish();
             }
         });
 
@@ -170,7 +170,7 @@ public class ProfileFragment extends Fragment {
             //profileTv.setText(user.getEmail());
         } else{
             startActivity(new Intent(getActivity(), MainActivity.class));
-            getActivity().finish();
+//            getActivity().finish();
         }
     }
 

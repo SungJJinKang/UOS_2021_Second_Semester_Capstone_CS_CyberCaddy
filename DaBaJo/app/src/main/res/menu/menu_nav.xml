@@ -6,9 +6,10 @@
     <item android:id="@+id/nav_category"
         android:title="카테고리"
         android:icon="@drawable/ic_category_black"/>
-    <item android:id="@+id/nav_favorite"
-        android:title="좋아요"
-        android:icon="@drawable/ic_favorite_black"/>
+    <item
+        android:id="@+id/nav_menu_chat"
+        android:icon="@drawable/ic_chat_black_24dp"
+        android:title="채팅" />
     <item android:id="@+id/nav_profile"
         android:title="프로필"
         android:icon="@drawable/ic_profile_black"/>
