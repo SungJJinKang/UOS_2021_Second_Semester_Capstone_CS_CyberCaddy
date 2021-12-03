@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +48,7 @@ public class ChatListFragment extends Fragment {
     FirebaseUser currentUser;
     CollectionReference dbRef;
     AdapterChatlist adapterChatlist;
-
+    TextView noChatList;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -102,7 +103,7 @@ public class ChatListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat_list, container, false);
-
+        noChatList = (TextView) view.findViewById(R.id.noChatList);
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -123,6 +124,7 @@ public class ChatListFragment extends Fragment {
 
                         if (snapshot != null && snapshot.exists()) {
                             Log.d(TAG, "Current data: " + snapshot.getData());
+                            noChatList.setVisibility(View.GONE);
                             chatlistList.clear();
                             for(String key : snapshot.getData().keySet()){
                                 Log.e("key : ",""+key);
@@ -131,6 +133,7 @@ public class ChatListFragment extends Fragment {
                             }
                             loadChats();
                         } else {
+                            noChatList.setVisibility(View.VISIBLE);
                             Log.d(TAG, "Current data: null");
                         }
                     }

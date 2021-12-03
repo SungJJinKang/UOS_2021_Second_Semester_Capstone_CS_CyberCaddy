@@ -31,7 +31,6 @@ public class AdapterChatlist extends RecyclerView.Adapter<AdapterChatlist.MyHold
         lastMessageMap = new HashMap<>();
     }
 
-
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

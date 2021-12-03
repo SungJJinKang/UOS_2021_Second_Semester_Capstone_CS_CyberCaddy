@@ -18,24 +18,16 @@ public class WriteInfo implements Serializable {
     private String body;
     private String writer;
     public Date createdAt;
-
     public int imageCount;
-
     public int videoCount;
     //TODO : 비디오 사이즈 수정 필요.
     //public int[] videoSize;
     public List<String> videoExtensions;
     public transient  boolean isVideoDataLoaded = false;
-
-
     public ArrayList<Comment> commentList;
-
     public WriteInfo() {
 
     }
-
-
-
     public WriteInfo(String title, String contents, String writer, Date createdAt){
         this.title = title;
         this.body = contents;
@@ -43,7 +35,6 @@ public class WriteInfo implements Serializable {
         this.createdAt = createdAt;
         this.commentList = new ArrayList<>();
     }
-
     public String getTitle(){
         return this.title;
     }

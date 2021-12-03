@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_tuty"
+        android:title="튜티"
+        android:icon="@drawable/ic_tuty_black"/>
+    <item android:id="@+id/nav_tutor"
+        android:title="튜터"
+        android:icon="@drawable/ic_tutor_black"/>
+</menu>

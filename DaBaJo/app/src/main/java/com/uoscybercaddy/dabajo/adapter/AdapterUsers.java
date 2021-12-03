@@ -1,6 +1,8 @@
 package com.uoscybercaddy.dabajo.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.models.ModelUsers;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.ChatActivity;
@@ -55,9 +58,25 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHolder>{
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("hisUid",hisUID);
-                context.startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setItems(new String[]{"프로필", "채팅"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){
+                            //프로필
+                            Intent intent = new Intent(context, PostFeedActivityUsers.class);
+                            intent.putExtra("uid",hisUID);
+                            context.startActivity(intent);
+                        }
+                        if(which == 1){
+                            //채팅
+                            Intent intent = new Intent(context, ChatActivity.class);
+                            intent.putExtra("hisUid",hisUID);
+                            context.startActivity(intent);
+                        }
+                    }
+                });
+                builder.create().show();
             }
         });
     }

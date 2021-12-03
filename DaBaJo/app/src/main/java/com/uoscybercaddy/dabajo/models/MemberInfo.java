@@ -2,6 +2,7 @@ package com.uoscybercaddy.dabajo.models;
 
 import android.graphics.drawable.Drawable;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 public class MemberInfo {
@@ -9,8 +10,36 @@ public class MemberInfo {
     private String name;
     private String introduction;
     private String sex;
+    private String tutortuty;
+    private HashMap<String, Long> categoriesCount;
 
+    public String getTutortuty() {
+        return tutortuty;
+    }
 
+    public void setTutortuty(String tutortuty) {
+        this.tutortuty = tutortuty;
+    }
+
+    public HashMap<String, Long> getCategoriesCount() {
+        return categoriesCount;
+    }
+
+    public void setCategoriesCount(HashMap<String, Long> categoriesCount) {
+        this.categoriesCount = categoriesCount;
+    }
+
+    public MemberInfo(String nickName, String name, String introduction, String sex, String tutortuty, HashMap<String, Long> categoriesCount, String photoUrl, Drawable profilePhotoDrawable, boolean profilePhotoDrawableIsLoaded) {
+        this.nickName = nickName;
+        this.name = name;
+        this.introduction = introduction;
+        this.sex = sex;
+        this.tutortuty = tutortuty;
+        this.categoriesCount = categoriesCount;
+        this.photoUrl = photoUrl;
+        this.profilePhotoDrawable = profilePhotoDrawable;
+        this.profilePhotoDrawableIsLoaded = profilePhotoDrawableIsLoaded;
+    }
 
     private String photoUrl;
 
