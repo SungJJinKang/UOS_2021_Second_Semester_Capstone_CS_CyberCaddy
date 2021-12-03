@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -24,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.fragment.CategoryFragment;
-import com.uoscybercaddy.dabajo.fragment.FavoriteFragment;
+import com.uoscybercaddy.dabajo.fragment.ChatListFragment;
 import com.uoscybercaddy.dabajo.fragment.HomeFragment;
 import com.uoscybercaddy.dabajo.fragment.ProfileFragment;
 import com.uoscybercaddy.dabajo.notifications.Token;
@@ -151,7 +150,7 @@ public class DashboardActivity extends AppCompatActivity {
                             HomeFragment fragment1= new HomeFragment();
                             FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
                             ft1.replace(R.id.content, fragment1, "");
-//                            ft1.addToBackStack(null);
+                            ft1.addToBackStack(null);
                             ft1.commit();
                             fragmentFlag = 0;
                             return true;
@@ -159,16 +158,16 @@ public class DashboardActivity extends AppCompatActivity {
                             CategoryFragment fragment2= new CategoryFragment();
                             FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
                             ft2.replace(R.id.content, fragment2, "");
-//                            ft2.addToBackStack(null);
+                            ft2.addToBackStack(null);
                             ft2.commit();
                             fragmentFlag = 1;
                             //nav_category fragment transaction
                             return true;
-                        case R.id.nav_favorite:
-                            FavoriteFragment fragment3= new FavoriteFragment();
+                        case R.id.nav_menu_chat:
+                            ChatListFragment fragment3= new ChatListFragment();
                             FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
                             ft3.replace(R.id.content, fragment3, "");
-//                            ft3.addToBackStack(null);
+                            ft3.addToBackStack(null);
                             ft3.commit();
                             fragmentFlag = 2;
                             //nav_favorite fragment transaction
@@ -177,7 +176,7 @@ public class DashboardActivity extends AppCompatActivity {
                             ProfileFragment fragment4= new ProfileFragment();
                             FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
                             ft4.replace(R.id.content, fragment4, "");
-//                            ft4.addToBackStack(null);
+                            ft4.addToBackStack(null);
                             ft4.commit();
                             fragmentFlag = 3;
                             //nav_profile fragment transaction
