@@ -223,7 +223,9 @@ public class PostDetailActivity extends AppCompatActivity {
         PopupMenu popupMenu = new PopupMenu(PostDetailActivity.this ,moreBtn, Gravity.END);
         if(hisUid == null){
             Toast.makeText(PostDetailActivity.this,"삭제된 게시판입니다.",Toast.LENGTH_SHORT).show();
-            finish();
+            Intent intent1 = new Intent("deletePost");
+            LocalBroadcastManager.getInstance(PostDetailActivity.this).sendBroadcast(intent1);
+            onBackPressed();
         }
         if(hisUid.equals(mUID)){
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "삭제");
@@ -394,6 +396,9 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
                     } else {
                         Log.d(TAG, "No such document");
+                        Intent intent1 = new Intent("deletePost");
+                        LocalBroadcastManager.getInstance(PostDetailActivity.this).sendBroadcast(intent1);
+                        onBackPressed();
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -434,6 +439,9 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
                     } else {
                         Log.d(TAG, "No such document");
+                        Intent intent1 = new Intent("deletePost");
+                        LocalBroadcastManager.getInstance(PostDetailActivity.this).sendBroadcast(intent1);
+                        onBackPressed();
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -478,8 +486,10 @@ public class PostDetailActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error updating document", e);
                         pd.dismiss();
-                        Toast.makeText(PostDetailActivity.this, "댓글 업로드 실패...", Toast.LENGTH_SHORT).show();
-                        finish();
+                        Toast.makeText(PostDetailActivity.this, "삭제된 게시판...", Toast.LENGTH_SHORT).show();
+                        Intent intent1 = new Intent("deletePost");
+                        LocalBroadcastManager.getInstance(PostDetailActivity.this).sendBroadcast(intent1);
+                        onBackPressed();
                     }
                 });
 
@@ -545,6 +555,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
+
                 }
             }
         });
@@ -632,12 +643,16 @@ public class PostDetailActivity extends AppCompatActivity {
                     } else {
                         Log.d(TAG, "No such document");
                             Toast.makeText(PostDetailActivity.this,"삭제된 게시물 입니다.", Toast.LENGTH_SHORT).show();
-                            finish();
+                        Intent intent1 = new Intent("deletePost");
+                        LocalBroadcastManager.getInstance(PostDetailActivity.this).sendBroadcast(intent1);
+                        onBackPressed();
 
                     }
                 } else {
                     Toast.makeText(PostDetailActivity.this,"삭제된 게시물 입니다.", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Intent intent1 = new Intent("deletePost");
+                    LocalBroadcastManager.getInstance(PostDetailActivity.this).sendBroadcast(intent1);
+                    onBackPressed();
                     Log.d(TAG, "get failed with ", task.getException());
                 }
             }

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
@@ -132,6 +133,11 @@ public class AddPostActivity extends AppCompatActivity {
         String editPostId = ""+intent.getStringExtra("editPostId");
         String editCategory = ""+intent.getStringExtra("pCategory");
         String editTutortuty = ""+intent.getStringExtra("pTutortuty");
+        if(intent.hasExtra("category")){
+            category = intent.getStringExtra("category");
+        }else{
+            category = "축구";
+        }
         if(isUpdateKey.equals("editPost")){
             pCategoryEt.setText(category +" (게시물 수정)");
             imageuploadBtnLayer.setVisibility(View.GONE);
@@ -142,14 +148,6 @@ public class AddPostActivity extends AppCompatActivity {
             imageuploadBtnLayer.setVisibility(View.VISIBLE);
             pCategoryEt.setText(category);
             uploadBtn.setText("업로드");
-        }
-
-
-
-        if(intent.hasExtra("category")){
-            category = intent.getStringExtra("category");
-        }else{
-            category = "축구";
         }
         actionBar = getSupportActionBar();
         actionBar.hide();
@@ -245,12 +243,44 @@ public class AddPostActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db = FirebaseFirestore.getInstance();
         DocumentReference washingtonRef = db.collection("Posts").document(editTutortuty).collection(editCategory).document(editPostId);
-        washingtonRef.update("pTitle", title);
-        washingtonRef.update("pDescr", description);
-        pd.dismiss();
-        startToast("업데이트 성공");
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        washingtonRef.update("pTitle", title)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        pd.dismiss();
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        washingtonRef.update("pDescr", description)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        pd.dismiss();
+                                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                        startToast("업데이트 성공");
+                                        Intent intent1 = new Intent("deletePost");
+                                        LocalBroadcastManager.getInstance(AddPostActivity.this).sendBroadcast(intent1);
+                                        onBackPressed();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        pd.dismiss();
+                                        Log.w(TAG, "Error updating document", e);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        pd.dismiss();
+                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
+
+
+
+
 
     }
 
@@ -435,12 +465,10 @@ public class AddPostActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
                                                         Log.d(TAG, "DocumentSnapshot successfully written!");
-                                                        startToast("업로드 성공");
-                                                        //uploadStorage(documentName);
-                                                        //Intent intent = new Intent(MemberinfoinitActivity.this,DashboardActivity.class);
-                                                        //startActivity(intent);
-                                                        //finish();
-                                                        pd.dismiss();
+                                                        Toast.makeText(AddPostActivity.this,"업로드 성공",Toast.LENGTH_LONG).show();
+                                                        Intent intent1 = new Intent("deletePost");
+                                                        LocalBroadcastManager.getInstance(AddPostActivity.this).sendBroadcast(intent1);
+
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
@@ -448,7 +476,6 @@ public class AddPostActivity extends AppCompatActivity {
                                                     public void onFailure(@NonNull Exception e) {
                                                         Log.w(TAG, "Error writing document", e);
                                                         startToast("업로드 실패");
-                                                        pd.dismiss();
                                                     }
                                                 });
                                         //washingtonRef.update("pImage", uploadUrls);
@@ -463,7 +490,6 @@ public class AddPostActivity extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            pd.dismiss();
                             Log.e("e ? : ",""+e.getMessage());
                             startToast(""+e.getMessage());
                         }
@@ -501,34 +527,6 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("pLikes", 0);
             Log.e("city : ",city+"");
             uploadStorage(documentName, city);
-            /*
-            db = FirebaseFirestore.getInstance();
-            CollectionReference citiesRef = db.collection("Posts");
-            citiesRef.document(tutortuty).collection(category).document(documentName)
-                    .set(city)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "DocumentSnapshot successfully written!");
-                            startToast("업로드 성공");
-                            //uploadStorage(documentName);
-                            //Intent intent = new Intent(MemberinfoinitActivity.this,DashboardActivity.class);
-                            //startActivity(intent);
-                            //finish();
-                            pd.dismiss();
-
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error writing document", e);
-                            startToast("업로드 실패");
-                            pd.dismiss();
-                        }
-                    });
-
-             */
         }
         else{
             //이미지없이
@@ -553,28 +551,28 @@ public class AddPostActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "DocumentSnapshot successfully written!");
-                            pd.dismiss();
                             startToast("업로드 성공");
-
-
+                            Intent intent1 = new Intent("deletePost");
+                            LocalBroadcastManager.getInstance(AddPostActivity.this).sendBroadcast(intent1);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.w(TAG, "Error writing document", e);
-                            pd.dismiss();
                             startToast("업로드 실패");
 
                         }
                     });
 
         }
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        pd.dismiss();
+        onBackPressed();
     }
-
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
     private void showImagePickDialog() {
         String[] options = {"카메라", "갤러리"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

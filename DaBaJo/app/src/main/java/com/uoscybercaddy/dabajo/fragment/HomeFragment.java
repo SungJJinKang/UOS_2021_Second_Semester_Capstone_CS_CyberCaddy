@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -36,7 +37,8 @@ import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    TextView showUsersTv,showChattingListTv;
+    TextView showUsersTv;
+    ImageButton showChattingListTv;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -181,7 +183,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         firebaseAuth = FirebaseAuth.getInstance();
         showUsersTv = (TextView) view.findViewById(R.id.showUsersTv);
-        showChattingListTv = (TextView) view.findViewById(R.id.showChattingListTv);
+        showChattingListTv = (ImageButton) view.findViewById(R.id.showChattingListIv);
         showUsersTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

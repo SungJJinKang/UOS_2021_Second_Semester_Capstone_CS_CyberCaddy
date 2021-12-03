@@ -100,7 +100,11 @@ public class CategorySportActivity extends AppCompatActivity {
             CategoryNameHashmap.put("교육", list);
         }
     }
-
+    private void startActivityShortcut(Class c, String category) {
+        Intent intent = new Intent(this, c);
+        intent.putExtra("category", category);
+        startActivity(intent);
+    }
     @Override
     public void onStart()
     {
@@ -113,18 +117,22 @@ public class CategorySportActivity extends AppCompatActivity {
 
         for(Button button : CategoryButtons)
         {
-            if(intent.hasExtra("튜터")) {
+           // if(intent.hasExtra("튜터")) {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        startActivityShortcut(PostFeedActivity.class, button.getText().toString());
+                        /*
                         Intent intent = new Intent(CategorySportActivity.this, FeedActivity.class);
                         intent.putExtra("튜터", 1);
                         //UI에 쓰여있는 텍스트를 기반으로 카테고리 글 가져온다.
                         intent.putExtra(PostHelper.GetCategoryIntentExtraName(), button.getText());
                         intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
                         startActivity(intent);
+                         */
                     }
                 });
+                /*
             }
             else {
                 button.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +146,7 @@ public class CategorySportActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-            }
+            }*/
         }
     }
 
