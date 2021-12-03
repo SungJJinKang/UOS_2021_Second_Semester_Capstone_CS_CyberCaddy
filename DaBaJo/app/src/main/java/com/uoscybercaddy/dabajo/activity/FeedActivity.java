@@ -160,12 +160,12 @@ public class FeedActivity extends AppCompatActivity {
         for (QueryDocumentSnapshot document : task.getResult())
         {
             WriteInfo writeInfo = document.toObject(WriteInfo.class);
-            writeInfo.FirebaseWriteInfoID = document.getId();
+            String writer = writeInfo.getWriter();
 
             boolean isIncluded = false;
             if
             (
-                writeInfo.FirebaseWriteInfoID == targetUsetUID &&
+                writer == targetUsetUID &&
                 (
                 (postFilter == PostFilter.PostsWrittenByTargetUser) ||
                 (postFilter == PostFilter.PostsAndCommnetsWrittenByTargetUser)
@@ -239,7 +239,7 @@ public class FeedActivity extends AppCompatActivity {
         }
 
 
-        assert(getIntent().hasExtra(GetCategoryIntentExtraName()));
+//        assert(getIntent().hasExtra(GetCategoryIntentExtraName()));
 
         String dbPath = "posts";
 

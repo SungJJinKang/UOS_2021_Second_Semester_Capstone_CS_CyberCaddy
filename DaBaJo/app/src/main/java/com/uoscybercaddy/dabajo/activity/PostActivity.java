@@ -195,7 +195,7 @@ public class PostActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             String nickName = document.getData().get("nickName").toString();
-                            AddComment(inputString, nickName);
+                            AddComment(inputString, clientUID);
                         } else {
                             Log.d(TAG, " ");
                         }
