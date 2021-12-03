@@ -11,7 +11,7 @@ public class ModelPost implements Comparable<ModelPost> {
     List<URLS> pImage;
     List<String> pLikers;
     HashMap<String, HashMap<String, Object>> Comments;
-    List<String> pCommenters;
+    HashMap<String, Integer> pCommenters;
 
     public int getpComments() {
         return pComments;
@@ -29,15 +29,15 @@ public class ModelPost implements Comparable<ModelPost> {
         Comments = comments;
     }
 
-    public List<String> getpCommenters() {
+    public HashMap<String, Integer> getpCommenters() {
         return pCommenters;
     }
 
-    public void setpCommenters(List<String> pCommenters) {
+    public void setpCommenters(HashMap<String, Integer> pCommenters) {
         this.pCommenters = pCommenters;
     }
 
-    public ModelPost(String pId, String pTitle, String pDescr, String pTime, String uid, String uEmail, String uDp, String uName, String pCategory, String pTutortuty, int arrayCount, int pLikes, int pComments, List<URLS> pImage, List<String> pLikers, HashMap<String, HashMap<String, Object>> comments, List<String> pCommenters) {
+    public ModelPost(String pId, String pTitle, String pDescr, String pTime, String uid, String uEmail, String uDp, String uName, String pCategory, String pTutortuty, int arrayCount, int pLikes, int pComments, List<URLS> pImage, List<String> pLikers, HashMap<String, HashMap<String, Object>> comments, HashMap<String, Integer> pCommenters) {
         this.pId = pId;
         this.pTitle = pTitle;
         this.pDescr = pDescr;

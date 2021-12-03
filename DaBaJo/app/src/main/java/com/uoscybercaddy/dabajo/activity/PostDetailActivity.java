@@ -185,7 +185,7 @@ public class PostDetailActivity extends AppCompatActivity {
                                     commentList.add(modelComment);
                                     // do something
                                 }
-                                adapterComments = new AdapterComments(getApplicationContext(), commentList);
+                                adapterComments = new AdapterComments(getApplicationContext(), commentList, mUID, pId, pCategory, pTutortuty);
                                 recyclerView.setAdapter(adapterComments);
                             }
                         } else {
@@ -478,13 +478,11 @@ public class PostDetailActivity extends AppCompatActivity {
                             mProcessComment = false;
 
                             Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            if(!commented){
-                                FirebaseFirestore.getInstance().collection("Posts")
-                                        .document(pTutortuty).collection(pCategory).document(pId)
-                                        .update("pCommenters", FieldValue.arrayUnion(mUID));
-                                DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(mUID);
-                                docRef.update("comments."+pTutortuty+"."+pCategory+"."+pId, timeStamp+mUID);
-                            }
+                            FirebaseFirestore.getInstance().collection("Posts")
+                                    .document(pTutortuty).collection(pCategory).document(pId)
+                                    .update("pCommenters."+mUID, FieldValue.increment(1));
+                            DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(mUID);
+                            docRef.update("comments."+pTutortuty+"."+pCategory+"."+pId, timeStamp+mUID);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -552,8 +550,8 @@ public class PostDetailActivity extends AppCompatActivity {
                         String uEmail = modelPost.getuEmail();
                         hisName = modelPost.getuName();
                         arrayCount = modelPost.getArrayCount();
-                        List<String> pCommenters = modelPost.getpCommenters();
-                        if(pCommenters!=null && pCommenters.contains(mUID)){
+                        HashMap<String, Integer> pCommenters = modelPost.getpCommenters();
+                        if(pCommenters!=null && pCommenters.containsKey(mUID)){
                             commented = true;
                         }else{
                             commented = false;
