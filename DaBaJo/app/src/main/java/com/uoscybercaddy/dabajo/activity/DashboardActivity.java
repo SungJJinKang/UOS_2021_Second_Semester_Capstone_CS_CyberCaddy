@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -28,15 +29,19 @@ import com.uoscybercaddy.dabajo.fragment.HomeFragment;
 import com.uoscybercaddy.dabajo.fragment.ProfileFragment;
 import com.uoscybercaddy.dabajo.notifications.Token;
 
+import java.util.Stack;
+
 public class DashboardActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     ActionBar actionBar;
     String mUID;
     int fragmentFlag = 0;
+    int currentFragmentFlag = 0;
+    Stack<Integer> flagStack = new Stack<>(); // flagstack
     // fragmentFlag 0 : home
     // fragmentFlag 1 : category
-    // fragmentFlag 2 : like(-> chat)
+    // fragmentFlag 2 : chat
     // fragmentFlag 3 : profile
     private static final String TAG = "DashboardActivity";
     @Override
@@ -114,11 +119,30 @@ public class DashboardActivity extends AppCompatActivity {
 
         @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
-        navigationView.setOnNavigationItemSelectedListener(selectedListener);
-        navigationView.getMenu().getItem(fragmentFlag).setChecked(true);
+        if(flagStack.isEmpty()) {
+            if (pressedTime == 0) {
+                Toast.makeText(DashboardActivity.this, " 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
+                pressedTime = System.currentTimeMillis();
+            } else {
+                int seconds = (int) (System.currentTimeMillis() - pressedTime);
+
+                if (seconds > 2000) {
+                    Toast.makeText(DashboardActivity.this, " 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
+                    pressedTime = 0;
+                } else {
+                    System.exit(0);
+//                    finish(); // app 종료 시키기
+                }
+            }
+        }
+        else {
+            super.onBackPressed();
+            BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
+            navigationView.setOnNavigationItemSelectedListener(selectedListener);
+            fragmentFlag = flagStack.pop();
+            navigationView.getMenu().getItem(fragmentFlag).setChecked(true);
 //        finish();
+        }
     }
 
     @Override
@@ -152,7 +176,8 @@ public class DashboardActivity extends AppCompatActivity {
                             ft1.replace(R.id.content, fragment1, "");
                             ft1.addToBackStack(null);
                             ft1.commit();
-                            fragmentFlag = 0;
+                            flagStack.push(currentFragmentFlag);
+                            currentFragmentFlag = 0;
                             return true;
                         case R.id.nav_category:
                             CategoryFragment fragment2= new CategoryFragment();
@@ -160,7 +185,8 @@ public class DashboardActivity extends AppCompatActivity {
                             ft2.replace(R.id.content, fragment2, "");
                             ft2.addToBackStack(null);
                             ft2.commit();
-                            fragmentFlag = 1;
+                            flagStack.push(currentFragmentFlag);
+                            currentFragmentFlag = 1;
                             //nav_category fragment transaction
                             return true;
                         case R.id.nav_menu_chat:
@@ -169,7 +195,8 @@ public class DashboardActivity extends AppCompatActivity {
                             ft3.replace(R.id.content, fragment3, "");
                             ft3.addToBackStack(null);
                             ft3.commit();
-                            fragmentFlag = 2;
+                            flagStack.push(currentFragmentFlag);
+                            currentFragmentFlag = 2;
                             //nav_favorite fragment transaction
                             return true;
                         case R.id.nav_profile:
@@ -178,7 +205,8 @@ public class DashboardActivity extends AppCompatActivity {
                             ft4.replace(R.id.content, fragment4, "");
                             ft4.addToBackStack(null);
                             ft4.commit();
-                            fragmentFlag = 3;
+                            flagStack.push(currentFragmentFlag);
+                            currentFragmentFlag = 3;
                             //nav_profile fragment transaction
                             return true;
 
@@ -198,7 +226,7 @@ public class DashboardActivity extends AppCompatActivity {
             editor.putString("Current_USERID", mUID);
             editor.apply();
         } else{
-            startActivity(new Intent(DashboardActivity.this, MainActivity.class));
+            startActivity(new Intent(DashboardActivity.this, DashboardActivity.class));
             finish();
         }
     }
