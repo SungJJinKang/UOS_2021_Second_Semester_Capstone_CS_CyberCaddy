@@ -210,6 +210,26 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 context.startActivity(intent);
             }
         });
+        holder.pTitleTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PostDetailActivity.class);
+                intent.putExtra("pId", pId);
+                intent.putExtra("pTutortuty",pTutortuty);
+                intent.putExtra("pCategory",pCategory);
+                context.startActivity(intent);
+            }
+        });
+        holder.pDescriptionTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PostDetailActivity.class);
+                intent.putExtra("pId", pId);
+                intent.putExtra("pTutortuty",pTutortuty);
+                intent.putExtra("pCategory",pCategory);
+                context.startActivity(intent);
+            }
+        });
         holder.shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

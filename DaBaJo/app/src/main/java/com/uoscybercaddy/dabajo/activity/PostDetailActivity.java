@@ -3,11 +3,14 @@ package com.uoscybercaddy.dabajo.activity;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.ProgressDialog;
@@ -42,22 +45,30 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.uoscybercaddy.dabajo.R;
+import com.uoscybercaddy.dabajo.adapter.AdapterComments;
 import com.uoscybercaddy.dabajo.adapter.SliderAdapterforFeed;
+import com.uoscybercaddy.dabajo.models.ModelComment;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.ModelUsers;
 import com.uoscybercaddy.dabajo.models.URLS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class PostDetailActivity extends AppCompatActivity {
     ImageView uPictureIv;
@@ -85,6 +96,9 @@ public class PostDetailActivity extends AppCompatActivity {
     String timeStamp;
     String hisUid;
     Integer arrayCount;
+    RecyclerView recyclerView;
+    List<ModelComment> commentList;
+    AdapterComments adapterComments;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,12 +128,13 @@ public class PostDetailActivity extends AppCompatActivity {
         commentEt = findViewById(R.id.commentEt);
         sendBtn = findViewById(R.id.sendBtn);
         cAvatarIv = findViewById(R.id.cAvatarIv);
-
+        recyclerView = findViewById(R.id.recyclerView);
         checkUserStatus();
         loadMyInfo();
         loadPostInfo();
         setLikes();
         subTitle.setText("로그인한 계정 : "+myEmail);
+        loadComments();
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +153,49 @@ public class PostDetailActivity extends AppCompatActivity {
                 showMoreOptions();
             }
         });
+    }
+
+    private void loadComments() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        commentList = new ArrayList<>();
+        FirebaseFirestore.getInstance().collection("Posts")
+                .document(pTutortuty).collection(pCategory).document(pId)
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+
+                        if (snapshot != null && snapshot.exists()) {
+                            Log.d(TAG, "Current data: " + snapshot.getData());
+                            commentList.clear();
+                            ModelPost modelPost = snapshot.toObject(ModelPost.class);
+                            Integer pComments = modelPost.getpComments();
+                            pCommentsTv.setText((pComments)+" 댓글");
+                            HashMap<String, HashMap<String, Object>> Comments = modelPost.getComments();
+                            if(Comments != null){
+                                SortedSet<String> keys = new TreeSet<>(Comments.keySet());
+                                for (String key : keys) {
+                                    HashMap<String, Object> value = Comments.get(key);
+                                    ModelComment modelComment = new ModelComment(value);
+                                    commentList.add(modelComment);
+                                    // do something
+                                }
+                                adapterComments = new AdapterComments(getApplicationContext(), commentList);
+                                recyclerView.setAdapter(adapterComments);
+                            }
+                        } else {
+                            Log.d(TAG, "Current data: null");
+                        }
+                    }
+                });
+
+
+
     }
 
     private void showMoreOptions() {
@@ -418,7 +476,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             mProcessComment = false;
-                            pCommentsTv.setText((pComments+1)+" 댓글");
+
                             Log.d(TAG, "DocumentSnapshot successfully updated!");
                             if(!commented){
                                 FirebaseFirestore.getInstance().collection("Posts")

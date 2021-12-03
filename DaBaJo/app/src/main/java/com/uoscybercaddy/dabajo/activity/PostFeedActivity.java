@@ -19,9 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,8 +34,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -54,7 +60,6 @@ public class PostFeedActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ImageButton writePostButton;
     ActionBar actionBar;
-
     String mUID;
     RecyclerView recyclerView;
     List<ModelPost> postList;
@@ -64,12 +69,14 @@ public class PostFeedActivity extends AppCompatActivity {
     TextView pCategoryEt;
     ImageButton goBackButton;
     String tutortuty;
+    private Menu menu;
     private static final String TAG = "PostFeedActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_feed);
         firebaseAuth = FirebaseAuth.getInstance();
+
         pCategoryEt = (TextView) findViewById(R.id.CategorryLabel);
         BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
@@ -137,6 +144,37 @@ public class PostFeedActivity extends AppCompatActivity {
             loadPosts();
         }
     };
+    private void realTimeListener(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        menu.getItem(1).setIcon(ContextCompat.getDrawable(PostFeedActivity.this, R.drawable.ic_refresh_black));
+        db.collection("Posts").document(tutortuty).collection(category)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "listen:error", e);
+                            return;
+                        }
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    //Log.d(TAG, "New city: " + dc.getDocument().getData());
+                                        break;
+                                case MODIFIED:
+                                    //Log.d(TAG, "Modified city: " + dc.getDocument().getData());
+                                    menu.getItem(1).setIcon(ContextCompat.getDrawable(PostFeedActivity.this, R.drawable.ic_refresh_red));
+                                    break;
+                                case REMOVED:
+                                    //Log.d(TAG, "Removed city: " + dc.getDocument().getData());
+                                    menu.getItem(1).setIcon(ContextCompat.getDrawable(PostFeedActivity.this, R.drawable.ic_refresh_red));
+                                    break;
+                            }
+                        }
+
+                    }
+                });
+    }
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -258,7 +296,10 @@ public class PostFeedActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search_post, menu);
+        this.menu = menu;
+        //realTimeListener();
         MenuItem item = menu.findItem(R.id.action_search);
+
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -297,6 +338,8 @@ public class PostFeedActivity extends AppCompatActivity {
             checkUserStatus();
         }else if(id == R.id.action_refresh){
             loadPosts();
+            item.setIcon(ContextCompat.getDrawable(PostFeedActivity.this, R.drawable.ic_refresh_black));
+
         }
         return super.onOptionsItemSelected(item);
     }

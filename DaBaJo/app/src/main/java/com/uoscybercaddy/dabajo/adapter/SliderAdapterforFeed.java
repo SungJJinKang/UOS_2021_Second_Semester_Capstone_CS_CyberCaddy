@@ -119,7 +119,10 @@ public class SliderAdapterforFeed extends RecyclerView.Adapter<SliderAdapterforF
 
     @Override
     public int getItemCount() {
-        return pImage.size();
+        if(pImage != null)
+            return pImage.size();
+        else
+            return 0;
     }
 
     class SliderViewHolder extends RecyclerView.ViewHolder{

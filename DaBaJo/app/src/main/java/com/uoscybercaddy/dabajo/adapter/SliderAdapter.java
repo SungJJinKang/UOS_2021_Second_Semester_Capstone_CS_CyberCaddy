@@ -118,7 +118,10 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     @Override
     public int getItemCount() {
-        return uris.size();
+        if(uris != null)
+            return uris.size();
+        else
+            return 0;
     }
 
     class SliderViewHolder extends RecyclerView.ViewHolder{
