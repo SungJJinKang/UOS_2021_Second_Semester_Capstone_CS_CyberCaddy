@@ -233,7 +233,19 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         holder.shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Share", Toast.LENGTH_SHORT).show();
+                String shareBody = pTitle +"\n" + pDescription +"\n\n";
+                if(arrayCount > 0){
+                    shareBody += "콘텐츠"+"\n";
+                    for(int i=0; i< arrayCount; i++){
+                        shareBody += pImage.get(i).getUrls() + "\n";
+                    }
+                }
+                Intent sIntent = new Intent(Intent.ACTION_SEND);
+                sIntent.setType("text/plain");
+                sIntent.putExtra(Intent.EXTRA_SUBJECT, "제목은 여기에");
+                sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                context.startActivity(Intent.createChooser(sIntent, "공유 하기"));
+
             }
         });
         if(!isUsers){

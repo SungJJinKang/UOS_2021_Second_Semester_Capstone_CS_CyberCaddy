@@ -99,6 +99,7 @@ public class PostDetailActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     List<ModelComment> commentList;
     AdapterComments adapterComments;
+    List<URLS> pImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +152,26 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showMoreOptions();
+            }
+        });
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pTitle = pTitleTv.getText().toString().trim();
+                String pDescription = pDescriptionTv.getText().toString().trim();
+                String shareBody = pTitle +"\n" + pDescription +"\n\n";
+                if(arrayCount > 0){
+                    shareBody += "콘텐츠"+"\n";
+                    for(int i=0; i< arrayCount; i++){
+                        shareBody += pImage.get(i).getUrls() + "\n";
+                    }
+                }
+                Intent sIntent = new Intent(Intent.ACTION_SEND);
+                sIntent.setType("text/plain");
+                sIntent.putExtra(Intent.EXTRA_SUBJECT, "제목은 여기에");
+                sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sIntent, "공유 하기"));
+
             }
         });
     }
@@ -543,7 +564,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         String pDescr = modelPost.getpDescr();
                         pLikes = modelPost.getpLikes();
                         String pTimeStamp = modelPost.getpTime();
-                        List<URLS> pImage = modelPost.getpImage();
+                        pImage = modelPost.getpImage();
                         hisDp = modelPost.getuDp();
                         hisUid = modelPost.getUid();
                         pComments = modelPost.getpComments();
