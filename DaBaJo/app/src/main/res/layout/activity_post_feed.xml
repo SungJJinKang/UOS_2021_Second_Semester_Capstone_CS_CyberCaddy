@@ -83,7 +83,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:text="게시물 없음"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:id="@+id/noPost"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postsRecyclerView"
         android:layout_width="match_parent"

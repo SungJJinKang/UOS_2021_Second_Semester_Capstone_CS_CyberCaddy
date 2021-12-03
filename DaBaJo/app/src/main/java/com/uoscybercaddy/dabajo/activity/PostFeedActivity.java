@@ -70,13 +70,14 @@ public class PostFeedActivity extends AppCompatActivity {
     ImageButton goBackButton;
     String tutortuty;
     private Menu menu;
+    TextView noPost;
     private static final String TAG = "PostFeedActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_feed);
         firebaseAuth = FirebaseAuth.getInstance();
-
+        noPost = (TextView)findViewById(R.id.noPost);
         pCategoryEt = (TextView) findViewById(R.id.CategorryLabel);
         BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
@@ -197,6 +198,11 @@ public class PostFeedActivity extends AppCompatActivity {
                                     postList.add(modelPost);
                                 //}
                             }
+                            if(postList.size()==0){
+                                noPost.setVisibility(View.VISIBLE);
+                            }else{
+                                noPost.setVisibility(View.GONE);
+                            }
                             adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
                             recyclerView.setAdapter(adapterPosts);
                         } else {
@@ -226,6 +232,11 @@ public class PostFeedActivity extends AppCompatActivity {
                                         postList.add(modelPost);
                                     //}
                                 }
+                            }
+                            if(postList.size()==0){
+                                noPost.setVisibility(View.VISIBLE);
+                            }else{
+                                noPost.setVisibility(View.GONE);
                             }
                             adapterPosts = new AdapterPosts(PostFeedActivity.this, postList, false);
                             recyclerView.setAdapter(adapterPosts);
