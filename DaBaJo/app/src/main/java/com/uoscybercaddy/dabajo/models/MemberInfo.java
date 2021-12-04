@@ -12,6 +12,7 @@ public class MemberInfo {
     private String sex;
     private String tutortuty;
     private HashMap<String, Long> categoriesCount;
+    private HashMap<String, Long> commentsCount;
 
     public String getTutortuty() {
         return tutortuty;
@@ -29,6 +30,14 @@ public class MemberInfo {
         this.categoriesCount = categoriesCount;
     }
 
+    public HashMap<String, Long> getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(HashMap<String, Long> commentsCount) {
+        this.commentsCount = commentsCount;
+    }
+
     public MemberInfo(String nickName, String name, String introduction, String sex, String tutortuty, HashMap<String, Long> categoriesCount, String photoUrl, Drawable profilePhotoDrawable, boolean profilePhotoDrawableIsLoaded) {
         this.nickName = nickName;
         this.name = name;
@@ -36,6 +45,7 @@ public class MemberInfo {
         this.sex = sex;
         this.tutortuty = tutortuty;
         this.categoriesCount = categoriesCount;
+        this.commentsCount = new HashMap<String, Long>();
         this.photoUrl = photoUrl;
         this.profilePhotoDrawable = profilePhotoDrawable;
         this.profilePhotoDrawableIsLoaded = profilePhotoDrawableIsLoaded;

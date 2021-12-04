@@ -500,12 +500,17 @@ public class PostDetailActivity extends AppCompatActivity {
                     }
                 });
 
-
+        String commentsCount = "commentsCount." + pCategory;
+        FirebaseFirestore.getInstance().collection("users").document(mUID)
+                .update(
+                        commentsCount, FieldValue.increment(1)
+                );
     }
 
     private void updateCommentCount() {
         mProcessComment = true;
         if(mProcessComment){
+
 
             FirebaseFirestore.getInstance().collection("Posts")
                     .document(pTutortuty).collection(pCategory).document(pId)

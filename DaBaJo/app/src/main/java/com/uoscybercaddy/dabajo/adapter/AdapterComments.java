@@ -169,6 +169,12 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.MyHold
                 }
             }
         });
+
+        String commentsCount = "commentsCount." + pCategory;
+        FirebaseFirestore.getInstance().collection("users").document(mUID)
+                .update(
+                        commentsCount, FieldValue.increment(-1)
+                );
     }
 
     @Override
