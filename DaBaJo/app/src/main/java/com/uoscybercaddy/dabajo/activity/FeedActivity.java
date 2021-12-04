@@ -163,6 +163,7 @@ public class FeedActivity extends AppCompatActivity {
         {
             WriteInfo writeInfo = document.toObject(WriteInfo.class);
             String writer = writeInfo.getWriter();
+            writeInfo.FirebaseWriteInfoID = document.getId();
 
             boolean isIncluded = false;
             if
