@@ -33,9 +33,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -114,7 +116,17 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                         }else{
                             tutortuty = "튜티";
                         }
-                        usersCategoriesCounts = (HashMap<String, Long>) document.getData().get("categoriesCount");
+
+                        String filter;
+                        if(getIntent().hasExtra("OnlyCommnets") && getIntent().getBooleanExtra("OnlyCommnets", false) == true)
+                        {
+                            filter = "commentsCount";
+                        }
+                        else
+                        {
+                            filter = "categoriesCount";
+                        }
+                        usersCategoriesCounts = (HashMap<String, Long>) document.getData().get(filter);
                         if(usersCategoriesCounts != null){
                             noPost.setVisibility(View.GONE);
                             List<Map.Entry<String, Long>> list_entries = new ArrayList<Map.Entry<String, Long>>(usersCategoriesCounts.entrySet());
@@ -214,49 +226,63 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     private void startToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
+    private void FetchPost(final String categoryName, OnCompleteListener<QuerySnapshot> onCompleteListener)
+    {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference colRef = db.collection("Posts").document(tutortuty).collection(categoryName);
+
+        Query query = null;
+        boolean noOption = true;
+        if(getIntent().hasExtra("OnlyCommnets") && getIntent().getBooleanExtra("OnlyCommnets", false) == true)
+        {
+            query = colRef.whereGreaterThan("pCommenters." + uid, 0);
+        }
+        else
+        {
+            query = colRef.whereEqualTo("uid", uid);
+        }
+
+        query.get()
+            .addOnCompleteListener(onCompleteListener);
+    }
+
+
     private void loadPostsAll(){
         postList.clear();
         Log.e("카테고리 사이즈 ", categories.size()+"");
         for(int i = 0; i< categories.size() ; i++){
             final int index = i;
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Posts").document(tutortuty).collection(categories.get(i))
-                    .whereEqualTo("uid", uid)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d(TAG, document.getId() + " => " + document.getData());
-                                    ModelPost modelPost = document.toObject(ModelPost.class);
-                                   // List<URLS> post = modelPost.getpImage();
-                                   // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
-                                    //{
-                                        postList.add(modelPost);
-                                   // }
-                                }
-                                if(index == categories.size()-1){
-                                    Collections.sort(postList);
-                                    adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
-                                    recyclerView.setAdapter(adapterPosts);
-                                }
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
+            FetchPost(categories.get(i), new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                ModelPost modelPost = document.toObject(ModelPost.class);
+                               // List<URLS> post = modelPost.getpImage();
+                               // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                //{
+                                    postList.add(modelPost);
+                               // }
                             }
+                            if(index == categories.size()-1){
+                                Collections.sort(postList);
+                                adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
+                                recyclerView.setAdapter(adapterPosts);
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
-                    });
+                    }
+                });
         }
     }
     private void searchPostsAll(String searchQuery){
         postList.clear();
         for(int i = 0; i< categories.size() ; i++){
             final int index = i;
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Posts").document(tutortuty).collection(categories.get(i))
-                    .whereEqualTo("uid", uid)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            FetchPost(categories.get(index), new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
@@ -286,10 +312,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     private void loadPosts(String category) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         postList.clear();
-        db.collection("Posts").document(tutortuty).collection(category)
-                .whereEqualTo("uid", uid)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        FetchPost(category, new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -313,10 +336,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     private void searchPosts(String searchQuery, String category){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         postList.clear();
-        db.collection("Posts").document(tutortuty).collection(category)
-                .whereEqualTo("uid", uid)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        FetchPost(category, new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {

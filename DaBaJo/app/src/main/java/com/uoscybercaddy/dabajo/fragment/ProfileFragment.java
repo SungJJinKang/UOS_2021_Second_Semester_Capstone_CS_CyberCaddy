@@ -175,6 +175,16 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        commentedByMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PostFeedActivityUsers.class);
+                intent.putExtra("uid", firebaseAuth.getCurrentUser().getUid());
+                intent.putExtra("OnlyCommnets", true);
+                getActivity().startActivity(intent);
+            }
+        });
+
         return view;
     }
     private void checkUserStatus(){
