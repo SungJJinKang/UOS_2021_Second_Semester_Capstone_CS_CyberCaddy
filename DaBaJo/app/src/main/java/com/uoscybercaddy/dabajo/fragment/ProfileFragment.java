@@ -34,6 +34,7 @@ import com.uoscybercaddy.dabajo.activity.NoticeActivity;
 import com.uoscybercaddy.dabajo.activity.LoginActivity;
 import com.uoscybercaddy.dabajo.activity.MainActivity;
 import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
+import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.activity.SignUpActivity;
 
 /**
@@ -168,11 +169,9 @@ public class ProfileFragment extends Fragment {
         writtenByMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FeedActivity.class);
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                String temp = user.getUid();
-                intent.putExtra("특정유저", user.getUid());
-                startActivity(intent);
+                Intent intent = new Intent(getActivity(), PostFeedActivityUsers.class);
+                intent.putExtra("uid", firebaseAuth.getCurrentUser().getUid());
+                getActivity().startActivity(intent);
             }
         });
 
