@@ -54,6 +54,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 public class PostFeedActivityUsers extends AppCompatActivity {
     Toolbar toolbar;
@@ -127,9 +128,14 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                             filter = "categoriesCount";
                         }
                         usersCategoriesCounts = (HashMap<String, Long>) document.getData().get(filter);
+
+
                         if(usersCategoriesCounts != null){
                             noPost.setVisibility(View.GONE);
                             List<Map.Entry<String, Long>> list_entries = new ArrayList<Map.Entry<String, Long>>(usersCategoriesCounts.entrySet());
+
+                            list_entries.removeIf(element -> (element.getValue() <= 0));
+
                             // 비교함수 Comparator를 사용하여 내림차순으로 정렬
                             Collections.sort(list_entries, new Comparator<Map.Entry<String, Long>>() {
                                 // compare로 값을 비교
