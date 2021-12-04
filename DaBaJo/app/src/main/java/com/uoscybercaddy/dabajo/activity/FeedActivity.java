@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import static com.uoscybercaddy.dabajo.activity.PostHelper.GetCategoryIntentExtraName;
 import static com.uoscybercaddy.dabajo.activity.PostHelper.GetSpecificUserSearchIntentExtraName;
+import static com.uoscybercaddy.dabajo.activity.UserProfileHelepr.GetUserProfile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -212,10 +214,25 @@ public class FeedActivity extends AppCompatActivity {
         }
         else if(getIntent().hasExtra(PostHelper.GetSpecificUserSearchIntentExtraName()))
         {
-            CategoryLabel.setText(getIntent().getStringExtra
+            String targetUserId = getIntent().getStringExtra(GetSpecificUserSearchIntentExtraName());
+
+            GetUserProfile
                     (
-                            PostHelper.GetSpecificUserSearchIntentExtraName()
-                    ) +  "의 글, 댓글");
+                            targetUserId,
+                            new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            String nickName = document.getData().get("nickName").toString();
+                                            CategoryLabel.setText(nickName + "의 글, 댓글");
+                                        }
+                                    }
+                                }
+                            }
+                    );
+
         }
         else
         {
