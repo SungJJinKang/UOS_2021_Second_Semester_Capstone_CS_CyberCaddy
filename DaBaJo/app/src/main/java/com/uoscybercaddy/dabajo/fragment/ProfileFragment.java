@@ -104,7 +104,7 @@ public class ProfileFragment extends Fragment {
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         nickNameTv = (TextView) view.findViewById(R.id.nickNameTv);
         descriptionTv = (TextView) view.findViewById(R.id.descriptionTv);
-        notice = (ImageButton) view.findViewById(R.id.noticeButton);
+//        notice = (ImageButton) view.findViewById(R.id.noticeButton);
         logout = (ImageButton) view.findViewById(R.id.logoutButton);
         commentedByMe = (ImageButton) view.findViewById(R.id.commentedByMeButton);
         writtenByMe = (ImageButton) view.findViewById(R.id.writtenByMeButton);
@@ -146,15 +146,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        notice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NoticeActivity.class);
-                intent.putExtra("튜티",1);
-                startActivity(intent);
-//                getActivity().finish();
-            }
-        });
+//        notice.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), NoticeActivity.class);
+//                intent.putExtra("튜티",1);
+//                startActivity(intent);
+////                getActivity().finish();
+//            }
+//        });
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
