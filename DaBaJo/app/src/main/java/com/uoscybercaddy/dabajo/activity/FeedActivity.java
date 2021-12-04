@@ -165,7 +165,7 @@ public class FeedActivity extends AppCompatActivity {
             boolean isIncluded = false;
             if
             (
-                writer == targetUsetUID &&
+                writer.compareTo(targetUsetUID) == 0 &&
                 (
                 (postFilter == PostFilter.PostsWrittenByTargetUser) ||
                 (postFilter == PostFilter.PostsAndCommnetsWrittenByTargetUser)
@@ -182,7 +182,7 @@ public class FeedActivity extends AppCompatActivity {
             {
                 for(Comment comment : writeInfo.commentList)
                 {
-                    if(comment.getWriterUID() == targetUsetUID)
+                    if(comment.getWriterUID().compareTo(targetUsetUID) == 0)
                     {
                         isIncluded = true;
                         break;
