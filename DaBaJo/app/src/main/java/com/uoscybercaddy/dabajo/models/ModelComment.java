@@ -28,7 +28,8 @@ public class ModelComment {
         this.timeStamp = comments.get("timeStamp").toString();
         this.uid = comments.get("uid").toString();
         this.uEmail = comments.get("uEmail").toString();
-        this.uDp = comments.get("uDp").toString();
+        Object uDpObj = comments.get("uDp");
+        this.uDp = uDpObj != null ? uDpObj.toString() : null;
         this.uName = comments.get("uName").toString();
     }
 
