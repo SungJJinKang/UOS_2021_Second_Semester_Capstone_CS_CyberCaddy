@@ -92,6 +92,13 @@ public class PostFeedActivityUsers extends AppCompatActivity {
         intent = getIntent();
         uid = intent.getStringExtra("uid");
 
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PostFeedActivityUsers.super.onBackPressed();
+            }
+        });
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(uid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

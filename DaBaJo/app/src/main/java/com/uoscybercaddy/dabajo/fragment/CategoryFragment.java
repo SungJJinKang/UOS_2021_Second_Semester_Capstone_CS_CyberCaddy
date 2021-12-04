@@ -89,7 +89,7 @@ public class CategoryFragment extends Fragment {
                     intent.putExtra("튜티", "tutee");
                     intent.putExtra("BigCategory", buttons[finalI].getText());
                     startActivity(intent);
-                    getActivity().finish();
+//                    getActivity().finish();
                 }
             });
         }

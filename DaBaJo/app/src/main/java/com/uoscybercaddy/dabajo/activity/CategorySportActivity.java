@@ -172,9 +172,7 @@ public class CategorySportActivity extends AppCompatActivity {
             goBackCategory.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(CategorySportActivity.this, DashboardActivityTutor.class);
-                    intent.putExtra("카테고리로", 1);
-                    startActivity(intent);
+                    CategorySportActivity.super.onBackPressed();
                 }
             });
         }
@@ -182,9 +180,10 @@ public class CategorySportActivity extends AppCompatActivity {
             goBackCategory.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(CategorySportActivity.this, DashboardActivity.class);
-                    intent.putExtra("카테고리로", 1);
-                    startActivity(intent);
+                    CategorySportActivity.super.onBackPressed();
+//                    Intent intent = new Intent(CategorySportActivity.this, DashboardActivity.class);
+//                    intent.putExtra("카테고리로", 1);
+//                    startActivity(intent);
                 }
             });
         }

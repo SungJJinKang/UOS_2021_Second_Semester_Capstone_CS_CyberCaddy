@@ -87,7 +87,7 @@ public class CategoryFragmentTutor extends Fragment {
                     intent.putExtra("튜터", "tutor");
                     intent.putExtra("BigCategory", buttons[finalI].getText());
                     startActivity(intent);
-                    getActivity().finish();
+//                    getActivity().finish();
                 }
             });
         }
@@ -101,7 +101,7 @@ public class CategoryFragmentTutor extends Fragment {
             //profileTv.setText(user.getEmail());
         } else{
             startActivity(new Intent(getActivity(), DashboardActivityTutor.class));
-            getActivity().finish();
+//            getActivity().finish();
         }
     }
 

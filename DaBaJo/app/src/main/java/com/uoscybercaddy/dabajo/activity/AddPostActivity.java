@@ -181,6 +181,13 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddPostActivity.super.onBackPressed();
+            }
+        });
+
         uploadBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

@@ -87,7 +87,7 @@ public class PostDetailActivity extends AppCompatActivity {
     LinearLayout layoutIndicators;
     Toolbar toolbar;
     EditText commentEt;
-    ImageButton sendBtn;
+    ImageButton sendBtn, goBackButton;
     ImageView cAvatarIv;
     FirebaseAuth firebaseAuth;
     ProgressDialog pd;
@@ -130,6 +130,7 @@ public class PostDetailActivity extends AppCompatActivity {
         sendBtn = findViewById(R.id.sendBtn);
         cAvatarIv = findViewById(R.id.cAvatarIv);
         recyclerView = findViewById(R.id.recyclerView);
+        goBackButton = findViewById(R.id.goBackButton);
         checkUserStatus();
         loadMyInfo();
         loadPostInfo();
@@ -172,6 +173,12 @@ public class PostDetailActivity extends AppCompatActivity {
                 sIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sIntent, "공유 하기"));
 
+            }
+        });
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PostDetailActivity.super.onBackPressed();
             }
         });
     }

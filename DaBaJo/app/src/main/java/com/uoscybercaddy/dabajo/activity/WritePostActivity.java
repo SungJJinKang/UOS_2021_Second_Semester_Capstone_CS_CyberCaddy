@@ -232,20 +232,26 @@ public class WritePostActivity extends AppCompatActivity {
         findViewById(R.id.imageButton).setOnClickListener(onClickListener);
         findViewById(R.id.videoButton).setOnClickListener(onClickListener);
 
-
-        Intent intent = getIntent();
-        if(intent.hasExtra("튜티")) {
-            goBackFeed.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(WritePostActivity.this, FeedActivity.class);
-                    intent.putExtra("튜티", 1);
-                    intent.putExtra(PostHelper.GetCategoryIntentExtraName(), CurrentCategoryID);
-                    intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
-                    startActivity(intent);
-                }
-            });
-        }
+        goBackFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WritePostActivity.super.onBackPressed();
+            }
+        });
+//        Intent intent = getIntent();
+//        if(intent.hasExtra("튜티")) {
+//            goBackFeed.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    WritePostActivity.super.onBackPressed();
+////                    Intent intent = new Intent(WritePostActivity.this, FeedActivity.class);
+////                    intent.putExtra("튜티", 1);
+////                    intent.putExtra(PostHelper.GetCategoryIntentExtraName(), CurrentCategoryID);
+////                    intent.putExtra("BigCategory", getIntent().getStringExtra("BigCategory"));
+////                    startActivity(intent);
+//                }
+//            });
+//        }
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -262,6 +268,9 @@ public class WritePostActivity extends AppCompatActivity {
                     break;
                 case R.id.videoButton:
                     showVideoDialog();
+                    break;
+                case R.id.goBackButton:
+                    WritePostActivity.super.onBackPressed();
                     break;
             }
         }

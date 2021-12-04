@@ -123,8 +123,14 @@ public class PostFeedActivity extends AppCompatActivity {
                     }
                 });
 
-
+    goBackButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            PostFeedActivity.super.onBackPressed();
+        }
+    });
     }
+
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -134,10 +140,16 @@ public class PostFeedActivity extends AppCompatActivity {
                     intent.putExtra("category", category);
                     startActivity(intent);
                     break;
+                case R.id.goBackButton:
+                    PostFeedActivity.super.onBackPressed();
+                    break;
 
             }
         }
     };
+
+
+
     public BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
