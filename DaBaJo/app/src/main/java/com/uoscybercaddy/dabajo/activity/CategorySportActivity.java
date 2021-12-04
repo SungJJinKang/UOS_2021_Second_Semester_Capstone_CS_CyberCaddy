@@ -69,23 +69,23 @@ public class CategorySportActivity extends AppCompatActivity {
 
         {
             ArrayList<String> list= new ArrayList<String>();
-            list.add("예체능1");
-            list.add("예체능2");
-            list.add("예체능3");
-            list.add("예체능4");
-            list.add("예체능5");
-            list.add("예체능6");
+            list.add("랩");
+            list.add("노래");
+            list.add("비트박스");
+            list.add("그림 그리기");
+            list.add("코딩");
+            list.add("웹툰 그리기");
             CategoryNameHashmap.put("예체능", list);
         }
 
         {
             ArrayList<String> list= new ArrayList<String>();
-            list.add("헬스1");
-            list.add("헬스2");
-            list.add("헬스3");
-            list.add("헬스4");
-            list.add("헬스5");
-            list.add("헬스6");
+            list.add("웨이트 트레이닝");
+            list.add("다이어트");
+            list.add("줄넘기");
+            list.add("달리기");
+            list.add("등산");
+            list.add("자전거");
             CategoryNameHashmap.put("헬스", list);
         }
 
