@@ -238,6 +238,9 @@ public class PostDetailActivity extends AppCompatActivity {
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "삭제");
             popupMenu.getMenu().add(Menu.NONE, 1, 0, "수정");
         }
+        else {
+            popupMenu.getMenu().add(Menu.NONE, 2, 0, "채팅");
+        }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -253,6 +256,12 @@ public class PostDetailActivity extends AppCompatActivity {
                     intent.putExtra("editPostId",pId);
                     intent.putExtra("pCategory",pCategory);
                     intent.putExtra("pTutortuty",pTutortuty);
+                    startActivity(intent);
+                }
+                else if(id==2) {
+                    Intent intent = new Intent(PostDetailActivity.this, ChatActivity.class);
+                    intent.putExtra("hisUid",hisUid);
+                    intent.putExtra("myUid", mUID);
                     startActivity(intent);
                 }
                 return false;
