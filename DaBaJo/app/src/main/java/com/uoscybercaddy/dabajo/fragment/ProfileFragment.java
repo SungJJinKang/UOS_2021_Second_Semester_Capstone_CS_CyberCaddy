@@ -1,6 +1,5 @@
 package com.uoscybercaddy.dabajo.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,13 +28,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
-import com.uoscybercaddy.dabajo.activity.FeedActivity;
-import com.uoscybercaddy.dabajo.activity.NoticeActivity;
 import com.uoscybercaddy.dabajo.activity.LoginActivity;
 import com.uoscybercaddy.dabajo.activity.MainActivity;
 import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
-import com.uoscybercaddy.dabajo.activity.SignUpActivity;
 
 /**
  * A simple {@link Fragment} subclass.

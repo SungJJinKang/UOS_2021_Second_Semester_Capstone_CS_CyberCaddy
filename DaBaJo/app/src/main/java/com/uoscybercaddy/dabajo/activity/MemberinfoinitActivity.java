@@ -452,7 +452,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         progressDialog.show();
         rb_woman.setError(null);
         if(nickName.length()<1){
-            editTextNickName.setError("닉네임을 입력해주세요..");
+            editTextNickName.setError("닉네임을 입력해주세요.");
             editTextNickName.setFocusable(true);
         }
         else if(name.length()<1){
@@ -461,7 +461,7 @@ public class MemberinfoinitActivity extends AppCompatActivity {
 
         }
         else if(introduction.length()<1){
-            editTextIntroduction.setError("비밀번호가 일치하지 않습니다.");
+            editTextIntroduction.setError("소개를 입력해주세요.");
             editTextIntroduction.setFocusable(true);
         }
         else if(sex.length()<1){

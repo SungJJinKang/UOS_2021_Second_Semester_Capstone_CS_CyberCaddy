@@ -27,7 +27,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
-import com.uoscybercaddy.dabajo.activity.NoticeActivity;
 import com.uoscybercaddy.dabajo.activity.DashboardActivityTutor;
 import com.uoscybercaddy.dabajo.activity.LoginActivity;
 import com.uoscybercaddy.dabajo.activity.MemberinfoinitTutorActivity;
@@ -97,7 +96,6 @@ public class ProfileFragmentTutor extends Fragment {
         descriptionTv = (TextView) view.findViewById(R.id.descriptionTv);
         chatting = (ImageButton) view.findViewById(R.id.chattingListButton);
         myEval = (ImageButton) view.findViewById(R.id.reviewButton);
-        notice = (ImageButton) view.findViewById(R.id.noticeButton);
         logout = (ImageButton) view.findViewById(R.id.logoutButton);
         textView12 = (TextView) view.findViewById(R.id.textView12);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -138,15 +136,6 @@ public class ProfileFragmentTutor extends Fragment {
             }
         });
 
-        notice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NoticeActivity.class);
-                intent.putExtra("튜터",1);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
         textView12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

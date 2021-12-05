@@ -69,7 +69,7 @@
             android:background="@drawable/round_corner_eval"
             android:ems="0"
             android:fontFamily="@font/roboto_medium"
-            android:hint="                  솔직한 리뷰를 남겨주세요"
+            android:hint="솔직한 리뷰를 남겨주세요 "
             android:inputType="textMultiLine|textNoSuggestions"
             android:lines="8"
             android:minHeight="48dp"
