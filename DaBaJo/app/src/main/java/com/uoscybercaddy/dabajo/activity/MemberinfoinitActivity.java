@@ -528,26 +528,28 @@ public class MemberinfoinitActivity extends AppCompatActivity {
         memberInfo.setCategoriesCount(usersCategoriesCounts);
         memberInfo.setTutortuty(tutortuty);
         String uUid = user.getUid();
-        for(int i = 0; i< categories.size() ; i++) {
-            final int index = i;
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Posts").document(tutortuty).collection(categories.get(i))
-                    .whereEqualTo("uid", uUid)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d(TAG, document.getId() + " => " + document.getData());
-                                    document.getReference().update("uName",memberInfo.getNickName());
-                                    document.getReference().update("uDp",memberInfo.getPhotoUrl());
+        if(categories != null){
+            for(int i = 0; i< categories.size() ; i++) {
+                final int index = i;
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("Posts").document(tutortuty).collection(categories.get(i))
+                        .whereEqualTo("uid", uUid)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                        document.getReference().update("uName",memberInfo.getNickName());
+                                        document.getReference().update("uDp",memberInfo.getPhotoUrl());
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
                                 }
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
                             }
-                        }
-                    });
+                        });
+            }
         }
         if(comments!=null){
             HashMap<String, HashMap<String,String>> innerTutorComments = comments.get("튜터");

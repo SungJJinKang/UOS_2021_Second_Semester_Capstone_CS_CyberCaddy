@@ -182,7 +182,32 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
     }
-
+    private void addToHisNotifications(String hisUid, String pId, String pCategory, String pTutortuty,String notification){
+        String timeStamp =  ""+System.currentTimeMillis();
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("pId", pId);
+        hashMap.put("pCategory", pCategory);
+        hashMap.put("pTutortuty", pTutortuty);
+        hashMap.put("timeStamp", timeStamp);
+        hashMap.put("pUid", hisUid);
+        hashMap.put("notification", notification);
+        hashMap.put("sUid", mUID);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(hisUid)
+                .update("notifications."+timeStamp,hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+    }
     private void loadComments() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -452,6 +477,7 @@ public class PostDetailActivity extends AppCompatActivity {
                             likeBtn.setText("관심있음");
                             pLikesTv.setText((likes+1) + " 관심");
                             mProcessLike = false;
+                            addToHisNotifications(""+hisUid, pId, pCategory, pTutortuty, "관심 있어 합니다.");
                         }
                     } else {
                         Log.d(TAG, "No such document");
@@ -495,6 +521,8 @@ public class PostDetailActivity extends AppCompatActivity {
                         commentEt.setText("");
                         updateCommentCount();
                         Log.d(TAG, "DocumentSnapshot successfully updated!");
+
+                        addToHisNotifications(""+hisUid, pId, pCategory, pTutortuty, "댓글이 달렸습니다.");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

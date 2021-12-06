@@ -189,8 +189,10 @@ public class HomeFragment extends Fragment {
         notificationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), SettingsActivity.class);
-                startActivity(intent);
+                NotificationsFragment notificationsFragment = new NotificationsFragment();
+                ((DashboardActivity)getActivity()).replaceFragment(notificationsFragment);
+                //Intent intent = new Intent(getContext(), SettingsActivity.class);
+                //startActivity(intent);
             }
         });
         showUsersTv.setOnClickListener(new View.OnClickListener() {

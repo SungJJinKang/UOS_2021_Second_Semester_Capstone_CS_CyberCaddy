@@ -189,6 +189,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                                     holder.likeBtn.setText("관심있음");
                                     holder.pLikesTv.setText((likes+1) + " 관심");
                                     mProcessLike = false;
+
+                                    addToHisNotifications(""+uid, pId, pCategory, pTutortuty, "관심 있어 합니다.");
                                 }
                             } else {
                                 Log.d(TAG, "No such document");
@@ -258,11 +260,32 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 }
             });
         }
-
-
-
-
-
+    }
+    private void addToHisNotifications(String hisUid, String pId, String pCategory, String pTutortuty,String notification){
+        String timeStamp =  ""+System.currentTimeMillis();
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("pId", pId);
+        hashMap.put("pCategory", pCategory);
+        hashMap.put("pTutortuty", pTutortuty);
+        hashMap.put("timeStamp", timeStamp);
+        hashMap.put("pUid", hisUid);
+        hashMap.put("notification", notification);
+        hashMap.put("sUid", myUid);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(hisUid)
+                .update("notifications."+timeStamp,hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
     }
 
     private void setLikes(MyHolder holder, String pId, String pTutortuty, String pCategory) {
@@ -301,7 +324,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             popupMenu.getMenu().add(Menu.NONE, 0, 0, "삭제");
             popupMenu.getMenu().add(Menu.NONE, 1, 0, "수정");
         }
-        popupMenu.getMenu().add(Menu.NONE, 2, 0 , "댓글 달기");
+        popupMenu.getMenu().add(Menu.NONE, 2, 0 , "자세히 보기");
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

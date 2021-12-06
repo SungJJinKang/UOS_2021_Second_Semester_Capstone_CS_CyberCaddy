@@ -8,8 +8,9 @@ public class ModelUsers {
     boolean isBlocked = false;
     HashMap<String, Long> categoriesCount;
     HashMap<String, HashMap<String, HashMap<String,String>>> comments;
+    HashMap<String, HashMap<String,String>> notifications;
 
-    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search, String uid, String onlineStatus, String typingTo, boolean isBlocked, HashMap<String, Long> categoriesCount, HashMap<String, HashMap<String, HashMap<String, String>>> comments) {
+    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search, String uid, String onlineStatus, String typingTo, boolean isBlocked, HashMap<String, Long> categoriesCount, HashMap<String, HashMap<String, HashMap<String, String>>> comments, HashMap<String, HashMap<String, String>> notifications) {
         this.name = name;
         this.nickName = nickName;
         this.photoUrl = photoUrl;
@@ -23,6 +24,15 @@ public class ModelUsers {
         this.isBlocked = isBlocked;
         this.categoriesCount = categoriesCount;
         this.comments = comments;
+        this.notifications = notifications;
+    }
+
+    public HashMap<String, HashMap<String, String>> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(HashMap<String, HashMap<String, String>> notifications) {
+        this.notifications = notifications;
     }
 
     public boolean isBlocked() {

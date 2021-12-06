@@ -37,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
 */
         postSwitch = findViewById(R.id.postSwitch);
 
-        sp = getSharedPreferences("NOtification_SP", MODE_PRIVATE);
+        sp = getSharedPreferences("Notification_SP", MODE_PRIVATE);
         boolean isPostEnabled = sp.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
 
         if (isPostEnabled) {
