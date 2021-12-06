@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,7 +57,7 @@ import java.util.TreeSet;
  */
 public class NotificationsFragment extends Fragment {
     SwitchCompat postSwitch;
-
+    TextView noPost;
     SharedPreferences sp;
     SharedPreferences.Editor editor;
 
@@ -118,7 +119,7 @@ public class NotificationsFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         getAllNotifications();
         postSwitch = view.findViewById(R.id.postSwitch);
-
+        noPost = (TextView)view.findViewById(R.id.noPost);
         sp = this.getActivity().getSharedPreferences("Notification_SP", Context.MODE_PRIVATE);
         boolean isPostEnabled = sp.getBoolean(""+TOPIC_POST_NOTIFICATION, false);
 
@@ -182,6 +183,7 @@ public class NotificationsFragment extends Fragment {
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
                     Log.w("", "Listen failed.", e);
+                    noPost.setVisibility(View.VISIBLE);
                     return;
                 }
 
@@ -189,6 +191,11 @@ public class NotificationsFragment extends Fragment {
                     notificationList.clear();
                     ModelUsers modelUsers = snapshot.toObject(ModelUsers.class);
                     HashMap<String, HashMap<String,String>> notifications = modelUsers.getNotifications();
+                    if(notifications == null){
+                        noPost.setVisibility(View.VISIBLE);
+                    }else{
+                        noPost.setVisibility(View.GONE);
+                    }
                     if(notifications != null){
                         SortedSet<String> keys = new TreeSet<>(notifications.keySet());
                         for (String key : keys) {
@@ -202,6 +209,7 @@ public class NotificationsFragment extends Fragment {
                     }
                     Log.d("", "Current data: " + snapshot.getData());
                 } else {
+                    noPost.setVisibility(View.VISIBLE);
                     Log.d("", "Current data: null");
                 }
             }
