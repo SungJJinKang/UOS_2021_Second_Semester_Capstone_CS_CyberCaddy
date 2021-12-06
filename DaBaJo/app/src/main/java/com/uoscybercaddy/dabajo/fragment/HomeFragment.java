@@ -30,6 +30,7 @@ import com.uoscybercaddy.dabajo.activity.CategorySportActivity;
 import com.uoscybercaddy.dabajo.activity.DashboardActivity;
 import com.uoscybercaddy.dabajo.activity.MainActivity;
 import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
+import com.uoscybercaddy.dabajo.activity.SettingsActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +39,7 @@ import com.uoscybercaddy.dabajo.activity.MemberinfoinitActivity;
  */
 public class HomeFragment extends Fragment {
     TextView showUsersTv;
-    ImageButton showChattingListTv;
+    ImageButton showChattingListTv,notificationBtn;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -184,6 +185,14 @@ public class HomeFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         showUsersTv = (TextView) view.findViewById(R.id.showUsersTv);
         showChattingListTv = (ImageButton) view.findViewById(R.id.showChattingListIv);
+        notificationBtn = (ImageButton)view.findViewById(R.id.notificationBtn);
+        notificationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
         showUsersTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

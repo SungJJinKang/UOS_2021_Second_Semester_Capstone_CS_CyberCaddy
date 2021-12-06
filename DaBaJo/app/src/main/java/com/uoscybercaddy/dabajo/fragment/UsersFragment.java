@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.uoscybercaddy.dabajo.activity.SettingsActivity;
 import com.uoscybercaddy.dabajo.models.ModelUsers;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.MainActivity;
@@ -259,6 +260,9 @@ public class UsersFragment extends Fragment {
         if(id== R.id.action_logout){
             firebaseAuth.signOut();
             checkUserStatus();
+        }
+        else if (id==R.id.action_settings){
+            startActivity(new Intent(getActivity(), SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

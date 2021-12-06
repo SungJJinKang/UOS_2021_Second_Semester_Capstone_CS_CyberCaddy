@@ -959,7 +959,9 @@ public class ChatActivity extends AppCompatActivity {
                     Log.d(TAG+"왓", "Current data: " + snapshot.getData());
                     String tokenString = snapshot.getData().get("token").toString();
                     Token token = new Token(tokenString);
-                    Data data = new Data(myUid, name+": "+message, "새로운 메세지", hisUid, R.drawable.ic_chat_black);
+                    Data data = new Data(""+myUid, name+": "+message, "새로운 메세지", ""+hisUid,
+                            "ChatNotification",
+                            R.drawable.splash_image);
                     Sender sender = new Sender(data, token.getToken());
 
                     //fcm json object request

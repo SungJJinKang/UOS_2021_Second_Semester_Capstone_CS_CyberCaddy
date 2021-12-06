@@ -31,6 +31,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,6 +60,9 @@ import com.uoscybercaddy.dabajo.adapter.SliderAdapterforFeed;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.URLS;
 import com.uoscybercaddy.dabajo.models.UsersCategoriesCount;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -244,6 +252,63 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
 
+    private void prepareNotification(String pId, String title, String description, String notificationType, String notificationTopic){
+        String NOTIFICATION_TOPIC = "/topics/" + notificationTopic;
+        String NOTIFICATION_TITLE  = title;
+        String NOTIFICATION_MESSAGE = description;
+        String NOTIFICATION_TYPE = notificationType;
+
+        JSONObject notificationJo = new JSONObject();
+        JSONObject notificationBodyJo = new JSONObject();
+
+        try {
+            notificationBodyJo.put("notificationType", NOTIFICATION_TYPE);
+            notificationBodyJo.put("sender", uid);
+            notificationBodyJo.put("pId", pId);
+            notificationBodyJo.put("pTitle", NOTIFICATION_TITLE);
+            notificationBodyJo.put("pDescription", NOTIFICATION_MESSAGE);
+            notificationBodyJo.put("pCategory", category);
+            notificationBodyJo.put("pTutortuty", tutortuty);
+
+
+            notificationJo.put("to", NOTIFICATION_TOPIC);
+
+            notificationJo.put("data", notificationBodyJo);
+        } catch (JSONException e) {
+            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+
+        sendPostNotification(notificationJo);
+    }
+
+    private void sendPostNotification(JSONObject notificationJo) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("FCM_RESPONSE", "onResponse: "+response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(AddPostActivity.this, ""+error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "key=AAAA9RV8rQM:APA91bHAUdhZt04zg97Y1I5yzAG3Pq5x7qEhCb8WS0saCHGDlaP8SgjixsE_PvRX8EmEIyEPV0mIdsoQsQj_U29F3yyN1cWveuCslPKW2-zr0lRHVNnP2ZQv_S5RopltAV6r-5xSO72R");
+
+                return headers;
+            }
+        };
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+    }
+
     private void beginUpdate(String title, String description, String editPostId, String editCategory, String editTutortuty) {
         pd.setMessage("업데이트 중...");
         pd.show();
@@ -421,7 +486,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
         builder.create().show();
     }
-    private void uploadStorage( String documentName, Map<String, Object> city){
+    private void uploadStorage( String documentName, Map<String, Object> city, String title, String description){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference washingtonRef = db.collection("Posts").document(tutortuty).collection(category).document(documentName);
         int urisSize = uris.size();
@@ -475,7 +540,9 @@ public class AddPostActivity extends AppCompatActivity {
                                                         Toast.makeText(AddPostActivity.this,"업로드 성공",Toast.LENGTH_LONG).show();
                                                         Intent intent1 = new Intent("deletePost");
                                                         LocalBroadcastManager.getInstance(AddPostActivity.this).sendBroadcast(intent1);
-
+                                                        prepareNotification(documentName,name+"이 게시판을 올렸습니다."
+                                                                ,""+title+"\n"+description
+                                                                ,"PostNotification","POST");
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
@@ -533,7 +600,7 @@ public class AddPostActivity extends AppCompatActivity {
             city.put("pTutortuty", tutortuty);
             city.put("pLikes", 0);
             Log.e("city : ",city+"");
-            uploadStorage(documentName, city);
+            uploadStorage(documentName, city, title, description);
         }
         else{
             //이미지없이
@@ -561,6 +628,9 @@ public class AddPostActivity extends AppCompatActivity {
                             startToast("업로드 성공");
                             Intent intent1 = new Intent("deletePost");
                             LocalBroadcastManager.getInstance(AddPostActivity.this).sendBroadcast(intent1);
+                            prepareNotification(documentName,name+"이 게시판을 올렸습니다."
+                                    ,""+title+"\n"+description
+                                    ,"PostNotification","POST");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
