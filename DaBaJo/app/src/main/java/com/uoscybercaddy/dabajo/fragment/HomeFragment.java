@@ -197,14 +197,14 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 UsersFragment usersFragment= new UsersFragment();
-                ((DashboardActivity)getActivity()).replaceFragment(usersFragment, "유저");
+                ((DashboardActivity)getActivity()).replaceFragment(usersFragment);
             }
         });
         showChattingListTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ChatListFragment chatListFragment= new ChatListFragment();
-                ((DashboardActivity)getActivity()).replaceFragment(chatListFragment,"채팅");
+                ((DashboardActivity)getActivity()).replaceFragment(chatListFragment);
             }
         });
 
@@ -231,7 +231,7 @@ public class HomeFragment extends Fragment {
                 break;
             case R.id.nav_chat:
                 ChatListFragment chatListFragment= new ChatListFragment();
-                ((DashboardActivity)getActivity()).replaceFragment(chatListFragment,"채팅");
+                ((DashboardActivity)getActivity()).replaceFragment(chatListFragment);
                 break;
         }
 

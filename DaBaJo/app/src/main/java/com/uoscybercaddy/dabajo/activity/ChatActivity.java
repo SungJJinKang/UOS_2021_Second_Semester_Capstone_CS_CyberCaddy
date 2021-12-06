@@ -51,6 +51,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -63,6 +64,7 @@ import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.adapter.AdapterChat;
+import com.uoscybercaddy.dabajo.adapter.AdapterUsers;
 import com.uoscybercaddy.dabajo.models.Modelchat;
 import com.uoscybercaddy.dabajo.notifications.Data;
 import com.uoscybercaddy.dabajo.notifications.Sender;
@@ -84,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     RecyclerView recyclerView;
-    ImageView profileIv;
+    ImageView profileIv, blockIv;
     TextView nameTv, userStatusTv;
     EditText messageEt;
     ImageButton sendBtn, attachBtn;
@@ -98,6 +100,8 @@ public class ChatActivity extends AppCompatActivity {
     String hisUid;
     String myUid;
     String hisImage;
+    boolean isBlocked = false;
+
 
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
@@ -124,6 +128,7 @@ public class ChatActivity extends AppCompatActivity {
         toolbar.setTitle("");
         recyclerView = findViewById(R.id.chat_recyclerView);
         profileIv = findViewById(R.id.profileIv);
+        blockIv = findViewById(R.id.blockIv);
         nameTv = findViewById(R.id.nameTv);
         userStatusTv = findViewById(R.id.userStatusTv);
         messageEt = findViewById(R.id.messageEt);
@@ -251,9 +256,90 @@ public class ChatActivity extends AppCompatActivity {
                 showImagePicDialog();
             }
         });
-
+        blockIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isBlocked){
+                    unBlockUser();
+                }
+                else{
+                    blockUser();
+                }
+            }
+        });
         readMessages();
+
+        checkIsBlocked();
+
         seenMessage();
+    }
+    private void checkIsBlocked() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("users").document(firebaseAuth.getUid());
+        docRef
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("", "DocumentSnapshot data: " + document.getData());
+                        HashMap<String, String> blockedUsers = (HashMap<String, String>) document.getData().get("blockedUsers");
+                        if(blockedUsers != null && blockedUsers.containsKey(hisUid)){
+                            blockIv.setImageResource(R.drawable.ic_blocked_gray);
+                            isBlocked = true;
+                        }
+                    } else {
+                        Log.d("", "No such document");
+                    }
+                } else {
+                    Log.d("", "get failed with ", task.getException());
+                }
+            }
+        });
+
+    }
+
+    private void blockUser() {
+        HashMap<String, String> blockUsers = new HashMap<>();
+        blockUsers.put(hisUid, hisUid);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(myUid)
+                .update("blockedUsers", blockUsers)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        blockIv.setImageResource(R.drawable.ic_blocked_gray);
+                        Toast.makeText(ChatActivity.this,"차단 완료", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ChatActivity.this,"차단 실패...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void unBlockUser() {
+        HashMap<String, Object> blockUsers = new HashMap<>();
+        blockUsers.put(hisUid, FieldValue.delete());
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(myUid)
+                .update("blockedUsers", blockUsers)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        blockIv.setImageResource(R.drawable.ic_unblocked_orange);
+                        Toast.makeText(ChatActivity.this,"차단 해제 완료", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ChatActivity.this,"차단 해제 실패...", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     private void showImagePicDialog(){
         String options[] = {"사진 촬영","사진갤러리", "동영상 촬영","동영상 갤러리"};

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -34,7 +33,6 @@ import java.util.Stack;
 public class DashboardActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
-    ActionBar actionBar;
     String mUID;
     int fragmentFlag = 0;
     int currentFragmentFlag = 0;
@@ -52,8 +50,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(selectedListener);
-        actionBar = getSupportActionBar();
-        actionBar.hide();
 
 
         Intent intent = getIntent();
@@ -147,8 +143,7 @@ public class DashboardActivity extends AppCompatActivity {
         docRef.set(mToken);
     }
 
-    public void replaceFragment(Fragment fragment, String s) {
-        actionBar.setTitle(s);
+    public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.

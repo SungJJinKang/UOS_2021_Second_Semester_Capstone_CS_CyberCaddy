@@ -66,6 +66,7 @@
             android:exported="false" />
         <activity
             android:name=".activity.DashboardActivity"
+            android:theme="@style/AppThemeNo"
             android:exported="false">
         </activity>
 

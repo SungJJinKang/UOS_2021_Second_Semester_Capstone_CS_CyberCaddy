@@ -4,8 +4,10 @@
     >
     <item android:id="@+id/action_logout"
         android:title="Logout"/>
-    <item android:id="@+id/action_settings"
-        android:title="알람 셋팅"/>
+    <item android:id="@+id/action_blockUsers"
+        android:title="전부 차단하기"/>
+    <item android:id="@+id/action_unblockUsers"
+        android:title="전부 차단풀기"/>
     <item android:id="@+id/action_search"
         android:title="검색"
         android:icon="@drawable/ic_person_search_white"

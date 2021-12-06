@@ -5,8 +5,33 @@ import java.util.List;
 
 public class ModelUsers {
     String name, nickName, photoUrl, sex, tutortuty, introduction, search, uid, onlineStatus, typingTo;
+    boolean isBlocked = false;
     HashMap<String, Long> categoriesCount;
     HashMap<String, HashMap<String, HashMap<String,String>>> comments;
+
+    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search, String uid, String onlineStatus, String typingTo, boolean isBlocked, HashMap<String, Long> categoriesCount, HashMap<String, HashMap<String, HashMap<String, String>>> comments) {
+        this.name = name;
+        this.nickName = nickName;
+        this.photoUrl = photoUrl;
+        this.sex = sex;
+        this.tutortuty = tutortuty;
+        this.introduction = introduction;
+        this.search = search;
+        this.uid = uid;
+        this.onlineStatus = onlineStatus;
+        this.typingTo = typingTo;
+        this.isBlocked = isBlocked;
+        this.categoriesCount = categoriesCount;
+        this.comments = comments;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
 
     public HashMap<String, Long> getCategoriesCount() {
         return categoriesCount;
@@ -24,20 +49,6 @@ public class ModelUsers {
         this.comments = comments;
     }
 
-    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search, String uid, String onlineStatus, String typingTo, HashMap<String, Long> categoriesCount, HashMap<String, HashMap<String, HashMap<String, String>>> comments) {
-        this.name = name;
-        this.nickName = nickName;
-        this.photoUrl = photoUrl;
-        this.sex = sex;
-        this.tutortuty = tutortuty;
-        this.introduction = introduction;
-        this.search = search;
-        this.uid = uid;
-        this.onlineStatus = onlineStatus;
-        this.typingTo = typingTo;
-        this.categoriesCount = categoriesCount;
-        this.comments = comments;
-    }
 
     public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String uid) {
         this.name = name;
@@ -53,30 +64,6 @@ public class ModelUsers {
 
 
     public ModelUsers() {
-    }
-
-    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String onlineStatus, String typingTo) {
-        this.name = name;
-        this.nickName = nickName;
-        this.photoUrl = photoUrl;
-        this.sex = sex;
-        this.tutortuty = tutortuty;
-        this.introduction = introduction;
-        this.onlineStatus = onlineStatus;
-        this.typingTo = typingTo;
-    }
-
-    public ModelUsers(String name, String nickName, String photoUrl, String sex, String tutortuty, String introduction, String search, String uid, String onlineStatus, String typingTo) {
-        this.name = name;
-        this.nickName = nickName;
-        this.photoUrl = photoUrl;
-        this.sex = sex;
-        this.tutortuty = tutortuty;
-        this.introduction = introduction;
-        this.search = search;
-        this.uid = uid;
-        this.onlineStatus = onlineStatus;
-        this.typingTo = typingTo;
     }
 
     public String getName() {

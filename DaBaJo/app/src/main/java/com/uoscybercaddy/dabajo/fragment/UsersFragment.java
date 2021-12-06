@@ -15,20 +15,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,6 +45,7 @@ import com.uoscybercaddy.dabajo.activity.MainActivity;
 import com.uoscybercaddy.dabajo.adapter.AdapterUsers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class UsersFragment extends Fragment {
@@ -46,7 +53,8 @@ public class UsersFragment extends Fragment {
     AdapterUsers adapterUsers;
     FirebaseAuth firebaseAuth;
     List<ModelUsers> usersList;
-    ActionBar actionBar;
+    String tutortuty;
+    Toolbar toolbar;
     private static final String TAG = "UserFragment";
     public UsersFragment(){
 
@@ -69,6 +77,7 @@ public class UsersFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -83,15 +92,138 @@ public class UsersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         recyclerView = view.findViewById(R.id.users_recyclerView);
         recyclerView.setHasFixedSize(true);
+        toolbar = (Toolbar)view.findViewById(R.id.toolbar);
+        BottomNavigationView navigationView = (BottomNavigationView) view.findViewById(R.id.navigation);
+        navigationView.setOnNavigationItemSelectedListener(selectedListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        actionBar.show();
+
+        toolbar.setTitle("");
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
         usersList = new ArrayList<>();
-
+        tutortuty = "튜티";
         getAllUsers();
 
         return view;
+    }
+    private void setAllUsersUnBlocked() {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(fUser.getUid());
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .whereEqualTo("tutortuty", tutortuty)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            usersList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String name, nickName, photoUrl, sex, tutortuty, introduction, search,uid;
+                                name = document.getData().get("name").toString();
+                                nickName = document.getData().get("nickName").toString();
+                                if(document.getData().get("photoUrl") != null){
+                                    photoUrl = document.getData().get("photoUrl").toString();
+                                }else{
+                                    photoUrl = null;
+                                }
+                                if(document.getData().get("tutortuty") != null){
+                                    tutortuty = document.getData().get("tutortuty").toString();
+                                }else{
+                                    tutortuty = "튜티";
+                                }
+
+                                introduction = document.getData().get("introduction").toString();
+                                sex = document.getData().get("sex").toString();
+                                uid = document.getId();
+
+                                ModelUsers modelUser = new ModelUsers(name, nickName, photoUrl, sex,  tutortuty, introduction,uid);
+                                if(!(document.getId().equals(fUser.getUid()))){
+                                    usersList.add(modelUser);
+                                    HashMap<String, Object> blockUsers = new HashMap<>();
+                                    blockUsers.put("blockedUsers."+uid, FieldValue.delete());
+                                    docRef.update(blockUsers)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.e("","차단 성공");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.e("","차단 실패");
+                                                }
+                                            });
+                                }
+                            }
+                            adapterUsers = new AdapterUsers(getActivity(), usersList);
+                            recyclerView.setAdapter(adapterUsers);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void setAllUsersBlocked() {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("users").document(fUser.getUid());
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .whereEqualTo("tutortuty", tutortuty)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            usersList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String name, nickName, photoUrl, sex, tutortuty, introduction, search,uid;
+                                name = document.getData().get("name").toString();
+                                nickName = document.getData().get("nickName").toString();
+                                if(document.getData().get("photoUrl") != null){
+                                    photoUrl = document.getData().get("photoUrl").toString();
+                                }else{
+                                    photoUrl = null;
+                                }
+                                if(document.getData().get("tutortuty") != null){
+                                    tutortuty = document.getData().get("tutortuty").toString();
+                                }else{
+                                    tutortuty = "튜티";
+                                }
+
+                                introduction = document.getData().get("introduction").toString();
+                                sex = document.getData().get("sex").toString();
+                                uid = document.getId();
+
+                                ModelUsers modelUser = new ModelUsers(name, nickName, photoUrl, sex,  tutortuty, introduction,uid);
+                                if(!(document.getId().equals(fUser.getUid()))){
+                                    usersList.add(modelUser);
+                                    HashMap<String, Object> blockUsers = new HashMap<>();
+                                    blockUsers.put("blockedUsers."+uid, uid);
+                                    docRef.update(blockUsers)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.e("","차단 성공");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.e("","차단 실패");
+                                                }
+                                            });
+                                }
+                            }
+                            adapterUsers = new AdapterUsers(getActivity(), usersList);
+                            recyclerView.setAdapter(adapterUsers);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
     private void getAllUsers() {
@@ -99,6 +231,7 @@ public class UsersFragment extends Fragment {
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
+                .whereEqualTo("tutortuty", tutortuty)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -118,7 +251,7 @@ public class UsersFragment extends Fragment {
                                 if(document.getData().get("tutortuty") != null){
                                     tutortuty = document.getData().get("tutortuty").toString();
                                 }else{
-                                    tutortuty = null;
+                                    tutortuty = "튜티";
                                 }
 
                                 introduction = document.getData().get("introduction").toString();
@@ -143,6 +276,7 @@ public class UsersFragment extends Fragment {
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
+                .whereEqualTo("tutortuty", tutortuty)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -163,7 +297,7 @@ public class UsersFragment extends Fragment {
                                 if(tt!=null){
                                     tutortuty = tt.toString();
                                 }else{
-                                    tutortuty = null;
+                                    tutortuty = "튜티";
                                 }
 
                                 introduction = document.getData().get("introduction").toString();
@@ -199,6 +333,24 @@ public class UsersFragment extends Fragment {
             getActivity().finish();
         }
     }
+    private BottomNavigationView.OnNavigationItemSelectedListener selectedListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.nav_tuty:
+                            tutortuty = "튜티";
+                            getAllUsers();
+                            return true;
+                        case R.id.nav_tutor:
+                            tutortuty = "튜터";
+                            getAllUsers();
+                            //nav_category fragment transaction
+                            return true;
+                    }
+                    return false;
+                }
+            };
     //inflate option menu
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
@@ -234,23 +386,6 @@ public class UsersFragment extends Fragment {
     }
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FC5943")));
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden) {
-            getActivity().getActionBar().hide(); //getSupportActionBar() for API<11
-        } else {
-            getActivity().getActionBar().show(); //getSupportActionBar() for API<11
-        }
-    }
 
     //handle menu item clicks
 
@@ -261,9 +396,14 @@ public class UsersFragment extends Fragment {
             firebaseAuth.signOut();
             checkUserStatus();
         }
-        else if (id==R.id.action_settings){
-            startActivity(new Intent(getActivity(), SettingsActivity.class));
+        else if (id==R.id.action_blockUsers){
+            setAllUsersBlocked();
+        }
+        else if (id==R.id.action_unblockUsers){
+            setAllUsersUnBlocked();
         }
         return super.onOptionsItemSelected(item);
     }
+
+    
 }
