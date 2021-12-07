@@ -35,6 +35,7 @@ public class ReviewTutorActivity extends AppCompatActivity {
     TextView nickNameTv, fieldTv, descriptionTv, ratingTv;
     RatingBar ratingBar;
     FirebaseFirestore db;
+    String tutorUid; // 튜터 uid
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +53,13 @@ public class ReviewTutorActivity extends AppCompatActivity {
 
         // 튜터, 튜티 구분용
         Intent intent = getIntent();
+        tutorUid = getIntent().getExtras().getString("tutorUid");;
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
         db = FirebaseFirestore.getInstance();
-        DocumentReference docRef_tutor = db.collection("users_tutor").document(user.getUid()/*여기 tUid가 들어가야함*/);
+        DocumentReference docRef_tutor = db.collection("users").document(tutorUid/*여기 tUid가 들어가야함*/);
         docRef_tutor.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -69,7 +71,7 @@ public class ReviewTutorActivity extends AppCompatActivity {
                             Glide.with(ReviewTutorActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(avatarIv);
                         }
                         nickNameTv.setText(document.getData().get("nickName").toString());
-                        fieldTv.setText(document.getData().get("field").toString());
+//                        fieldTv.setText(document.getData().get("field").toString());
                         descriptionTv.setText(document.getData().get("introduction").toString());
                     } else {
                         Log.d(TAG, "No such document");
@@ -80,7 +82,7 @@ public class ReviewTutorActivity extends AppCompatActivity {
             }
         });
 
-        DocumentReference docRef_eval = db.collection("eval").document(user.getUid()/*여기 tUid가 들어가야함*/).collection("forAverage").document("total");
+        DocumentReference docRef_eval = db.collection("eval").document(tutorUid/*여기 tUid가 들어가야함*/).collection("forAverage").document("total");
         docRef_eval.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

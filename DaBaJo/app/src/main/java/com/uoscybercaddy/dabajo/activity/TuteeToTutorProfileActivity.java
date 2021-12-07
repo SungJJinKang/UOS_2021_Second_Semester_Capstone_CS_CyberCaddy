@@ -95,7 +95,9 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                     break;
                 //
                 case R.id.reviewButton:
-                    startActivityShortcut(ReviewTutorActivity.class);
+                    Intent reviewIntent = new Intent(TuteeToTutorProfileActivity.this, ReviewTutorActivity.class);
+                    reviewIntent.putExtra("tutorUid", profileUid);
+                    startActivity(reviewIntent);
                     break;
                 case R.id.showUserPostButton:
                     Intent showPostIntent = new Intent(TuteeToTutorProfileActivity.this, PostFeedActivityUsers.class);
