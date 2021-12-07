@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -72,7 +73,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     AdapterPosts adapterPosts;
     Intent intent;
     ImageButton goBackButton;
-    String tutortuty;
+    //String tutortuty;
     List<String> categories;
     String category;
     private static final String TAG = "PostFeedActivityUsers";
@@ -82,7 +83,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
         setContentView(R.layout.activity_post_feed_users);
         firebaseAuth = FirebaseAuth.getInstance();
         goBackButton = (ImageButton)findViewById(R.id.goBackButton);
-        tutortuty = "튜티";
+        //tutortuty = "튜티";
         categoriesSpinner = (Spinner) findViewById(R.id.categoriesSpinner);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         noPost = (TextView)findViewById(R.id.noPost);
@@ -111,12 +112,12 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        Object position = document.getData().get("tutortuty");
-                        if(position != null){
-                            tutortuty = position.toString();
-                        }else{
-                            tutortuty = "튜티";
-                        }
+                        //Object position = document.getData().get("tutortuty");
+                        //if(position != null){
+                        //    tutortuty = position.toString();
+                        //}else{
+                        //    tutortuty = "튜티";
+                        //}
 
                         String filter;
                         if(getIntent().hasExtra("OnlyCommnets") && getIntent().getBooleanExtra("OnlyCommnets", false) == true)
@@ -233,24 +234,42 @@ public class PostFeedActivityUsers extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void FetchPost(final String categoryName, OnCompleteListener<QuerySnapshot> onCompleteListener)
+    private void FetchPost(final String categoryName, OnCompleteListener<List<Object>> onCompleteListener)
     {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference colRef = db.collection("Posts").document(tutortuty).collection(categoryName);
 
-        Query query = null;
-        boolean noOption = true;
-        if(getIntent().hasExtra("OnlyCommnets") && getIntent().getBooleanExtra("OnlyCommnets", false) == true)
+        Query tutorQuery = null;
+        Query tuteeQuery = null;
         {
-            query = colRef.whereGreaterThan("pCommenters." + uid, 0);
+            CollectionReference colRef = db.collection("Posts").document("튜터").collection(categoryName);
+            boolean noOption = true;
+            if(getIntent().hasExtra("OnlyCommnets") && getIntent().getBooleanExtra("OnlyCommnets", false) == true)
+            {
+                tutorQuery = colRef.whereGreaterThan("pCommenters." + uid, 0);
+            }
+            else
+            {
+                tutorQuery = colRef.whereEqualTo("uid", uid);
+            }
         }
-        else
         {
-            query = colRef.whereEqualTo("uid", uid);
+            CollectionReference colRef = db.collection("Posts").document("튜티").collection(categoryName);
+            boolean noOption = true;
+            if(getIntent().hasExtra("OnlyCommnets") && getIntent().getBooleanExtra("OnlyCommnets", false) == true)
+            {
+                tuteeQuery = colRef.whereGreaterThan("pCommenters." + uid, 0);
+            }
+            else
+            {
+                tuteeQuery = colRef.whereEqualTo("uid", uid);
+            }
         }
 
-        query.get()
-            .addOnCompleteListener(onCompleteListener);
+        Task<QuerySnapshot> tutorTask = tutorQuery.get();
+        Task<QuerySnapshot> tuteeTask = tuteeQuery.get();
+
+        Tasks.whenAllSuccess(tutorTask, tuteeTask).addOnCompleteListener(onCompleteListener);
+
     }
 
 
@@ -259,18 +278,23 @@ public class PostFeedActivityUsers extends AppCompatActivity {
         Log.e("카테고리 사이즈 ", categories.size()+"");
         for(int i = 0; i< categories.size() ; i++){
             final int index = i;
-            FetchPost(categories.get(i), new OnCompleteListener<QuerySnapshot>() {
+            FetchPost(categories.get(i), new OnCompleteListener<List<Object>>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task<List<Object>> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                ModelPost modelPost = document.toObject(ModelPost.class);
-                               // List<URLS> post = modelPost.getpImage();
-                               // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
-                                //{
+                            List<Object> result = task.getResult();
+                            for (Object documentObj : result)
+                            {
+                                QuerySnapshot queySnapshot = (QuerySnapshot)documentObj;
+                                for(DocumentSnapshot document : queySnapshot.getDocuments()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    ModelPost modelPost = document.toObject(ModelPost.class);
+                                    // List<URLS> post = modelPost.getpImage();
+                                    // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                    //{
                                     postList.add(modelPost);
-                               // }
+                                    // }
+                                }
                             }
                             if(index == categories.size()-1){
                                 Collections.sort(postList);
@@ -288,19 +312,24 @@ public class PostFeedActivityUsers extends AppCompatActivity {
         postList.clear();
         for(int i = 0; i< categories.size() ; i++){
             final int index = i;
-            FetchPost(categories.get(index), new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            FetchPost(categories.get(index), new OnCompleteListener<List<Object>>() {
+                @Override
+                public void onComplete(@NonNull Task<List<Object>> task) {
                             if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d(TAG, document.getId() + " => " + document.getData());
-                                    ModelPost modelPost = document.toObject(ModelPost.class);
-                                    if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
-                                       // List<URLS> post = modelPost.getpImage();
-                                        //if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
-                                        //{
+                                List<Object> result = task.getResult();
+                                for (Object documentObj : result)
+                                {
+                                    QuerySnapshot queySnapshot = (QuerySnapshot)documentObj;
+                                    for(DocumentSnapshot document : queySnapshot.getDocuments()) {
+                                        Log.d(TAG, document.getId() + " => " + document.getData());
+                                        ModelPost modelPost = document.toObject(ModelPost.class);
+                                        if (modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())) {
+                                            // List<URLS> post = modelPost.getpImage();
+                                            //if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                            //{
                                             postList.add(modelPost);
-                                        //}
+                                            //}
+                                        }
                                     }
                                 }
                                 if(index == categories.size()-1){
@@ -318,18 +347,23 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     private void loadPosts(String category) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         postList.clear();
-        FetchPost(category, new OnCompleteListener<QuerySnapshot>() {
+        FetchPost(category, new OnCompleteListener<List<Object>>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task<List<Object>> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                ModelPost modelPost = document.toObject(ModelPost.class);
-                                //List<URLS> post = modelPost.getpImage();
-                                //if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
-                               // {
+                            List<Object> result = task.getResult();
+                            for (Object documentObj : result)
+                            {
+                                QuerySnapshot queySnapshot = (QuerySnapshot)documentObj;
+                                for(DocumentSnapshot document : queySnapshot.getDocuments()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    ModelPost modelPost = document.toObject(ModelPost.class);
+                                    //List<URLS> post = modelPost.getpImage();
+                                    //if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                    // {
                                     postList.add(modelPost);
-                               // }
+                                    // }
+                                }
                             }
                             adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
                             recyclerView.setAdapter(adapterPosts);
@@ -342,19 +376,24 @@ public class PostFeedActivityUsers extends AppCompatActivity {
     private void searchPosts(String searchQuery, String category){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         postList.clear();
-        FetchPost(category, new OnCompleteListener<QuerySnapshot>() {
+        FetchPost(category, new OnCompleteListener<List<Object>>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task<List<Object>> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                ModelPost modelPost = document.toObject(ModelPost.class);
-                                if(modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
-                                    //List<URLS> post = modelPost.getpImage();
-                                   // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
-                                   // {
+                            List<Object> result = task.getResult();
+                            for (Object documentObj : result)
+                            {
+                                QuerySnapshot queySnapshot = (QuerySnapshot)documentObj;
+                                for(DocumentSnapshot document : queySnapshot.getDocuments()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    ModelPost modelPost = document.toObject(ModelPost.class);
+                                    if (modelPost.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) || modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())) {
+                                        //List<URLS> post = modelPost.getpImage();
+                                        // if(modelPost.getArrayCount() == 0 || post!= null && modelPost.getArrayCount() == post.size())
+                                        // {
                                         postList.add(modelPost);
-                                   // }
+                                        // }
+                                    }
                                 }
                             }
                             adapterPosts = new AdapterPosts(PostFeedActivityUsers.this, postList, true);
