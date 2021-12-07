@@ -31,7 +31,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
     FirebaseFirestore db;
     ImageView avatarIv;
     TextView nickNameTv, descriptionTv, fieldTv;
-
+    String profileUid;
     ActionBar actionBar;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +48,14 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
 
         findViewById(R.id.startChatButton).setOnClickListener(onClickListener);
         findViewById(R.id.reviewButton).setOnClickListener(onClickListener);
-        findViewById(R.id.evalButton).setOnClickListener(onClickListener);
+        findViewById(R.id.showUserPostButton).setOnClickListener(onClickListener);
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        DocumentReference docRef_tutor = db.collection("users_tutor").document(user.getUid());
+        Intent intent = getIntent();
+        profileUid = intent.getStringExtra("profileUid");
+        DocumentReference docRef_tutor = db.collection("users").document(profileUid);
         docRef_tutor.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -65,7 +67,6 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                             Glide.with(TuteeToTutorProfileActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(avatarIv);
                         }
                         nickNameTv.setText(document.getData().get("nickName").toString());
-                        fieldTv.setText(document.getData().get("field").toString());
                         descriptionTv.setText(document.getData().get("introduction").toString());
                     } else {
                         Log.d(TAG, "No such document");
@@ -83,13 +84,18 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
             switch (v.getId()) {
                 // 튜티가 튜터에게 채팅 걸음(구현 필요)
                 case R.id.startChatButton:
+                     Intent profileIntent = new Intent(TuteeToTutorProfileActivity.this, ChatActivity.class);
+                     profileIntent.putExtra("hisUid", profileUid);
+                     startActivity(profileIntent);
                     break;
                 //
                 case R.id.reviewButton:
                     startActivityShortcut(ReviewTutorActivity.class);
                     break;
-                case R.id.evalButton:
-                    startActivityShortcut(EvalTutorActivity.class);
+                case R.id.showUserPostButton:
+                    Intent showPostIntent = new Intent(TuteeToTutorProfileActivity.this, PostFeedActivityUsers.class);
+                    showPostIntent.putExtra("uid", profileUid);
+                    startActivity(showPostIntent);
             }
         }
     };
