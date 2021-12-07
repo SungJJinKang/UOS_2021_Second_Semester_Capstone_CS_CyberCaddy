@@ -66,21 +66,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/fieldTv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            android:fontFamily="@font/roboto_black"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:text="분야"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/descriptionTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

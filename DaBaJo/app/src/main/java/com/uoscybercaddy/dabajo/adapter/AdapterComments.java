@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.ChatActivity;
+import com.uoscybercaddy.dabajo.activity.TuteeToTutorProfileActivity;
 import com.uoscybercaddy.dabajo.models.ModelComment;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.ModelUsers;
@@ -106,9 +107,27 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.MyHold
                 }
                 else{
                     // 댓글 누르면 채팅으로 넘어가게 수정
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+//                    builder.setTitle("채팅");
+//                    builder.setMessage(name+"와 채팅을 하시겠습니까?");
+//                    builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Toast.makeText(context, "취소", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                    builder.setPositiveButton("네", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Intent intent = new Intent(context, ChatActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.putExtra("hisUid", uid);
+//                            context.startActivity(intent);
+//                        }
+//                    });
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
-                    builder.setTitle("채팅");
-                    builder.setMessage(name+"와 채팅을 하시겠습니까?");
+                    builder.setTitle("프로필");
+                    builder.setMessage(name+"의 프로필을 보시겠습니까?");
                     builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -118,13 +137,13 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.MyHold
                     builder.setPositiveButton("네", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(context, ChatActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("hisUid", uid);
+                            Intent intent = new Intent(context, TuteeToTutorProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("profileUid", uid);
                             context.startActivity(intent);
                         }
                     });
-
                     builder.create().show();
+
 
 //                    Toast.makeText(context,"다른 사람의 댓글은 지울 수 없습니다.",Toast.LENGTH_SHORT).show();
 //                    원래 있었던 코드
