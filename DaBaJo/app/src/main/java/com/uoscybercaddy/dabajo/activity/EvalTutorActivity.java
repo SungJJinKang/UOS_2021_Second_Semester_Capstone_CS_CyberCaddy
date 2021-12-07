@@ -99,6 +99,9 @@ public class EvalTutorActivity extends AppCompatActivity {
             EvalData evalData = new EvalData(body, rating, uUid);
             db = FirebaseFirestore.getInstance();
             Map<String, Object> total = new HashMap<>();
+            // 저장 방식 개선 필요
+            // uid로 만들면 한사람 당 평가 한개씩밖에 안들어감
+            // 숫자방식으로 처리 필요
             db.collection("eval").document(tUid/*여기 tUid가 들어가야함*/).collection("rating_list").document(uUid).set(evalData)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
