@@ -153,7 +153,7 @@ public class EvalTutorActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.goBackButton:
-                    startActivityShortcut(TuteeToTutorProfileActivity.class);
+                    EvalTutorActivity.super.onBackPressed();
                     break;
                 case R.id.evalSubmitButton:
                     evalUpdate();
