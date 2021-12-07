@@ -26,6 +26,7 @@ import com.uoscybercaddy.dabajo.fragment.CategoryFragment;
 import com.uoscybercaddy.dabajo.fragment.ChatListFragment;
 import com.uoscybercaddy.dabajo.fragment.HomeFragment;
 import com.uoscybercaddy.dabajo.fragment.ProfileFragment;
+import com.uoscybercaddy.dabajo.fragment.UsersFragment;
 import com.uoscybercaddy.dabajo.notifications.Token;
 
 import java.util.Stack;
@@ -173,10 +174,10 @@ public class DashboardActivity extends AppCompatActivity {
                             currentFragmentFlag = 1;
                             //nav_category fragment transaction
                             return true;
-                        case R.id.nav_menu_chat:
-                            ChatListFragment fragment3= new ChatListFragment();
+                        case R.id.nav_menu_users:
+                            UsersFragment usersFragment= new UsersFragment();
                             FragmentTransaction ft3 = getSupportFragmentManager().beginTransaction();
-                            ft3.replace(R.id.content, fragment3, "");
+                            ft3.replace(R.id.content, usersFragment, "");
                             ft3.addToBackStack(null);
                             ft3.commit();
                             flagStack.push(currentFragmentFlag);
