@@ -264,7 +264,8 @@ public class PostDetailActivity extends AppCompatActivity {
             popupMenu.getMenu().add(Menu.NONE, 1, 0, "수정");
         }
         else {
-            popupMenu.getMenu().add(Menu.NONE, 2, 0, "채팅");
+            popupMenu.getMenu().add(Menu.NONE, 2,0,"프로필 보기");
+            popupMenu.getMenu().add(Menu.NONE, 3, 0, "채팅");
         }
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -284,6 +285,11 @@ public class PostDetailActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(id==2) {
+                    Intent intent = new Intent(PostDetailActivity.this, TuteeToTutorProfileActivity.class);
+                    intent.putExtra("profileUid",hisUid);
+                    startActivity(intent);
+                }
+                else if(id==3) {
                     Intent intent = new Intent(PostDetailActivity.this, ChatActivity.class);
                     intent.putExtra("hisUid",hisUid);
                     intent.putExtra("myUid", mUID);

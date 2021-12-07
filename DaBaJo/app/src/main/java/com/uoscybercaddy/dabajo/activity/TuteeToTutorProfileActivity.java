@@ -48,7 +48,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
 
         findViewById(R.id.startChatButton).setOnClickListener(onClickListener);
         findViewById(R.id.reviewButton).setOnClickListener(onClickListener);
-        findViewById(R.id.evalButton).setOnClickListener(onClickListener);
+        findViewById(R.id.showUserPostButton).setOnClickListener(onClickListener);
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -84,16 +84,18 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
             switch (v.getId()) {
                 // 튜티가 튜터에게 채팅 걸음(구현 필요)
                 case R.id.startChatButton:
-                     Intent intent = new Intent(TuteeToTutorProfileActivity.this, ChatActivity.class);
-                     intent.putExtra("hisUid", profileUid);
-                     startActivity(intent);
+                     Intent profileIntent = new Intent(TuteeToTutorProfileActivity.this, ChatActivity.class);
+                     profileIntent.putExtra("hisUid", profileUid);
+                     startActivity(profileIntent);
                     break;
                 //
                 case R.id.reviewButton:
                     startActivityShortcut(ReviewTutorActivity.class);
                     break;
-                case R.id.evalButton:
-                    startActivityShortcut(EvalTutorActivity.class);
+                case R.id.showUserPostButton:
+                    Intent showPostIntent = new Intent(TuteeToTutorProfileActivity.this, PostFeedActivityUsers.class);
+                    showPostIntent.putExtra("uid", profileUid);
+                    startActivity(showPostIntent);
             }
         }
     };
