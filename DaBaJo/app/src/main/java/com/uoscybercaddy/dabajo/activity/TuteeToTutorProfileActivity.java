@@ -105,7 +105,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                 case R.id.evalButton:
                     if(profileTutority.equals("튜터")) {
                         Intent evalIntent = new Intent(TuteeToTutorProfileActivity.this, EvalTutorActivity.class);
-                        evalIntent.putExtra("uid", profileUid);
+                        evalIntent.putExtra("tUid", profileUid);
                         startActivity(evalIntent);
                         break;
                     }

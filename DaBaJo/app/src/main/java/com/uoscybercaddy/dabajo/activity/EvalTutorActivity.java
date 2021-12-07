@@ -85,7 +85,7 @@ public class EvalTutorActivity extends AppCompatActivity {
         final float rating = ratingBar.getRating();
         final String uUid = user.getUid();
         // tutorID intent로 받기
-//        final String tUid = getIntent().getExtras().getString("tUid");
+        final String tUid = getIntent().getExtras().getString("tUid");
 
         progressDialog.setMessage("리뷰 업데이트중");
         progressDialog.show();
@@ -99,11 +99,11 @@ public class EvalTutorActivity extends AppCompatActivity {
             EvalData evalData = new EvalData(body, rating, uUid);
             db = FirebaseFirestore.getInstance();
             Map<String, Object> total = new HashMap<>();
-            db.collection("eval").document(uUid/*여기 tUid가 들어가야함*/).collection("rating_list").document(uUid).set(evalData)
+            db.collection("eval").document(tUid/*여기 tUid가 들어가야함*/).collection("rating_list").document(uUid).set(evalData)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            DocumentReference docRef = db.collection("eval").document(uUid/*여기 tUid가 들어가야함*/).collection("forAverage").document("total");
+                            DocumentReference docRef = db.collection("eval").document(tUid/*여기 tUid가 들어가야함*/).collection("forAverage").document("total");
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -141,7 +141,9 @@ public class EvalTutorActivity extends AppCompatActivity {
 
                             startToast("리뷰 등록 성공");
                             progressDialog.dismiss();
-                            startActivityShortcut(TuteeToTutorProfileActivity.class);
+                            Intent intent = new Intent(EvalTutorActivity.this, TuteeToTutorProfileActivity.class);
+                            intent.putExtra("profileUid",tUid);
+                            startActivity(intent);
                             finish();
                         }
                     });
