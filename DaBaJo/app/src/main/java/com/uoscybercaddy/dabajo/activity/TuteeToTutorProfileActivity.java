@@ -1,5 +1,7 @@
 package com.uoscybercaddy.dabajo.activity;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +34,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
     FirebaseFirestore db;
     ImageView avatarIv;
     TextView nickNameTv, descriptionTv, fieldTv;
-    String profileUid, profileTutority;
+    String profileUid, profileTutority, myName, myUid;
     ActionBar actionBar;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +55,13 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
+
+
+
         db = FirebaseFirestore.getInstance();
         Intent intent = getIntent();
         profileUid = intent.getStringExtra("profileUid");
+//        myName = intent.getStringExtra("myName");
         DocumentReference docRef_tutor = db.collection("users").document(profileUid);
         docRef_tutor.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -80,6 +86,26 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if(user!=null) {
+            String clientUID = user.getUid();
+            DocumentReference docRef = db.collection("users").document(clientUID);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            myName = document.getData().get("nickName").toString();
+                        } else {
+                            Log.d(TAG, " ");
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -96,6 +122,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                 case R.id.reviewButton:
                     Intent reviewIntent = new Intent(TuteeToTutorProfileActivity.this, ReviewTutorActivity.class);
                     reviewIntent.putExtra("tutorUid", profileUid);
+                    reviewIntent.putExtra("myName", myName);
                     startActivity(reviewIntent);
                     break;
                 case R.id.showUserPostButton:
@@ -107,6 +134,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                     if(profileTutority.equals("튜터")) {
                         Intent evalIntent = new Intent(TuteeToTutorProfileActivity.this, EvalTutorActivity.class);
                         evalIntent.putExtra("tUid", profileUid);
+                        evalIntent.putExtra("myName", myName);
                         startActivity(evalIntent);
                         break;
                     }
