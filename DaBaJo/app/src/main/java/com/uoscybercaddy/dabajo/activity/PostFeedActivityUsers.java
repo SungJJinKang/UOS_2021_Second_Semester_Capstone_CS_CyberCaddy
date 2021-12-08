@@ -95,7 +95,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
         checkUserStatus();
         intent = getIntent();
         uid = intent.getStringExtra("uid");
-
+        Log.e("uid : ",""+uid);
         goBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -44,6 +44,7 @@ import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.AddPostActivity;
 import com.uoscybercaddy.dabajo.activity.PostDetailActivity;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
+import com.uoscybercaddy.dabajo.activity.PostLikedByActivity;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.URLS;
 
@@ -226,6 +227,16 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PostDetailActivity.class);
+                intent.putExtra("pId", pId);
+                intent.putExtra("pTutortuty",pTutortuty);
+                intent.putExtra("pCategory",pCategory);
+                context.startActivity(intent);
+            }
+        });
+        holder.pLikesTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PostLikedByActivity.class);
                 intent.putExtra("pId", pId);
                 intent.putExtra("pTutortuty",pTutortuty);
                 intent.putExtra("pCategory",pCategory);

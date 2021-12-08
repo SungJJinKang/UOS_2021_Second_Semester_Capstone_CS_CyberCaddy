@@ -175,6 +175,16 @@ public class PostDetailActivity extends AppCompatActivity {
 
             }
         });
+        pLikesTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PostDetailActivity.this, PostLikedByActivity.class);
+                intent.putExtra("pId", pId);
+                intent.putExtra("pTutortuty",pTutortuty);
+                intent.putExtra("pCategory",pCategory);
+                startActivity(intent);
+            }
+        });
         goBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

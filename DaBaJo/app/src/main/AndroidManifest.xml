@@ -17,9 +17,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DaBaJo">
         <activity
-            android:name=".activity.PostDetailActivity"
+            android:name=".activity.PostLikedByActivity"
             android:theme="@style/AppThemeNo"
             android:exported="false" />
+        <activity
+            android:name=".activity.PostDetailActivity"
+            android:exported="false"
+            android:theme="@style/AppThemeNo" />
         <activity
             android:name=".activity.PostFeedActivityUsers"
             android:exported="false"
@@ -46,15 +50,15 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <provider
-            android:authorities="com.uoscybercaddy.dabajo.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.uoscybercaddy.dabajo.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true"
-            >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/paths"/>
+                android:resource="@xml/paths" />
         </provider>
 
         <activity
@@ -66,20 +70,18 @@
             android:exported="false" />
         <activity
             android:name=".activity.DashboardActivity"
-            android:theme="@style/AppThemeNo"
-            android:exported="false">
-        </activity>
-
+            android:exported="false"
+            android:theme="@style/AppThemeNo"></activity>
         <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.SplashActivity"
             android:theme="@style/SplashActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true" />
