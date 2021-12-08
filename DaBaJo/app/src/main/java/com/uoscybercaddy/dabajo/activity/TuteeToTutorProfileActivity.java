@@ -49,6 +49,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
         findViewById(R.id.startChatButton).setOnClickListener(onClickListener);
         findViewById(R.id.reviewButton).setOnClickListener(onClickListener);
         findViewById(R.id.showUserPostButton).setOnClickListener(onClickListener);
+        findViewById(R.id.showCommentPostButton).setOnClickListener(onClickListener);
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -96,6 +97,13 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                     Intent showPostIntent = new Intent(TuteeToTutorProfileActivity.this, PostFeedActivityUsers.class);
                     showPostIntent.putExtra("uid", profileUid);
                     startActivity(showPostIntent);
+                    break;
+                case R.id.showCommentPostButton:
+                    Intent intent = new Intent(TuteeToTutorProfileActivity.this, PostFeedActivityUsers.class);
+                    intent.putExtra("uid", profileUid);
+                    intent.putExtra("OnlyCommnets", true);
+                    startActivity(intent);
+                    break;
             }
         }
     };

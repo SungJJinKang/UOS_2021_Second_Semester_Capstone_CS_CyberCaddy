@@ -148,7 +148,11 @@ public class PostFeedActivityUsers extends AppCompatActivity {
                             // 결과 출력
                             List<String> catgs = new ArrayList<String>();
                             categories = new ArrayList<String>();
-                            catgs.add("카테고리 선택 (전체)");
+                            if(filter.equals("commentsCount")){
+                                catgs.add("카테고리 선택 : (댓글 수)");
+                            }else{
+                                catgs.add("카테고리 선택 (게시물 수)");
+                            }
                             for(Map.Entry<String, Long> entry : list_entries) {
                                 categories.add(entry.getKey()+"");
                                 catgs.add(entry.getKey() + " : " + entry.getValue()+ " 개");
@@ -497,6 +501,7 @@ public class PostFeedActivityUsers extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        this.item = item;
         int id = item.getItemId();
         if(id== R.id.action_logout){
             firebaseAuth.signOut();

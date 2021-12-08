@@ -100,6 +100,7 @@ public class PostDetailActivity extends AppCompatActivity {
     List<ModelComment> commentList;
     AdapterComments adapterComments;
     List<URLS> pImage;
+    HashMap<String, Integer> pCommenters;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -238,6 +239,7 @@ public class PostDetailActivity extends AppCompatActivity {
                             commentList.clear();
                             ModelPost modelPost = snapshot.toObject(ModelPost.class);
                             Integer pComments = modelPost.getpComments();
+                            pCommenters = modelPost.getpCommenters();
                             pCommentsTv.setText((pComments)+" 댓글");
                             HashMap<String, HashMap<String, Object>> Comments = modelPost.getComments();
                             if(Comments != null){
@@ -283,7 +285,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 if( id ==0 ){
                     //삭제
-                    beginDelete(pId, arrayCount, pCategory, pTutortuty, hisUid);
+                    beginDelete(pId, arrayCount, pCategory, pTutortuty, hisUid, pCommenters);
                 }
                 else if( id == 1 ){
                     //수정
@@ -311,9 +313,29 @@ public class PostDetailActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
-    private void beginDelete(String pId, Integer arrayCount, String pCategory, String pTutortuty, String hisUid) {
+    private void beginDelete(String pId, Integer arrayCount, String pCategory, String pTutortuty, String hisUid, HashMap<String, Integer> pCommenters) {
         String categoriesCount = "categoriesCount."+pCategory;
+        String commentsCount = "commentsCount."+pCategory;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        pCommenters.forEach((key,value)->{
+            FirebaseFirestore.getInstance().collection("users").document(key)
+                    .update(
+                            commentsCount, FieldValue.increment(-(value))
+                    )
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, ".update(categoriesCount, FieldValue.increment(-1)\n)");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating document"+".update(categoriesCount, FieldValue.increment(-1)\n)", e);
+                        }
+                    });
+        });
         db.collection("users").document(hisUid)
                 .update(
                         categoriesCount, FieldValue.increment(-1)
@@ -328,21 +350,6 @@ public class PostDetailActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error updating document"+".update(categoriesCount, FieldValue.increment(-1)\n)", e);
-                    }
-                });
-        Map<String,Object> updates = new HashMap<>();
-        updates.put("comments."+pTutortuty+"."+pCategory+"."+pId, FieldValue.delete());
-        db.collection("users").document(hisUid).update(updates)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "updates.put(\"comments.\"+pTutortuty+\".\"+pCategory+\".\"+pId, FieldValue.delete());");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating document"+"updates.put(\"comments.\"+pTutortuty+\".\"+pCategory+\".\"+pId, FieldValue.delete());", e);
                     }
                 });
         if(arrayCount == 0){
@@ -563,8 +570,6 @@ public class PostDetailActivity extends AppCompatActivity {
     private void updateCommentCount() {
         mProcessComment = true;
         if(mProcessComment){
-
-
             FirebaseFirestore.getInstance().collection("Posts")
                     .document(pTutortuty).collection(pCategory).document(pId)
                     .update("pComments", FieldValue.increment(1))

@@ -186,6 +186,11 @@ public class AdapterComments extends RecyclerView.Adapter<AdapterComments.MyHold
                         HashMap<String, Integer> commenter = modelPost.getpCommenters();
                         if(commenter.get(mUID)<2){
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            String commentsCount = "commentsCount." + pCategory;
+                            FirebaseFirestore.getInstance().collection("users").document(mUID)
+                                    .update(
+                                            commentsCount, FieldValue.increment(-1)
+                                    );
                             Map<String,Object> updates1 = new HashMap<>();
                             updates1.put("comments."+pTutortuty+"."+pCategory+"."+pId, FieldValue.delete());
                             db.collection("users").document(mUID).update(updates1)

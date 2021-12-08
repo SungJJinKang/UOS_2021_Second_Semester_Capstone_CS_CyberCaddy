@@ -45,6 +45,7 @@ import com.uoscybercaddy.dabajo.activity.AddPostActivity;
 import com.uoscybercaddy.dabajo.activity.PostDetailActivity;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
 import com.uoscybercaddy.dabajo.activity.PostLikedByActivity;
+import com.uoscybercaddy.dabajo.activity.TuteeToTutorProfileActivity;
 import com.uoscybercaddy.dabajo.models.ModelPost;
 import com.uoscybercaddy.dabajo.models.URLS;
 
@@ -98,6 +99,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         Integer pLikes = postList.get(position).getpLikes();
         List<String> pLikers= postList.get(position).getpLikers();
         Integer pComments = postList.get(position).getpComments();
+        HashMap<String, Integer> pCommenters = postList.get(position).getpCommenters();
 
         if(pImage == null){
             holder.viewPager2.setVisibility(View.GONE);
@@ -157,7 +159,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "클릭 !!! ");
-                showMoreOptions(holder.moreBtn, uid, myUid, pId, pImage, arrayCount, pCategory, pTutortuty);
+                showMoreOptions(holder.moreBtn, uid, myUid, pId, pImage, arrayCount, pCategory, pTutortuty, pCommenters);
             }
         });
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
@@ -265,9 +267,12 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
             holder.profileLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, PostFeedActivityUsers.class);
-                    intent.putExtra("uid",uid);
+                    Intent intent = new Intent(context, TuteeToTutorProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("profileUid", uid);
                     context.startActivity(intent);
+                    //Intent intent = new Intent(context, PostFeedActivityUsers.class);
+                    //intent.putExtra("uid",uid);
+                    //context.startActivity(intent);
                 }
             });
         }
@@ -328,7 +333,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         });
     }
 
-    private void showMoreOptions(ImageButton moreBtn, String uid, String myUid, String pId, List<URLS> pImage,int arrayCount,String pCategory,String pTutortuty ) {
+    private void showMoreOptions(ImageButton moreBtn, String uid, String myUid, String pId, List<URLS> pImage,int arrayCount,String pCategory,String pTutortuty ,HashMap<String, Integer> pCommenters) {
         PopupMenu popupMenu = new PopupMenu(context ,moreBtn, Gravity.END);
         
         if(uid.equals(myUid)){
@@ -342,7 +347,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                 int id = item.getItemId();
                 if( id ==0 ){
                     //삭제
-                    beginDelete(pId, arrayCount, pCategory, pTutortuty, uid);
+                    beginDelete(pId, arrayCount, pCategory, pTutortuty, uid, pCommenters);
                 }
                 else if( id == 1 ){
                     //수정
@@ -366,26 +371,42 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
         popupMenu.show();
     }
 
-    private void beginDelete(String pId, int arrayCount,String pCategory,String pTutortuty, String uid) {
+    private void beginDelete(String pId, int arrayCount,String pCategory,String pTutortuty, String uid, HashMap<String, Integer> pCommenters) {
         String categoriesCount = "categoriesCount."+pCategory;
+        String commentsCount = "commentsCount."+pCategory;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        pCommenters.forEach((key,value)->{
+            FirebaseFirestore.getInstance().collection("users").document(key)
+                    .update(
+                            commentsCount, FieldValue.increment(-(value))
+                    )
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, ".update(categoriesCount, FieldValue.increment(-1)\n)");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating document"+".update(categoriesCount, FieldValue.increment(-1)\n)", e);
+                        }
+                    });
+        });
+
         db.collection("users").document(uid)
                 .update(
                         categoriesCount, FieldValue.increment(-1)
-                );
-        Map<String,Object> updates = new HashMap<>();
-        updates.put("comments."+pTutortuty+"."+pCategory+"."+pId, FieldValue.delete());
-        db.collection("users").document(uid).update(updates)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "updates.put(\"comments.\"+pTutortuty+\".\"+pCategory+\".\"+pId, FieldValue.delete());");
-                    }
-                })
+                ).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, ".update(categoriesCount, FieldValue.increment(-1)\n)");
+            }
+        })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating document"+"updates.put(\"comments.\"+pTutortuty+\".\"+pCategory+\".\"+pId, FieldValue.delete());", e);
+                        Log.w(TAG, "Error updating document"+".update(categoriesCount, FieldValue.increment(-1)\n)", e);
                     }
                 });
         if(arrayCount == 0){
