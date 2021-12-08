@@ -82,7 +82,7 @@ public class ReviewTutorActivity extends AppCompatActivity {
                             Glide.with(ReviewTutorActivity.this).load(document.getData().get("photoUrl")).centerCrop().override(500).into(avatarIv);
                         }
                         nickNameTv.setText(document.getData().get("nickName").toString());
-                        fieldTv.setText(document.getData().get("field").toString());
+//                        fieldTv.setText(document.getData().get("field").toString());
                         descriptionTv.setText(document.getData().get("introduction").toString());
                     } else {
                         Log.d(TAG, "No such document");

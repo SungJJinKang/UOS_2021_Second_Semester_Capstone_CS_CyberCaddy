@@ -58,6 +58,7 @@ public class EvalTutorActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         findViewById(R.id.goBackButton).setOnClickListener(onClickListener);
         findViewById(R.id.evalSubmitButton).setOnClickListener(onClickListener);
@@ -86,7 +87,7 @@ public class EvalTutorActivity extends AppCompatActivity {
         final String body = postBody.getText().toString().trim();
         final float rating = ratingBar.getRating();
         final String uUid = user.getUid();
-        DocumentReference docRef_tutor = db.collection("users").document(user.getUid());
+        DocumentReference docRef_tutor = db.collection("users").document(uUid);
         docRef_tutor.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -118,7 +119,7 @@ public class EvalTutorActivity extends AppCompatActivity {
         }
         else {
             EvalData evalData = new EvalData(body, rating, uUid, nickName);
-            db = FirebaseFirestore.getInstance();
+
             Map<String, Object> total = new HashMap<>();
             // 저장 방식 개선 필요
             // uid로 만들면 한사람 당 평가 한개씩밖에 안들어감
