@@ -144,14 +144,17 @@ public class ReviewTutorActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Double ratingEach;
-
+                    String nickName;
+                    String body;
                     for (QueryDocumentSnapshot document : task.getResult())
                     {
                         Log.d(TAG, document.getId() + " => " + document.getData().get("body"));
                         // 튜터를 평가한 한 사람의 rating 점수 꺼내오기
                         ratingEach = Double.parseDouble(document.getData().get("rating").toString());
+                        nickName = document.getData().get("nickname").toString();
+                        body = document.getData().get("body").toString();
                         // rating_list에서 rating 점수, 평가한 튜티 닉네임, 평가내용 꺼내와서 arrayList에 추가
-                        tmp.add(new ModelEvalList(ratingEach, document.getData().get("nickName").toString(), document.getData().get("body").toString()));
+                        tmp.add(new ModelEvalList(ratingEach, nickName, body));
                     }
                     // 평가리스트 카드뷰 담은 recyclerView 실행
                     recyclerView.setAdapter(new AdapterEvalList(tmp));
