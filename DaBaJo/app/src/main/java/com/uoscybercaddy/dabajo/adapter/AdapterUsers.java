@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.uoscybercaddy.dabajo.activity.PostFeedActivityUsers;
+import com.uoscybercaddy.dabajo.activity.TuteeToTutorProfileActivity;
 import com.uoscybercaddy.dabajo.models.ModelUsers;
 import com.uoscybercaddy.dabajo.R;
 import com.uoscybercaddy.dabajo.activity.ChatActivity;
@@ -86,9 +87,12 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHolder>{
                     public void onClick(DialogInterface dialog, int which) {
                         if(which == 0){
                             //프로필
-                            Intent intent = new Intent(context, PostFeedActivityUsers.class);
-                            intent.putExtra("uid",hisUID);
+                            Intent intent = new Intent(context, TuteeToTutorProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("profileUid", hisUID);
                             context.startActivity(intent);
+                            //Intent intent = new Intent(context, PostFeedActivityUsers.class);
+                            //intent.putExtra("uid",hisUID);
+                            //context.startActivity(intent);
                         }
                         if(which == 1){
                             //채팅
