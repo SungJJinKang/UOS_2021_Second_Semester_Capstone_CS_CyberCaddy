@@ -4,12 +4,14 @@ public class EvalData {
     private String body;
     private float rating;
     private String tutee_id;
+    // nickname 부분 추가
     private String nickname;
 
     public EvalData(String body, float rating,String tutee_id, String nickname) {
         this.body = body;
         this.rating = rating;
         this.tutee_id = tutee_id;
+        // nickname 부분 추가
         this.nickname = nickname;
     }
 
@@ -31,6 +33,7 @@ public class EvalData {
     public void setTutee_id() {
         this.tutee_id = tutee_id;
     }
+    // nickname 부분 추가
     public String getNickname() {
         return this.nickname;
     }

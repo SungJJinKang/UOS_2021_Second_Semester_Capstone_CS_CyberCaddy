@@ -46,6 +46,9 @@ public class EvalTutorActivity extends AppCompatActivity {
     RatingBar ratingBar;
     TextView ratingScore;
     EditText postBody;
+
+    // 닉네임을 받와아야하는데 final 형태로하면 에러가 생겨서 부득이하게 밖으로 뺌, 이것때매 오류 생길 가능성 높음
+    // IDE에서 시키는 대로 배열로 만들어지만 값이 안받아지는 것 같아서 이 방식 선택
     String nickName;
 
     ProgressDialog progressDialog;
@@ -87,7 +90,11 @@ public class EvalTutorActivity extends AppCompatActivity {
         final String body = postBody.getText().toString().trim();
         final float rating = ratingBar.getRating();
         final String uUid = user.getUid();
+
         DocumentReference docRef_tutor = db.collection("users").document(uUid);
+
+        // 닉네임을 user의 uid를 통해 users에서 받아오는 작업
+
         docRef_tutor.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -95,6 +102,7 @@ public class EvalTutorActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        // user 닉네임을 users에서 받아와서 nickName 변수에 할당
                         nickName = document.getData().get("nickName").toString();
                     } else {
                         Log.d(TAG, "No such document");
@@ -104,7 +112,6 @@ public class EvalTutorActivity extends AppCompatActivity {
                 }
             }
         });
-
 
         // tutorID intent로 받기
         final String tUid = getIntent().getExtras().getString("tUid");
@@ -118,6 +125,7 @@ public class EvalTutorActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
         else {
+            //////////////// 여기 바로 아래 코드 body, rating, uUid에서 nickName 추가함, 따라서 EvalData 모델도 nickName 추가
             EvalData evalData = new EvalData(body, rating, uUid, nickName);
 
             Map<String, Object> total = new HashMap<>();

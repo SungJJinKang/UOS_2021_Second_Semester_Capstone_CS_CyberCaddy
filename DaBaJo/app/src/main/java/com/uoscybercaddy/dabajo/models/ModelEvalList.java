@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 
 public class ModelEvalList {
     String body;
+    // name은 nickname과 같음
     String name;
     Double rating;
 
