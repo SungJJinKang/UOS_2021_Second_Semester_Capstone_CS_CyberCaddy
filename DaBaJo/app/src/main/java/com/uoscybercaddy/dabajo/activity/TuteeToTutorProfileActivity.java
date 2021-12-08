@@ -40,7 +40,6 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tutee_to_tutor_profile);
         actionBar = getSupportActionBar();
         actionBar.hide();
-        firebaseAuth = FirebaseAuth.getInstance();
 
         avatarIv = (ImageView) findViewById(R.id.avatarIv);
         nickNameTv = (TextView) findViewById(R.id.nickNameTv);
@@ -72,7 +71,7 @@ public class TuteeToTutorProfileActivity extends AppCompatActivity {
                         descriptionTv.setText(document.getData().get("introduction").toString());
                         if(document.getData().get("tutortuty").toString()!=null) {
                             profileTutority = document.getData().get("tutortuty").toString();
-                        }
+                       }
                     } else {
                         Log.d(TAG, "No such document");
                     }

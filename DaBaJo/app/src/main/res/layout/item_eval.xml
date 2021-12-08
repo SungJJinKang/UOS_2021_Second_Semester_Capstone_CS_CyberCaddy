@@ -15,30 +15,50 @@
         android:layout_margin="2dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/item_comment_writer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            tools:text="Writer" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <RatingBar
+                android:id="@+id/ratingBarEval"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progressBackgroundTint="@color/grey"
+                android:progressTint="@color/star"
+                android:rating="0.0"
+                android:secondaryProgressTint="#00000000"
+                android:stepSize='0.5' />
+
+            <TextView
+                android:id="@+id/item_eval_writer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="170dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/roboto_black"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:text="Writer" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/item_comment_contents"
+            android:id="@+id/item_eval_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/roboto_black"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             tools:text="Contents" />
-
-        <TextView
-            android:id="@+id/item_comment_createdAt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="createdAt" />
+        />
 
         <!--        <TextView-->
         <!--            android:id="@+id/item_comment_createdAt"-->

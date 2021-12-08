@@ -4,13 +4,13 @@ public class EvalData {
     private String body;
     private float rating;
     private String tutee_id;
-//    private String tutor_id;
+    private String nickname;
 
-    public EvalData(String body, float rating,String tutee_id/*, String tutor_id*/) {
+    public EvalData(String body, float rating,String tutee_id, String nickname) {
         this.body = body;
         this.rating = rating;
         this.tutee_id = tutee_id;
-//        this.tutor_id = tutor_id;
+        this.nickname = nickname;
     }
 
     public String getBody(){
@@ -31,11 +31,11 @@ public class EvalData {
     public void setTutee_id() {
         this.tutee_id = tutee_id;
     }
-//    public String getTutor_id() {
-//        return this.tutor_id;
-//    }
-//    public void setTutor_id() {
-//        this.tutee_id = tutor_id;
-//    }
+    public String getNickname() {
+        return this.nickname;
+    }
+    public void setNickname() {
+        this.nickname = nickname;
+    }
 
 }

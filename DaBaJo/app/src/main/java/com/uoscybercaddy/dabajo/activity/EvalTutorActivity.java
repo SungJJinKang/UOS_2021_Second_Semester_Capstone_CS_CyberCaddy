@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,6 +46,7 @@ public class EvalTutorActivity extends AppCompatActivity {
     RatingBar ratingBar;
     TextView ratingScore;
     EditText postBody;
+    String nickName;
 
     ProgressDialog progressDialog;
 
@@ -84,6 +86,25 @@ public class EvalTutorActivity extends AppCompatActivity {
         final String body = postBody.getText().toString().trim();
         final float rating = ratingBar.getRating();
         final String uUid = user.getUid();
+        DocumentReference docRef_tutor = db.collection("users").document(user.getUid());
+        docRef_tutor.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        nickName = document.getData().get("nickName").toString();
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+
         // tutorID intent로 받기
         final String tUid = getIntent().getExtras().getString("tUid");
 
@@ -96,7 +117,7 @@ public class EvalTutorActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
         else {
-            EvalData evalData = new EvalData(body, rating, uUid);
+            EvalData evalData = new EvalData(body, rating, uUid, nickName);
             db = FirebaseFirestore.getInstance();
             Map<String, Object> total = new HashMap<>();
             // 저장 방식 개선 필요
