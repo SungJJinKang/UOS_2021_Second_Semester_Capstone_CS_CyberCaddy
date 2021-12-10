@@ -292,8 +292,6 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 progressDialog.dismiss();
-                                FirebaseUser user = mAuth.getCurrentUser();
-
                                 startToast("로그인 성공");
                                 // 튜티가 로그인할때
                                 if (!isTutorCheckBox.isChecked()) {

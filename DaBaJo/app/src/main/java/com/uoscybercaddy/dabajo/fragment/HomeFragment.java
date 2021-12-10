@@ -1,5 +1,6 @@
 package com.uoscybercaddy.dabajo.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -18,6 +19,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +57,7 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private AdView mAdView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -123,6 +130,12 @@ public class HomeFragment extends Fragment {
 
         checkUserStatus();
 
+        MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
 
         IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
     }
@@ -145,6 +158,7 @@ public class HomeFragment extends Fragment {
         IfMemberInfoDataNotExist_StartMemerInfoInitActivity();
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -157,6 +171,10 @@ public class HomeFragment extends Fragment {
         buttons[1] = (Button)view.findViewById(R.id.buttonArtPhy);
         buttons[2] = (Button)view.findViewById(R.id.buttonHealth);
         buttons[3] = (Button)view.findViewById(R.id.buttonEdu);
+
+        mAdView = (AdView)view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         for(int i = 0 ; i < 4 ; i++) {
             int finalI = i;
@@ -195,13 +213,13 @@ public class HomeFragment extends Fragment {
                 //startActivity(intent);
             }
         });
-        showUsersTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UsersFragment usersFragment= new UsersFragment();
-                ((DashboardActivity)getActivity()).replaceFragment(usersFragment);
-            }
-        });
+//        showUsersTv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                UsersFragment usersFragment= new UsersFragment();
+//                ((DashboardActivity)getActivity()).replaceFragment(usersFragment);
+//            }
+//        });
         showChattingListTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

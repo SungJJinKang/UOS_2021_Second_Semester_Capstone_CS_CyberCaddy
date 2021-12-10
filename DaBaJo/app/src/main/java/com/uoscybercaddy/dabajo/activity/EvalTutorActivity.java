@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,6 +47,10 @@ public class EvalTutorActivity extends AppCompatActivity {
     TextView ratingScore;
     EditText postBody;
 
+    // 닉네임을 받와아야하는데 final 형태로하면 에러가 생겨서 부득이하게 밖으로 뺌, 이것때매 오류 생길 가능성 높음
+    // IDE에서 시키는 대로 배열로 만들어지만 값이 안받아지는 것 같아서 이 방식 선택
+    String nickName, tUid;
+
     ProgressDialog progressDialog;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +61,11 @@ public class EvalTutorActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
+        // tutorID intent로 받기
+        tUid = getIntent().getExtras().getString("tUid");
+        nickName = getIntent().getExtras().getString("myName");
         findViewById(R.id.goBackButton).setOnClickListener(onClickListener);
         findViewById(R.id.evalSubmitButton).setOnClickListener(onClickListener);
 
@@ -84,8 +93,30 @@ public class EvalTutorActivity extends AppCompatActivity {
         final String body = postBody.getText().toString().trim();
         final float rating = ratingBar.getRating();
         final String uUid = user.getUid();
-        // tutorID intent로 받기
-//        final String tUid = getIntent().getExtras().getString("tUid");
+
+//        DocumentReference docRef_tutor = db.collection("users").document(uUid);
+
+        // 닉네임을 user의 uid를 통해 users에서 받아오는 작업
+
+//        docRef_tutor.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document.exists()) {
+//                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                        // user 닉네임을 users에서 받아와서 nickName 변수에 할당
+//                        nickName = document.getData().get("nickName").toString();
+//                    } else {
+//                        Log.d(TAG, "No such document");
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                }
+//            }
+//        });
+
+
 
         progressDialog.setMessage("리뷰 업데이트중");
         progressDialog.show();
@@ -96,14 +127,18 @@ public class EvalTutorActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
         else {
-            EvalData evalData = new EvalData(body, rating, uUid);
-            db = FirebaseFirestore.getInstance();
+            //////////////// 여기 바로 아래 코드 body, rating, uUid에서 nickName 추가함, 따라서 EvalData 모델도 nickName 추가
+            EvalData evalData = new EvalData(body, rating, uUid, nickName);
+
             Map<String, Object> total = new HashMap<>();
-            db.collection("eval").document(uUid/*여기 tUid가 들어가야함*/).collection("rating_list").document(uUid).set(evalData)
+            // 저장 방식 개선 필요
+            // uid로 만들면 한사람 당 평가 한개씩밖에 안들어감
+            // 숫자방식으로 처리 필요
+            db.collection("eval").document(tUid/*여기 tUid가 들어가야함*/).collection("rating_list").document(uUid).set(evalData)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            DocumentReference docRef = db.collection("eval").document(uUid/*여기 tUid가 들어가야함*/).collection("forAverage").document("total");
+                            DocumentReference docRef = db.collection("eval").document(tUid/*여기 tUid가 들어가야함*/).collection("forAverage").document("total");
                             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -131,6 +166,22 @@ public class EvalTutorActivity extends AppCompatActivity {
                                                         }
                                                     });
                                         } else {
+                                            Map<String, Object> total = new HashMap<>();
+                                            total.put("raterCnt", 1);
+                                            total.put("totalRating", rating);
+                                            docRef.set(total)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w(TAG, "Error writing document", e);
+                                                        }
+                                                    });
                                             Log.d(TAG, "No such document");
                                         }
                                     } else {
@@ -141,7 +192,10 @@ public class EvalTutorActivity extends AppCompatActivity {
 
                             startToast("리뷰 등록 성공");
                             progressDialog.dismiss();
-                            startActivityShortcut(TuteeToTutorProfileActivity.class);
+                            Intent intent = new Intent(EvalTutorActivity.this, TuteeToTutorProfileActivity.class);
+                            intent.putExtra("profileUid",tUid);
+                            intent.putExtra("myName", nickName);
+                            startActivity(intent);
                             finish();
                         }
                     });
@@ -153,7 +207,7 @@ public class EvalTutorActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.goBackButton:
-                    startActivityShortcut(TuteeToTutorProfileActivity.class);
+                    EvalTutorActivity.super.onBackPressed();
                     break;
                 case R.id.evalSubmitButton:
                     evalUpdate();

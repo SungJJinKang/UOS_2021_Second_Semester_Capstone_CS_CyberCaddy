@@ -298,6 +298,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 }
                 else if(id==2) {
                     Intent intent = new Intent(PostDetailActivity.this, TuteeToTutorProfileActivity.class);
+                    intent.putExtra("myName", myName);
                     intent.putExtra("profileUid",hisUid);
                     startActivity(intent);
                 }

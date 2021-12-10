@@ -31,31 +31,31 @@ public class MainActivity extends FragmentActivity {
         if(user == null)
         {
             startActivityShortcut(LoginActivity.class);
-        }else{
-            //임시startActivityShortcut(CameraActivity.class);
-            //startActivityShortcut(MemberinfoinitActivity.class);//임시
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            DocumentReference docRef = db.collection("users").document(user.getUid());
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if(document != null){
-                            if (document.exists()) {
-                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-
-                            } else {
-                                Log.d(TAG, "No such document");
-                                startActivityShortcut(MemberinfoinitActivity.class);
-                            }
-                        }
-
-                    } else {
-                        Log.d(TAG, "get failed with ", task.getException());
-                    }
-                }
-            });
+//        }else{
+//            //임시startActivityShortcut(CameraActivity.class);
+//            //startActivityShortcut(MemberinfoinitActivity.class);//임시
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            DocumentReference docRef = db.collection("users").document(user.getUid());
+//            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        if(document != null){
+//                            if (document.exists()) {
+//                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//
+//                            } else {
+//                                Log.d(TAG, "No such document");
+//                                startActivityShortcut(MemberinfoinitActivity.class);
+//                            }
+//                        }
+//
+//                    } else {
+//                        Log.d(TAG, "get failed with ", task.getException());
+//                    }
+//                }
+//            });
             /*
             if (user != null) {
                 for (UserInfo profile : user.getProviderData()) {
@@ -90,7 +90,6 @@ public class MainActivity extends FragmentActivity {
         findViewById(R.id.gotoFeedButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoWritePost).setOnClickListener(onClickListener);
         findViewById(R.id.gotoPostFeed).setOnClickListener(onClickListener);
-
         findViewById(R.id.gotoTuteeToTutorProfile).setOnClickListener(onClickListener);
 
     }

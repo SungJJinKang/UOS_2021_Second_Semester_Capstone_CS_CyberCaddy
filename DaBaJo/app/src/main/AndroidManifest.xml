@@ -10,6 +10,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -75,7 +76,8 @@
         <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.SplashActivity"
-            android:theme="@style/SplashActivityTheme">
+            android:theme="@style/SplashActivityTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -98,6 +100,14 @@
         <activity android:name=".activity.TuteeToTutorProfileActivity" />
         <activity android:name=".activity.ReviewTutorActivity" />
         <activity android:name=".activity.EvalTutorActivity" />
+
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1548910834824140~9171595700"/>
+
+
+
     </application>
 
 </manifest>
