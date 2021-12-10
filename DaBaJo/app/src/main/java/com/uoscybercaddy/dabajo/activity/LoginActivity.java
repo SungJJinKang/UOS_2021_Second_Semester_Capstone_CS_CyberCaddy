@@ -42,6 +42,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.uoscybercaddy.dabajo.R;
 
@@ -295,12 +296,49 @@ public class LoginActivity extends AppCompatActivity {
                                 startToast("로그인 성공");
                                 // 튜티가 로그인할때
                                 if (!isTutorCheckBox.isChecked()) {
-                                    startDashboardActivity();;
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    DocumentReference washingtonRef = FirebaseFirestore.getInstance()
+                                            .collection("users").document(user.getUid());
+                                    washingtonRef
+                                            .update("tutortuty", "튜티")
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error updating document", e);
+                                                }
+                                            });
+                                    startDashboardActivity();
                                     finish();
                                 }
                                 // 튜터가 로그인할때
                                 else {
-                                    startDashboardActivityTutor();
+                                    //startDashboardActivityTutor();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    DocumentReference washingtonRef = FirebaseFirestore.getInstance()
+                                            .collection("users").document(user.getUid());
+                                    washingtonRef
+                                            .update("tutortuty", "튜터")
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error updating document", e);
+                                                }
+                                            });
+
+                                    startDashboardActivity();
+
                                     finish();
                                 }
                             } else {

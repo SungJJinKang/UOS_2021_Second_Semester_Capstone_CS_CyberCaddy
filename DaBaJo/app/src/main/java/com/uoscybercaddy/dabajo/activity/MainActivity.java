@@ -82,6 +82,8 @@ public class MainActivity extends FragmentActivity {
                 }
             }
             */
+        }else{
+            startActivityShortcut(DashboardActivity.class);
         }
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
@@ -97,7 +99,7 @@ public class MainActivity extends FragmentActivity {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null){
             //user is signed in stay here
-
+            startActivityShortcut(DashboardActivity.class);
         }else{
             //user not signed in, go to loginAcitivity
             startActivityShortcut(LoginActivity.class);
