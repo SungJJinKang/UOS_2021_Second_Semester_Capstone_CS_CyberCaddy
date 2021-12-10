@@ -213,13 +213,13 @@ public class HomeFragment extends Fragment {
                 //startActivity(intent);
             }
         });
-        showUsersTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UsersFragment usersFragment= new UsersFragment();
-                ((DashboardActivity)getActivity()).replaceFragment(usersFragment);
-            }
-        });
+//        showUsersTv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                UsersFragment usersFragment= new UsersFragment();
+//                ((DashboardActivity)getActivity()).replaceFragment(usersFragment);
+//            }
+//        });
         showChattingListTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
